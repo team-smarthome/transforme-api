@@ -6,7 +6,7 @@
 
 ## Pastikan anda sudah menginstall composer
 
-## Jika belum ada database bernama siram-be, silahkan buat database tersebut
+## Jika belum ada database bernama db_siram, silahkan buat database tersebut
 
 
 ### Cara Install
@@ -23,7 +23,7 @@ pastikan konfigurasi database sudah benar :
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
 DB_PORT=3306
-DB_DATABASE=siram-be
+DB_DATABASE=db_siram
 DB_USERNAME=root
 DB_PASSWORD=
 
