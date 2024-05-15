@@ -14,6 +14,7 @@
 $ git clone
 $ cd siram-be
 $ composer install
+$ php artisan migrate (ini untuk membuat table-table yang diperlukan, tergantung kebutuhan ya)
 ```
 
 ### Cara Menyiapkan Environment
