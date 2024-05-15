@@ -2,7 +2,7 @@
 
 ## Pastikan anda punya versi PHP 8.2 ke atas
 
-## Pastikan anda menjalankan server mysql di port 3306 serta user root tanpa password 
+## Pastikan anda menjalankan server mysql di port 3306 serta user root dengan password root 
 
 ## Pastikan anda sudah menginstall composer
 
