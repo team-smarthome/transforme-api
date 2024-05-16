@@ -20,6 +20,7 @@ $ php artisan migrate (ini untuk membuat table-table yang diperlukan, tergantung
 ### Cara Menyiapkan Environment
 ```bash
 buat file .env yang berisi salinan dari .env.example
+$ php artisan key:generate
 pastikan konfigurasi database sudah benar : 
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
