@@ -11,9 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('aset', function (Blueprint $table) {
-            $table->id();
+        Schema::create('version', function (Blueprint $table) {
+            $table->uuid('version_id')->primary();
+            $table->string('link', 100)->nullable();
+            $table->string('version_name', 100)->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
@@ -22,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('aset');
+        Schema::dropIfExists('version');
     }
 };
