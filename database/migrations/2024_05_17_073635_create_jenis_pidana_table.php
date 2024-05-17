@@ -11,12 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('grup_petugas', function (Blueprint $table) {
-            $table->uuid('grup_petugas_id')->primary();
-            $table->string('ketua_grup', 100);
-            $table->string('nama_grup_petugas', 100);
-            $table->timestamps(); 
-            $table->softDeletes(); 
+        Schema::create('jenis_pidana', function (Blueprint $table) {
+            $table->uuid('jenis_pidana_id')->primary();
+            $table->string('nama_jenis_pidana', 100)->nullable();
+            $table->softDeletes();
         });
     }
 
@@ -25,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('grup_petugas');
+        Schema::dropIfExists('jenis_pidana');
     }
 };

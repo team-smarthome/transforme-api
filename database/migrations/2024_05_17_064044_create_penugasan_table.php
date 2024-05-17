@@ -14,8 +14,6 @@ return new class extends Migration
         Schema::create('penugasan', function (Blueprint $table) {
             $table->uuid('penugasan_id')->primary();
             $table->string('nama_penugasan', 100)->nullable();
-            $table->tinyInteger('is_deleted')->default(0);
-            $table->timestamps();
             $table->softDeletes(); 
         });
     }

@@ -11,12 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('grup_petugas', function (Blueprint $table) {
-            $table->uuid('grup_petugas_id')->primary();
-            $table->string('ketua_grup', 100);
-            $table->string('nama_grup_petugas', 100);
-            $table->timestamps(); 
-            $table->softDeletes(); 
+        Schema::create('version', function (Blueprint $table) {
+            $table->uuid('version_id')->primary();
+            $table->string('link', 100)->nullable();
+            $table->string('version_name', 100)->nullable();
+            $table->timestamps();
+            $table->softDeletes();
         });
     }
 
@@ -25,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('grup_petugas');
+        Schema::dropIfExists('version');
     }
 };
