@@ -11,11 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('user_role', function (Blueprint $table) {
-            $table->uuid('user_role_id')->primary();
-            $table->string('role_name', 36)->nullable();
-            $table->string('deskripsi_role', 255)->nullable();
-            $table->softDeletes();
+        Schema::create('user_login', function (Blueprint $table) {
+            $table->uuid('user_login_id')->primary();
+            $table->uuid('user_id')->nullable();
+            $table->string('token', 64)->nullable();
+            $table->string('token_expiry', 64)->nullable();
         });
     }
 
@@ -24,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('user_role');
+        Schema::dropIfExists('user_login');
     }
 };

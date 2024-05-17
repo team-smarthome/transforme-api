@@ -14,11 +14,11 @@ return new class extends Migration
         Schema::create('lokasi_otmil', function (Blueprint $table) {
             $table->string('lokasi_otmil_id', 36)->primary();
             $table->string('nama_lokasi_otmil', 100)->nullable();
-            $table->tinyInteger('is_deleted')->default(0);
             $table->string('latitude', 100)->nullable();
             $table->string('longitude', 100)->nullable();
             $table->double('panjang', 8, 2)->default(0.00);
             $table->double('lebar', 8, 2)->default(0.00);
+            $table->softDeletes();
         });
     }
 
