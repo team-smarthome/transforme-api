@@ -11,10 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('user_role', function (Blueprint $table) {
-            $table->uuid('user_role_id')->primary();
-            $table->string('role_name', 36)->nullable();
-            $table->string('deskripsi_role', 255)->nullable();
+        Schema::create('version', function (Blueprint $table) {
+            $table->uuid('version_id')->primary();
+            $table->string('link', 100)->nullable();
+            $table->string('version_name', 100)->nullable();
+            $table->timestamps();
             $table->softDeletes();
         });
     }
@@ -24,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('user_role');
+        Schema::dropIfExists('version');
     }
 };

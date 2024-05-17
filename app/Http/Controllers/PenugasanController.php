@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\LokasiLemasmil;
-use App\Http\Requests\StoreLokasiLemasmilRequest;
-use App\Http\Requests\UpdateLokasiLemasmilRequest;
+use App\Models\Penugasan;
+use App\Http\Requests\StorePenugasanRequest;
+use App\Http\Requests\UpdatePenugasanRequest;
 
-class LokasiLemasmilController extends Controller
+class PenugasanController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -27,7 +27,7 @@ class LokasiLemasmilController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreLokasiLemasmilRequest $request)
+    public function store(StorePenugasanRequest $request)
     {
         //
     }
@@ -35,7 +35,7 @@ class LokasiLemasmilController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(LokasiLemasmil $lokasiLemasmil)
+    public function show(Penugasan $penugasan)
     {
         //
     }
@@ -43,7 +43,7 @@ class LokasiLemasmilController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(LokasiLemasmil $lokasiLemasmil)
+    public function edit(Penugasan $penugasan)
     {
         //
     }
@@ -51,7 +51,7 @@ class LokasiLemasmilController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateLokasiLemasmilRequest $request, LokasiLemasmil $lokasiLemasmil)
+    public function update(UpdatePenugasanRequest $request, Penugasan $penugasan)
     {
         //
     }
@@ -59,7 +59,7 @@ class LokasiLemasmilController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(LokasiLemasmil $lokasiLemasmil)
+    public function destroy(Penugasan $penugasan)
     {
         //
     }
