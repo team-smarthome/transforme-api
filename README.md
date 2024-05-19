@@ -10,9 +10,9 @@
 
 
 ### Jangan lupa setiap kali ingin mengerjakan selalu pull branch development-stagging
-   ```sh
-    git pull origin development-stagging
-    ```
+```bash
+$ git pull origin development-stagging
+```
 ### Cara Install
 ```bash
 $ git clone
