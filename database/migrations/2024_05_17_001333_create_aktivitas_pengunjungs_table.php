@@ -12,7 +12,7 @@ return new class extends Migration
    */
   public function up(): void
   {
-    Schema::create('aktivitas_pengunjungs', function (Blueprint $table) {
+    Schema::create('aktivitas_pengunjung', function (Blueprint $table) {
       $table->uuid('aktivitas_pengunjung_id')->primary();
       $table->string('nama_aktivitas_pengunjung', 100)->nullable();
       $table->dateTime('waktu_mulai_kunjungan')->nullable();
@@ -33,6 +33,6 @@ return new class extends Migration
    */
   public function down(): void
   {
-    Schema::dropIfExists('aktivitas_pengunjungs');
+    Schema::dropIfExists('aktivitas_pengunjung');
   }
 };

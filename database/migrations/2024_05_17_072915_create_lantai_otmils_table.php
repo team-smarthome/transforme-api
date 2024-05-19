@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('lantai_otmils', function (Blueprint $table) {
+        Schema::create('lantai_otmil', function (Blueprint $table) {
             $table->uuid("lantai_otmil_id")->primary();
             $table->string("nama_lantai",100)->nullable(false);
             $table->softDeletes();
@@ -30,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('lantai_otmils');
+        Schema::dropIfExists('lantai_otmil');
     }
 };

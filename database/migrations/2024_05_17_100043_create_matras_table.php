@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('matras', function (Blueprint $table) {
+        Schema::create('matra', function (Blueprint $table) {
             $table->uuid("matra_id")->primary();
             $table->string("nama_matra",100)->nullable(false);
             $table->softDeletes();
@@ -23,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('matras');
+        Schema::dropIfExists('matra');
     }
 };

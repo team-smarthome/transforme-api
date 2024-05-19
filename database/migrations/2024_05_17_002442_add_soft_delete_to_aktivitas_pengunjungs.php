@@ -11,7 +11,7 @@ return new class extends Migration
    */
   public function up(): void
   {
-    Schema::table('aktivitas_pengunjungs', function (Blueprint $table) {
+    Schema::table('aktivitas_pengunjung', function (Blueprint $table) {
       $table->softDeletes();
     });
   }

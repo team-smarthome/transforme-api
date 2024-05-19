@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('kegiatan_wbps', function (Blueprint $table) {
+        Schema::create('kegiatan_wbp', function (Blueprint $table) {
             $table->uuid("kegiatan_wbp_id")->primary();
             $table->foreignUuid("wbp_profile_id")->nullable(false);
             $table->foreignUuid("kegiatan_id")->nullable(false);
@@ -24,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('kegiatan_wbps');
+        Schema::dropIfExists('kegiatan_wbp');
     }
 };

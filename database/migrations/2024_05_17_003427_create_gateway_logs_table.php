@@ -11,7 +11,7 @@ return new class extends Migration
    */
   public function up(): void
   {
-    Schema::create('gateway_logs', function (Blueprint $table) {
+    Schema::create('gateway_log', function (Blueprint $table) {
       $table->uuid('gateway_log_id')->primary();
       $table->uuid('wbp_profile_id')->nullable();
       $table->string('image', 255)->nullable();

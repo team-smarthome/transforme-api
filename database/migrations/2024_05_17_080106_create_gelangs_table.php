@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('gelangs', function (Blueprint $table) {
+        Schema::create('gelang', function (Blueprint $table) {
             $table->uuid("gelang_id")->primary();
             $table->string("dmac",100)->nullable();
             $table->string("nama_gelang",100)->nullable(false);
@@ -29,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('gelangs');
+        Schema::dropIfExists('gelang');
     }
 };

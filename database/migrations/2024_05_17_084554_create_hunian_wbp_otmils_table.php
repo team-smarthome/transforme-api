@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('hunian_wbp_otmils', function (Blueprint $table) {
+        Schema::create('hunian_wbp_otmil', function (Blueprint $table) {
             $table->uuid("hunian_wbp_otmil_id")->primary();
             $table->foreignUuid("lokasi_otmil_id")->nullable(false)->oneDeleteCascade();
             $table->softDeletes();
@@ -24,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('hunian_wbp_otmils');
+        Schema::dropIfExists('hunian_wbp_otmil');
     }
 };

@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('wbp_profiles', function (Blueprint $table) {
+        Schema::create('wbp_profile', function (Blueprint $table) {
             $table->uuid("wbp_profile_id")->primary();
             $table->string("nama", 100)->nullable(false);
             $table->foreignUuid("pangkat_id")->nullable(false);
@@ -61,6 +61,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('wbp_profiles');
+        Schema::dropIfExists('wbp_profile');
     }
 };

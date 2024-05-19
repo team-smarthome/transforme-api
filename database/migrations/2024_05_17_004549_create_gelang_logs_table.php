@@ -11,7 +11,7 @@ return new class extends Migration
    */
   public function up(): void
   {
-    Schema::create('gelang_logs', function (Blueprint $table) {
+    Schema::create('gelang_log', function (Blueprint $table) {
       $table->id();
       $table->string('v_gmac', 255)->nullable();
       $table->string('v_dmac', 12)->nullable();

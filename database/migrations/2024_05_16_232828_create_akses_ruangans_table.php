@@ -20,6 +20,7 @@ return new class extends Migration
       $table->uuid('wbp_profile_id')->nullable();
       $table->boolean('is_permitted')->nullable();
       $table->softDeletes();
+      $table->timestamps();
     });
   }
 

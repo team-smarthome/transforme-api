@@ -11,7 +11,7 @@ return new class extends Migration
    */
   public function up(): void
   {
-    Schema::create('gateways', function (Blueprint $table) {
+    Schema::create('gateway', function (Blueprint $table) {
       $table->uuid('gateway_id')->primary();
       $table->string('gmac', 100)->nullable();
       $table->string('nama_gateway', 100)->nullable();
@@ -29,6 +29,6 @@ return new class extends Migration
    */
   public function down(): void
   {
-    Schema::dropIfExists('gateways');
+    Schema::dropIfExists('gateway');
   }
 };
