@@ -12,13 +12,15 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('jenis_perkara', function (Blueprint $table) {
-            $table->uuid("jenis_perkara_id")->primary();
+            $table->uuid("id")->primary();
             $table->foreignUuid("kategori_perkara_id")->nullable(false);
             $table->string("nama_jenis_perkara",100)->nullable(false);
             $table->string("pasal",100)->nullable();
             $table->integer("vonis_tahun_perkara")->nullable();
             $table->integer("vonis_bulan_perkara")->nullable();
             $table->integer("vonis_hari_perkara")->nullable();
+            $table->timestamps();
+            $table->softDeletes();
         });
     }
 

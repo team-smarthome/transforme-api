@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('gelang', function (Blueprint $table) {
-            $table->uuid("gelang_id")->primary();
+            $table->uuid("id")->primary();
             $table->string("dmac",100)->nullable();
             $table->string("nama_gelang",100)->nullable(false);
             $table->date("tanggal_pasang")->nullable();
@@ -20,6 +20,7 @@ return new class extends Migration
             $table->foreignUuid("ruangan_otmil_id")->nullable(false);
             $table->foreignUuid("ruangan_lemasmil_id")->nullable(false);
             $table->string("baterai",100)->nullable();
+            $table->timestamps();
             $table->softDeletes();
         });
     }

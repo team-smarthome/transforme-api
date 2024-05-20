@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('petugas_shift', function (Blueprint $table) {
-            $table->uuid('petugas_shift_id')->primary();
+            $table->uuid('id')->primary();
             $table->uuid('shift_id')->nullable();
             $table->uuid('petugas_id')->nullable();
             $table->uuid('schedule_id')->nullable();
@@ -25,10 +25,10 @@ return new class extends Migration
             $table->uuid('ruangan_lemasmil_id')->nullable();
             $table->uuid('lokasi_lemasmil_id')->nullable();
             $table->string('status_pengganti', 36)->nullable();
-            $table->timestamps();
-            $table->softDeletes();
             $table->tinyInteger('lembur')->nullable();
             $table->string('keterangan_lembur', 100)->nullable();
+            $table->timestamps();
+            $table->softDeletes();
         });
     }
 

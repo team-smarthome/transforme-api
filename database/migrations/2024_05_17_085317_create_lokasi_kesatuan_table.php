@@ -15,6 +15,7 @@ return new class extends Migration
             $table->uuid("lokasi_kesatuan_id")->primary();
             $table->string("nama_lokasi_kesatuan",100)->nullable(false);
             $table->softDeletes();
+            $table->timestamps();
         });
     }
 

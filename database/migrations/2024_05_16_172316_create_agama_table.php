@@ -15,7 +15,7 @@ class CreateAgamaTable extends Migration
     {
         Schema::create('agama', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->string('nama_agama');
+            $table->string('nama_agama', 255)->unique() ->nullable(false);
             $table->timestamps();
             $table->softDeletes();
         });

@@ -11,13 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('dokumen_persidangans', function (Blueprint $table) {
-            $table->uuid('dokumen_persidangan_id')->primary();
+        Schema::create('dokumen_persidangan', function (Blueprint $table) {
+            $table->uuid('id')->primary();
             $table->string('nama_dokumen_persidangan', 100)->nullable();
             $table->string('link_dokumen_persidangan', 255)->nullable();
+            $table->uuid('sidang_id')->nullable();
             $table->timestamps();
             $table->softDeletes();
-            $table->uuid('sidang_id')->nullable();
         });
     }
 
@@ -26,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('dokumen_persidangans');
+        Schema::dropIfExists('dokumen_persidangan');
     }
 };

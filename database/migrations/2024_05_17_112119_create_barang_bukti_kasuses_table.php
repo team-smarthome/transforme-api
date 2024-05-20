@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('barang_bukti_kasuses', function (Blueprint $table) {
-            $table->uuid('barang_bukti_kasus_id')->primary();
+        Schema::create('barang_bukti_kasus', function (Blueprint $table) {
+            $table->uuid('id')->primary();
             $table->uuid('kasus_id')->nullable();
             $table->string('nama_bukti_kasus', 100)->nullable();
             $table->string('nomor_barang_bukti', 100)->nullable();
@@ -21,8 +21,9 @@ return new class extends Migration
             $table->string('keterangan', 255)->nullable();
             $table->date('tanggal_diambil')->nullable();
             $table->string('longitude', 100)->nullable();
-            $table->softDeletes();
             $table->uuid('jenis_perkara_id', 100)->nullable();
+            $table->softDeletes();
+            $table->timestamps();
         });
     }
 
@@ -31,6 +32,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('barang_bukti_kasuses');
+        Schema::dropIfExists('barang_bukti_kasus');
     }
 };

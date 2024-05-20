@@ -11,11 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('pivot_sidang_saksis', function (Blueprint $table) {
-            $table->uuid('pivot_sidang_saksi_id')->primary();
+        Schema::create('pivot_sidang_saksi', function (Blueprint $table) {
+            $table->uuid('id')->primary();
             $table->uuid('sidang_id')->nullable();
             $table->uuid('saksi_id')->nullable();
             $table->softDeletes();
+            $table->timestamps();
         });
     }
 

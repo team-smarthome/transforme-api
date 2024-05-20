@@ -13,7 +13,7 @@ return new class extends Migration
   public function up(): void
   {
     Schema::create('aktivitas_pengunjung', function (Blueprint $table) {
-      $table->uuid('aktivitas_pengunjung_id')->primary();
+      $table->uuid('id')->primary();
       $table->string('nama_aktivitas_pengunjung', 100)->nullable();
       $table->dateTime('waktu_mulai_kunjungan')->nullable();
       $table->dateTime('waktu_selesai_kunjungan')->nullable();
@@ -24,7 +24,8 @@ return new class extends Migration
       $table->uuid('pengunjung_id')->nullable();
       $table->uuid('wbp_profile_id')->nullable();
       $table->string('zona_waktu', 10)->nullable();
-      $table->timestamp('d_createdAt')->nullable()->default(DB::raw('CURRENT_TIMESTAMP'));
+      $table->softDeletes();
+      $table->timestamps();
     });
   }
 

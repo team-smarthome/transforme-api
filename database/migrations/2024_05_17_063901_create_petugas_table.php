@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('petugas', function (Blueprint $table) {
-            $table->uuid('petugas_id')->primary();
+            $table->uuid('id')->primary();
             $table->string('nama', 100)->nullable();
             $table->uuid('pangkat_id')->nullable();
             $table->uuid('kesatuan_id')->nullable();
@@ -28,9 +28,6 @@ return new class extends Migration
             $table->uuid('bidang_keahlian_id')->nullable();
             $table->string('foto_wajah', 255)->nullable();
             $table->string('jabatan', 100)->nullable();
-            $table->timestamps(); 
-            $table->softDeletes();
-            $table->tinyInteger('is_deleted')->default(0);
             $table->string('divisi', 100)->nullable();
             $table->string('nomor_petugas', 100)->nullable();
             $table->uuid('lokasi_otmil_id')->nullable();
@@ -40,6 +37,8 @@ return new class extends Migration
             $table->uuid('matra_id')->nullable();
             $table->string('foto_wajah_fr', 255)->nullable();
             $table->uuid('lokasi_kesatuan_id')->nullable();
+            $table->timestamps(); 
+            $table->softDeletes();
         });
     }
 

@@ -11,12 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('pivot_kasus_oditurs', function (Blueprint $table) {
-            $table->uuid('pivot_kasus_oditur_id')->primary();
+        Schema::create('pivot_kasus_oditur', function (Blueprint $table) {
+            $table->uuid('id')->primary();
             $table->uuid('oditur_penyidikan_id')->nullable();
             $table->tinyInteger('role_ketua')->nullable();
             $table->uuid('kasus_id')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
@@ -25,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('pivot_kasus_oditurs');
+        Schema::dropIfExists('pivot_kasus_oditur');
     }
 };

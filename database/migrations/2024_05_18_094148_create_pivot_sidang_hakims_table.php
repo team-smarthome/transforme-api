@@ -11,12 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('pivot_sidang_hakims', function (Blueprint $table) {
-            $table->uuid('pivot_sidang_hakim_id')->primary();
+        Schema::create('pivot_sidang_hakim', function (Blueprint $table) {
+            $table->uuid('id')->primary();
             $table->uuid('sidang_id')->nullable();
             $table->tinyInteger('role_ketua')->nullable();
             $table->uuid('hakim_id')->nullable();
             $table->softDeletes();
+            $table->timestamps();
         });
     }
 
@@ -25,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('pivot_sidang_hakims');
+        Schema::dropIfExists('pivot_sidang_hakim');
     }
 };

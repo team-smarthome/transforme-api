@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('pengunjungs', function (Blueprint $table) {
-            $table->uuid('pengunjung_id')->primary();
+        Schema::create('pengunjung', function (Blueprint $table) {
+            $table->uuid('id')->primary();
             $table->string('nama', 100)->nullable();
             $table->string('tempat_lahir', 100)->nullable();
             $table->date('tanggal_lahir')->nullable();
@@ -23,10 +23,10 @@ return new class extends Migration
             $table->string('foto_wajah', 255)->nullable();
             $table->uuid('wbp_profile_id')->nullable();
             $table->string('hubungan_wbp', 100)->nullable();
-            $table->timestamps();
             $table->string('nik', 100)->nullable();
-            $table->softDeletes();
             $table->string('foto_wajah_fr', 255)->nullable();
+            $table->timestamps();
+            $table->softDeletes();
         });
     }
 
@@ -35,6 +35,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('pengunjungs');
+        Schema::dropIfExists('pengunjung');
     }
 };

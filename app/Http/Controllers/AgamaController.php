@@ -10,11 +10,12 @@ class AgamaController extends Controller
     {
         $collection = Agama::latest()->get();
         return response()->json([
-            $status = 200,
-            $message = 'Data retrieved successfully',
-            $data = $collection
+            'status' => 200,
+            'message' => 'Data retrieved successfully',
+            'data' => $collection
         ]);
     }
+    
 
     public function store(Request $request)
     {
@@ -70,7 +71,7 @@ class AgamaController extends Controller
         // $agama->forceDelete(); hapus permanen
         $agama->delete();
 
-        return response()->json('Data berhasil dihapus', 200);
+        return response()->json('Data berhasil dihapus', 204);
     }
 
     public function restore($id)
