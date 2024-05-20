@@ -11,14 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('pengadilan_militers', function (Blueprint $table) {
-            $table->uuid('pengadilan_militer_id')->primary();
+        Schema::create('pengadilan_militer', function (Blueprint $table) {
+            $table->uuid('id')->primary();
             $table->string('nama_pengadilan_militer', 100)->nullable();
             $table->uuid('provinsi_id')->nullable();
             $table->uuid('kota_id')->nullable();
             $table->string('latitude', 100)->nullable();
             $table->string('longitude', 100)->nullable();
             $table->softDeletes();
+            $table->timestamps();
         });
     }
 
@@ -27,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('pengadilan_militers');
+        Schema::dropIfExists('pengadilan_militer');
     }
 };

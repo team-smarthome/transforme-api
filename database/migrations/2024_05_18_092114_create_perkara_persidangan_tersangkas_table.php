@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('perkara_persidangan_tersangkas', function (Blueprint $table) {
-            $table->uuid('perkara_persidangan_tersangka_id')->primary();
+        Schema::create('perkara_persidangan_tersangka', function (Blueprint $table) {
+            $table->uuid('id')->primary();
             $table->string('nama_perkara_persidangan_tersangka', 100)->nullable();
             $table->string('nomor_perkara_persidangan_tersangka', 100)->nullable();
             $table->uuid('wbp_profile_id')->nullable();
@@ -21,8 +21,9 @@ return new class extends Migration
             $table->date('tanggal_registrasi_tersangka')->nullable();
             $table->uuid('oditur_id')->nullable();
             $table->integer('lama_proses_persidangan_tersangka')->nullable();
-            $table->softDeletes();
             $table->uuid('dokumen_bap_id')->nullable();
+            $table->softDeletes();
+            $table->timestamps();
         });
     }
 
@@ -31,6 +32,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('perkara_persidangan_tersangkas');
+        Schema::dropIfExists('perkara_persidangan_tersangka');
     }
 };

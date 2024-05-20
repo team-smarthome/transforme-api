@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('user', function (Blueprint $table) {
-            $table->uuid('user_id')->primary();
+            $table->uuid('id')->primary();
             $table->string('username', 100)->nullable();
             $table->string('password', 100)->nullable();
             $table->uuid('user_role_id')->nullable();
@@ -23,10 +23,10 @@ return new class extends Migration
             $table->tinyInteger('is_suspended')->default(0);
             $table->string('petugas_id', 100)->nullable();
             $table->string('image', 255)->nullable();
-            $table->timestamps();
             $table->timestamp('last_login')->nullable();
             $table->date('expiry_date')->nullable();
             $table->softDeletes();
+            $table->timestamps();
         });
     }
 

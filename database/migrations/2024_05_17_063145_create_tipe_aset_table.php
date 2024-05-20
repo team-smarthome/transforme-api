@@ -12,9 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('tipe_aset', function (Blueprint $table) {
-            $table->uuid('tipe_aset_id')->primary();
+            $table->uuid('id')->primary();
             $table->string('nama_tipe', 100)->nullable();
             $table->softDeletes();
+            $table->timestamps();
         });
     }
 

@@ -12,10 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('hunian_wbp_lemasmil', function (Blueprint $table) {
-            $table->uuid("hunian_wbp_lemasmil_id")->primary();
+            $table->uuid("id")->primary();
             $table->foreignUuid("lokasi_lemasmil_id")->nullable(false)->oneDeleteCascade();
-            $table->softDeletes();
             $table->string("nama_hunian_wbp_lemasmil", 100)->nullable();
+            $table->softDeletes();
+            $table->timestamps();
         });
     }
 

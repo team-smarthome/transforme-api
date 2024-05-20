@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('histori_penyidikans', function (Blueprint $table) {
-            $table->uuid('histori_penyidikan_id')->primary();
+        Schema::create('histori_penyidikan', function (Blueprint $table) {
+            $table->uuid('id')->primary();
             $table->uuid('penyidikan_id')->nullable();
             $table->string('hasil_penyidikan', 100)->nullable();
             $table->string('lama_masa_tahanan', 100)->nullable();
@@ -26,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('histori_penyidikans');
+        Schema::dropIfExists('histori_penyidikan');
     }
 };

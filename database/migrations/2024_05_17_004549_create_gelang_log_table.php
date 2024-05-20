@@ -12,7 +12,7 @@ return new class extends Migration
   public function up(): void
   {
     Schema::create('gelang_log', function (Blueprint $table) {
-      $table->id();
+      $table->uuid('id')->primary();
       $table->string('v_gmac', 255)->nullable();
       $table->string('v_dmac', 12)->nullable();
       $table->string('v_vbatt', 100)->nullable();
@@ -29,10 +29,10 @@ return new class extends Migration
       $table->string('v_y0', 100)->nullable();
       $table->string('v_z0', 100)->nullable();
       $table->dateTime('d_time')->nullable();
-      $table->tinyInteger('n_isdeleted')->default(0);
       $table->tinyInteger('n_isavailable')->default(1);
       $table->string('v_gateway_topic', 255)->nullable();
       $table->timestamps();
+      $table->softDeletes();
     });
   }
 

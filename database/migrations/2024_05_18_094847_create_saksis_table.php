@@ -11,16 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('saksis', function (Blueprint $table) {
-            $table->uuid('saksi_id')->primary();
+        Schema::create('saksi', function (Blueprint $table) {
+            $table->uuid('id')->primary();
             $table->string('nama_saksi', 50)->nullable();
             $table->string('no_kontak', 25)->nullable();
             $table->string('alamat', 100)->nullable();
             $table->tinyInteger('jenis_kelamin')->nullable();
             $table->uuid('kasus_id')->nullable();
-            $table->timestamps();
             $table->string('keterangan', 255)->nullable();
             $table->softDeletes();
+            $table->timestamps();
         });
     }
 
@@ -29,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('saksis');
+        Schema::dropIfExists('saksi');
     }
 };

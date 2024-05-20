@@ -11,11 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('pivot_sidang_ahlis', function (Blueprint $table) {
-            $table->uuid('pivot_sidang_ahli_id')->primary();
+        Schema::create('pivot_sidang_ahli', function (Blueprint $table) {
+            $table->uuid('id')->primary();
             $table->uuid('sidang_id')->nullable();
             $table->uuid('ahli_id')->nullable();
             $table->softDeletes();
+            $table->timestamps();
         });
     }
 
@@ -24,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('pivot_sidang_ahlis');
+        Schema::dropIfExists('pivot_sidang_ahli');
     }
 };

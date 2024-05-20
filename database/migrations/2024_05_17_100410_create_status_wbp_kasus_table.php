@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('status_wbp_kasus', function (Blueprint $table) {
-            $table->uuid("status_wbp_kasus_id")->primary();
+            $table->uuid("id")->primary();
             $table->string("nama_status_wbp_kasus",100)->nullable(false);
             $table->softDeletes();
             $table->timestamps();

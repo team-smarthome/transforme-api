@@ -11,11 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('sidang_pengacaras', function (Blueprint $table) {
-            $table->uuid('sidang_pencara_id')->primary();
+        Schema::create('sidang_pengacara', function (Blueprint $table) {
+            $table->uuid('id')->primary();
             $table->uuid('sidang_id')->nullable();
             $table->string('nama_pengacara', 255)->nullable();
             $table->softDeletes();
+            $table->timestamps();
         });
     }
 
@@ -24,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('sidang_pengacaras');
+        Schema::dropIfExists('sidang_pengacara');
     }
 };

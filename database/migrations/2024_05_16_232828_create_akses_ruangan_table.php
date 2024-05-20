@@ -12,9 +12,9 @@ return new class extends Migration
   public function up(): void
   {
     Schema::create('akses_ruangan', function (Blueprint $table) {
-      $table->uuid('akses_ruangan_id')->primary();
-      $table->string('dmac', 100)->nullable();
-      $table->string('nama_gateway', 100)->nullable();
+      $table->uuid('id')->primary();
+      $table->string('dmac', 255)->nullable();
+      $table->string('nama_gateway', 255)->nullable();
       $table->uuid('ruangan_otmil_id')->nullable();
       $table->uuid('ruangan_lemasmil_id')->nullable();
       $table->uuid('wbp_profile_id')->nullable();

@@ -12,7 +12,7 @@ return new class extends Migration
   public function up(): void
   {
     Schema::create('gateway', function (Blueprint $table) {
-      $table->uuid('gateway_id')->primary();
+      $table->uuid('id')->primary();
       $table->string('gmac', 100)->nullable();
       $table->string('nama_gateway', 100)->nullable();
       $table->uuid('ruangan_otmil_id')->nullable();

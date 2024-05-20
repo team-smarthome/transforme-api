@@ -11,12 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('pivot_kasus_wbps', function (Blueprint $table) {
-            $table->uuid('pivot_kasus_wbp_id')->primary();
+        Schema::create('pivot_kasus_wbp', function (Blueprint $table) {
+            $table->uuid('id')->primary();
             $table->uuid('wbp_profile_id')->nullable();
             $table->uuid('kasus_id')->nullable();
-            $table->softDeletes();
             $table->string('keterangan', 255)->nullable();
+            $table->softDeletes();
+            $table->timestamps();
         });
     }
 

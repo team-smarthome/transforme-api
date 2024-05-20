@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('wbp_perkara', function (Blueprint $table) {
-            $table->uuid("wbp_perkara_id")->primary();
+            $table->uuid("id")->primary();
             $table->foreignUuid("kategori_perkara_id")->nullable(false);
             $table->foreignUuid("jenis_perkara_id")->nullable(false);
             $table->integer("vonis_tahun")->nullable();
@@ -23,8 +23,9 @@ return new class extends Migration
             $table->foreignUuid("lokasi_otmil_id")->nullable(false);
             $table->foreignUuid("lokasi_lemasmil_id")->nullable(false);
             $table->integer("residivis")->nullable();
-            $table->softDeletes();
             $table->foreignUuid("wbp_profile_id")->nullable(false);
+            $table->softDeletes();
+            $table->timestamps();
         });
     }
 

@@ -11,12 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('oditur_penyidiks', function (Blueprint $table) {
-            $table->uuid('oditur_penyidik_id')->primary();
+        Schema::create('oditur_penyidik', function (Blueprint $table) {
+            $table->uuid('id')->primary();
             $table->string('nip', 100)->nullable();
             $table->string('nama_oditur', 100)->nullable();
             $table->string('alamat', 255)->nullable();
             $table->softDeletes();
+            $table->timestamps();
         });
     }
 
@@ -25,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('oditur_penyidiks');
+        Schema::dropIfExists('oditur_penyidik');
     }
 };
