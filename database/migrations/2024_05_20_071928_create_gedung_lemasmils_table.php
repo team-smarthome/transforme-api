@@ -20,6 +20,7 @@ return new class extends Migration
             $table->double('posisi_X');
             $table->double('posisi_Y');
             $table->softDeletes();
+            $table->timestamps();
 
             // $table->timestamp();
         });
