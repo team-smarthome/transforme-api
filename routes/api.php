@@ -1,8 +1,6 @@
 <?php
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AgamaController;
 
-Route::get('/user1', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
+Route::apiResource('agama', AgamaController::class);
+
