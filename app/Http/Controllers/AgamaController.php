@@ -8,21 +8,55 @@ use App\Http\Controllers\BaseController;
 class AgamaController extends BaseController
 {
     public function index(Request $request)
-    {
-        if($request->query('not-paginate')) {
-            $collection = Agama::all();
-            $result = ['data' => $collection];
-        } else {
-            $collection = Agama::paginate($request->recordsPerPage)->appends($request->query());
-            $result = [
-                'data' => $collection->items(),
-                'links' => $collection->links(),
-                'meta' => $collection->toArray()
-            ];
-        }
+    {   
 
-        return $this->wrapResponse(Response::HTTP_OK, self::SUCCESS, $result);
+        $collection = Agama::latest()->get();
+        return response()->json([
+            'status' => 200,
+            'message' => 'Data retrieved successfully',
+            'data' => $collection
+        ]);
+        // $collection = Agama::paginate($request->recordsPerPage)->appends($request->query());
+        // $agama = Agama::all();
+
+        // $result = [
+        //     'data' => $collection->items(),
+        //     'links' => $collection->links(),
+        //     'meta' => $collection->toArray()
+        // ];
+
+        // return $this->wrapResponse(Response::HTTP_OK, self::SUCCESS, $result);
+
+        // return response()->json($agama, 200);
+        // if ($request->query('not-paginate')) {
+        //     $collection = Agama::all();
+        //     $result = ['data' => $collection];
+        //     $response = $this->wrapResponse(Response::HTTP_OK, self::SUCCESS, $result);
+        // } else {
+        //     $collection = Agama::paginate($request->recordsPerPage)->appends($request->query());
+        //     $result = [
+        //         'data' => $collection->items(),
+        //         'links' => $collection->links(),
+        //         'meta' => $collection->toArray()
+        //     ];
+        //     $response = $this->wrapResponse(Response::HTTP_OK, self::SUCCESS, $result);
+        // }
+
+        // if ($request->query('not-paginate')) {
+        //     $collection = Agama::all();
+        //     $result = ['data' => $collection];
+        // } else {
+        //     $collection = Agama::paginate($request->recordsPerPage)->appends($request->query());
+        //     $result = [
+        //         'data' => $collection->items(),
+        //         'links' => $collection->links(),
+        //         'meta' => $collection->toArray()
+        //     ];
+        // }
+
+        // return $this->wrapResponse(Response::HTTP_OK, self::SUCCESS, $result);
     }
+
 
     public function store(Request $request)
     {

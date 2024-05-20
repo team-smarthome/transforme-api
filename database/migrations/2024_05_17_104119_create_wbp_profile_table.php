@@ -30,8 +30,6 @@ return new class extends Migration
             $table->string("nomor_tahanan", 100)->nullable();
             $table->tinyInteger("residivis")->nullable();
             $table->foreignUuid("status_wbp_kasus_id")->nullable(false);
-            $table->timestamps();
-            $table->softDeletes();
             $table->string("foto_wajah_fr")->nullable();
             $table->tinyInteger("is_isolated")->nullable();
             $table->tinyInteger("is_sick")->nullable();

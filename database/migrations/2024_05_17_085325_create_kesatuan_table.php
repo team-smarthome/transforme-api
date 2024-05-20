@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('kesatuan', function (Blueprint $table) {
             $table->uuid("id")->primary();
             $table->string("nama_kesatuan",100)->nullable(false);
-            $table->foreign('lokasi_kesatuan_id')->references('id')->on('lokasi_kesatuan')->onDelete('set null');
+            // $table->foreign('lokasi_kesatuan_id')->references('id')->on('lokasi_kesatuan')->onDelete('set null');
             $table->softDeletes();
             $table->timestamps();
         });
