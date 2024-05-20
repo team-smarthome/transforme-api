@@ -3,19 +3,60 @@ namespace App\Http\Controllers;
 
 use App\Models\Agama;
 use Illuminate\Http\Request;
+use App\Http\Controllers\BaseController;
 
-class AgamaController extends Controller
+class AgamaController extends BaseController
 {
-    public function index()
-    {
+    public function index(Request $request)
+    {   
+
         $collection = Agama::latest()->get();
         return response()->json([
             'status' => 200,
             'message' => 'Data retrieved successfully',
             'data' => $collection
         ]);
+        // $collection = Agama::paginate($request->recordsPerPage)->appends($request->query());
+        // $agama = Agama::all();
+
+        // $result = [
+        //     'data' => $collection->items(),
+        //     'links' => $collection->links(),
+        //     'meta' => $collection->toArray()
+        // ];
+
+        // return $this->wrapResponse(Response::HTTP_OK, self::SUCCESS, $result);
+
+        // return response()->json($agama, 200);
+        // if ($request->query('not-paginate')) {
+        //     $collection = Agama::all();
+        //     $result = ['data' => $collection];
+        //     $response = $this->wrapResponse(Response::HTTP_OK, self::SUCCESS, $result);
+        // } else {
+        //     $collection = Agama::paginate($request->recordsPerPage)->appends($request->query());
+        //     $result = [
+        //         'data' => $collection->items(),
+        //         'links' => $collection->links(),
+        //         'meta' => $collection->toArray()
+        //     ];
+        //     $response = $this->wrapResponse(Response::HTTP_OK, self::SUCCESS, $result);
+        // }
+
+        // if ($request->query('not-paginate')) {
+        //     $collection = Agama::all();
+        //     $result = ['data' => $collection];
+        // } else {
+        //     $collection = Agama::paginate($request->recordsPerPage)->appends($request->query());
+        //     $result = [
+        //         'data' => $collection->items(),
+        //         'links' => $collection->links(),
+        //         'meta' => $collection->toArray()
+        //     ];
+        // }
+
+        // return $this->wrapResponse(Response::HTTP_OK, self::SUCCESS, $result);
     }
-    
+
 
     public function store(Request $request)
     {
@@ -45,12 +86,11 @@ class AgamaController extends Controller
         }
     }
     
-
     public function show($id)
     {
         $agama = Agama::findOrFail($id);
 
-        return response()->json($agama);
+        return response()->json($agama, 200);
     }
 
     public function update(Request $request, $id)
@@ -60,9 +100,17 @@ class AgamaController extends Controller
         ]);
 
         $agama = Agama::findOrFail($id);
+
+        $namaEditAgama = $request->input('nama_agama');
+        $existingAgama = Agama::where('nama_agama', $agama->nama_agama)->first();
+
+        if ($existingAgama && $existingAgama->id !== $id) {
+            return response()->json(['message' => 'Nama agama sudah ada.'], 422);
+        }
+
         $agama->update($request->all());
 
-        return response()->json($agama);
+        return response()->json($agama, 200);
     }
 
     public function destroy($id, Request $request)
