@@ -11,19 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('ruangan_lemasmil', function (Blueprint $table) {
-            $table->uuid("ruangan_lemasmil_id")->primary();
-            $table->string("nama_ruangan_lemasmil",100)->nullable(false);
-            $table->string("jenis_ruangan_lemasmil",100)->nullable(false);
-            $table->foreignUuid("lokasi_lemasmil_id")->nullable();
+        Schema::create('lantai_lemasmil', function (Blueprint $table) {
+            $table->uuid("lantai_lemasmil_id")->primary();
+            $table->string("nama_lantai",100)->nullable(false);
             $table->softDeletes();
-            $table->foreignUuid("zona_id")->nullable();
             $table->double("panjang",8,2)->nullable()->default(0.00);
             $table->double("lebar",8,2)->nullable()->default(0.00);
             $table->double("posisi_X",8,2)->nullable()->default(0.00);
             $table->double("posisi_Y",8,2)->nullable()->default(0.00);
-            $table->foreignUuid("lantai_lemasmil_id")->nullable();
-            $table->timestamps();
+            $table->foreignUuid("lokasi_lemasmil_id")->nullable()->oneDelete("cascade");
+            $table->foreignUuid("gedung_lemasmil_id")->nullable()->oneDelete("cascade");
         });
     }
 
@@ -32,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        //
+        Schema::dropIfExists('lantai_lemasmil');
     }
 };
