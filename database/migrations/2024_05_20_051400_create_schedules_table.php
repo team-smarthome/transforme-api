@@ -11,8 +11,8 @@ return new class extends Migration
    */
   public function up(): void
   {
-    Schema::create('schedules', function (Blueprint $table) {
-      $table->uuid('schedule_id')->primary();
+    Schema::create('schedule', function (Blueprint $table) {
+      $table->uuid('id')->primary();
       $table->unsignedTinyInteger('tanggal')->nullable();
       $table->unsignedTinyInteger('bulan')->nullable();
       $table->unsignedSmallInteger('tahun')->nullable();
@@ -27,6 +27,6 @@ return new class extends Migration
    */
   public function down(): void
   {
-    Schema::dropIfExists('schedules');
+    Schema::dropIfExists('schedule');
   }
 };

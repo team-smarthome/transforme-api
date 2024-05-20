@@ -12,7 +12,7 @@ return new class extends Migration
   public function up(): void
   {
     Schema::create('wbp_sakit_log', function (Blueprint $table) {
-      $table->uuid('wbp_sakit_log_id')->primary();
+      $table->uuid('id')->primary();
       $table->uuid('wbp_profile_id')->nullable();
       $table->string('keterangan', 100)->nullable();
       $table->dateTime('timestamp')->nullable();
@@ -25,6 +25,6 @@ return new class extends Migration
    */
   public function down(): void
   {
-    Schema::dropIfExists('wbp_sakit_logs');
+    Schema::dropIfExists('wbp_sakit_log');
   }
 };

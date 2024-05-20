@@ -12,11 +12,12 @@ return new class extends Migration
   public function up(): void
   {
     Schema::create('shift', function (Blueprint $table) {
-      $table->uuid('shift_id')->primary();
+      $table->uuid('id')->primary();
       $table->string('nama_shift', 100)->nullable();
       $table->time('waktu_mulai')->nullable();
       $table->time('waktu_selesai')->nullable();
       $table->softDeletes();
+      $table->timestamps();
     });
   }
 
@@ -25,6 +26,6 @@ return new class extends Migration
    */
   public function down(): void
   {
-    Schema::dropIfExists('shifts');
+    Schema::dropIfExists('shift');
   }
 };

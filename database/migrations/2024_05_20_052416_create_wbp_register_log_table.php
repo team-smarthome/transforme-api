@@ -12,7 +12,7 @@ return new class extends Migration
   public function up(): void
   {
     Schema::create('wbp_register_log', function (Blueprint $table) {
-      $table->id('wbp_register_log_id');
+      $table->id('id');
       $table->string('wbp_profile_id', 36)->nullable();
       $table->string('keterangan', 100)->nullable();
       $table->dateTime('timestamp')->nullable();
@@ -25,6 +25,6 @@ return new class extends Migration
    */
   public function down(): void
   {
-    Schema::dropIfExists('wbp_register_logs');
+    Schema::dropIfExists('wbp_register_log');
   }
 };

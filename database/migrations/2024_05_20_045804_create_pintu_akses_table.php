@@ -12,7 +12,7 @@ return new class extends Migration
   public function up(): void
   {
     Schema::create('pintu_akses', function (Blueprint $table) {
-      $table->uuid('pintu_akses_id')->primary();
+      $table->uuid('id')->primary();
       $table->string('nama_pintu_akses', 100)->nullable();
       $table->string('mac_address', 100)->nullable();
       $table->uuid('ruangan_otmil_id')->nullable();
@@ -21,6 +21,7 @@ return new class extends Migration
       $table->string('merk', 100)->nullable();
       $table->string('model', 100)->nullable();
       $table->softDeletes();
+      $table->timestamps();
     });
   }
 

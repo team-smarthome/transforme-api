@@ -12,7 +12,7 @@ return new class extends Migration
   public function up(): void
   {
     Schema::create('kamera', function (Blueprint $table) {
-      $table->uuid('kamera_id')->primary();
+      $table->uuid('id')->primary();
       $table->string('nama_kamera', 100)->nullable();
       $table->string('url_rtsp', 100)->nullable();
       $table->string('ip_address', 100)->nullable();
@@ -22,6 +22,7 @@ return new class extends Migration
       $table->string('model', 100)->nullable();
       $table->string('status_kamera', 100)->nullable();
       $table->softDeletes();
+      $table->timestamps();
     });
   }
 

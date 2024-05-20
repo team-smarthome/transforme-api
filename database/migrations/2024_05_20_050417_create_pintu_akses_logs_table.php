@@ -11,8 +11,8 @@ return new class extends Migration
    */
   public function up(): void
   {
-    Schema::create('pintu_akses_logs', function (Blueprint $table) {
-      $table->uuid('pintu_akses_log_id')->primary();
+    Schema::create('pintu_akses_log', function (Blueprint $table) {
+      $table->uuid('id')->primary();
       $table->uuid('wbp_profile_id')->nullable();
       $table->string('image', 255)->nullable();
       $table->dateTime('timestamp')->nullable();
@@ -26,6 +26,6 @@ return new class extends Migration
    */
   public function down(): void
   {
-    Schema::dropIfExists('pintu_akses_logs');
+    Schema::dropIfExists('pintu_akses_log');
   }
 };
