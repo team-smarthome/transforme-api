@@ -4,9 +4,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AgamaController;
 use App\Http\Controllers\UserController;
+use App\Http\Middleware\AuthSanctumMiddleware;
 
 Route::post('login', [UserController::class, 'login']);
-Route::apiResource('agama', AgamaController::class);
-// Route::get('/user', function (Request $request) {
-//     return $request->user();
-// })->middleware('auth:sanctum');
+Route::prefix("master")
+  ->middleware([AuthSanctumMiddleware::class])
+  ->group(function () {
+    Route::apiResource('agama', AgamaController::class);
+  });
