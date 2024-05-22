@@ -12,8 +12,15 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('pivot_sidang_oditur', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
+            $table->uuid('sidang_id')->nullable(false);
+            $table->tinyInteger('role_ketua')->nullable();
+            $table->uuid('oditur_penuntut_id')->nullable(false);
             $table->timestamps();
+            $table->softDeletes();
+
+            $table->foreign('sidang_id')->references('id')->on('sidang');
+            $table->foreign('oditur_penuntut_id')->references('id')->on('oditur_penuntut');
         });
     }
 

@@ -12,8 +12,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('sidang_hakim', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
+            $table->uuid('sidang_id')->nullable(false);
+            $table->uuid('hakim_id')->nullable(false);
             $table->timestamps();
+            $table->softDeletes();
+
+            $table->foreign('sidang_id')->references('id')->on('sidang');
+            $table->foreign('hakim_id')->references('id')->on('hakim');
         });
     }
 

@@ -12,8 +12,18 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('gateway', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
+            $table->string('gmac', 100)->nullable();
+            $table->string('nama_gateway', 100)->nullable();
+            $table->uuid('ruangan_otmil_id')->nullable(false);
+            $table->uuid('ruangan_lemasmil_id')->nullable(false);
+            $table->string('status_gateway', 100)->nullable();
+            $table->string('v_gateway_topic', 100)->nullable();
             $table->timestamps();
+            $table->softDeletes();
+
+            $table->foreign('ruangan_otmil_id')->references('id')->on('ruangan_otmil');
+            $table->foreign('ruangan_lemasmil_id')->references('id')->on('ruangan_lemasmil');
         });
     }
 

@@ -12,8 +12,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('wbp_register_log', function (Blueprint $table) {
-            $table->id();
+            $table->id('id');
+            $table->uuid('wbp_profile_id')->nullable(false);
+            $table->string('keterangan', 100)->nullable();
+            $table->dateTime('timestamp')->nullable();
             $table->timestamps();
+            $table->softDeletes();
+
+            $table->foreign('wbp_profile_id')->references('id')->on('wbp_profile');
         });
     }
 

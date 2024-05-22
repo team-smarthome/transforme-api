@@ -12,8 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('ruang_isolasi_log', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
+            $table->uuid('wbp_profile_id')->nullable(false);
+            $table->string('keterangan', length: 100);
             $table->timestamps();
+            $table->softDeletes();
+
+            $table->foreign('wbp_profile_id')->references('id')->on('wbp_profile');
         });
     }
 

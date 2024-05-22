@@ -12,8 +12,15 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('gateway_log', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
+            $table->uuid('wbp_profile_id')->nullable(false);
+            $table->string('image', 255)->nullable();
+            $table->uuid('gateway_id')->nullable(false);
             $table->timestamps();
+            $table->softDeletes();
+
+            $table->foreign('wbp_profile_id')->references('id')->on('wbp_profile');
+            $table->foreign('gateway_id')->references('id')->on('gateway');
         });
     }
 

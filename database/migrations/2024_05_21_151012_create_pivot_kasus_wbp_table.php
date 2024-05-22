@@ -12,8 +12,15 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('pivot_kasus_wbp', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
+            $table->uuid('wbp_profile_id')->nullable(false);
+            $table->uuid('kasus_id')->nullable(false);
+            $table->string('keterangan', 255)->nullable();
             $table->timestamps();
+            $table->softDeletes();
+
+            $table->foreign('wbp_profile_id')->references('id')->on('wbp_profile');
+            $table->foreign('kasus_id')->references('id')->on('kasus');
         });
     }
 

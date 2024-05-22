@@ -12,8 +12,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('shift', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
+            $table->string('nama_shift', 100)->nullable();
+            $table->time('waktu_mulai')->nullable();
+            $table->time('waktu_selesai')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

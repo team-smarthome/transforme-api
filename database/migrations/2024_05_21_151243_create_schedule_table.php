@@ -12,8 +12,15 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('schedule', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
+            $table->unsignedTinyInteger('tanggal')->nullable();
+            $table->unsignedTinyInteger('bulan')->nullable();
+            $table->unsignedSmallInteger('tahun')->nullable();
+            $table->uuid('shift_id')->nullable(false);
             $table->timestamps();
+            $table->softDeletes();
+
+            $table->foreign('shift_id')->references('id')->on('shift');
         });
     }
 

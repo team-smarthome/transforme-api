@@ -12,8 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('messages_file', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
+            $table->string('messages_id', length: 36);
+            $table->string('namaFile', length: 100);
+            $table->string('link_file', length: 100);
+            $table->string('link_file_pdf', length: 100);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

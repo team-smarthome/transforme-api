@@ -12,8 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('pesan', function (Blueprint $table) {
-            $table->id();
+            $table->string('id', length: 100)->primary();
+            $table->string('percakapan_id', length: 36);
+            $table->string('user_id', length: 36);
+            $table->longtext('isi_pesan');
+            $table->text('lampiran');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

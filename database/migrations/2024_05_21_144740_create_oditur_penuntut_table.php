@@ -12,8 +12,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('oditur_penuntut', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
+            $table->string('nip', 36)->nullable();
+            $table->string('nama_oditur', 100)->nullable();
+            $table->string('alamat', 255)->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

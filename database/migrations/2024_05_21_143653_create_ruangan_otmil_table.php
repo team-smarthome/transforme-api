@@ -15,13 +15,13 @@ return new class extends Migration
             $table->uuid("id")->primary();
             $table->string("nama_ruangan_otmil",100)->nullable(false);
             $table->string("jenis_ruangan_otmil",100)->nullable(false);
-            $table->uuid("lokasi_otmil_id")->nullable()->oneDelete("cascade");
-            $table->uuid("zona_id")->nullable()->oneDelete("cascade");
+            $table->uuid("lokasi_otmil_id")->nullable(false);
+            $table->uuid("zona_id")->nullable(false);
             $table->double("panjang",8,2)->nullable()->default(0.00);
             $table->double("lebar",8,2)->nullable()->default(0.00);
             $table->double("posisi_X",8,2)->nullable()->default(0.00);
             $table->double("posisi_Y",8,2)->nullable()->default(0.00);
-            $table->uuid("lantai_otmil_id")->nullable()->oneDelete("cascade");
+            $table->uuid("lantai_otmil_id")->nullable(false);
             $table->timestamps();
             $table->softDeletes();
 

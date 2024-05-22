@@ -12,8 +12,18 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('dokumen_bap', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
+            $table->uuid('penyidikan_id')->nullable();
+            $table->string('nama_dokumen_bap', 100)->nullable();
+            $table->string('link_dokumen_bap', 255)->nullable();
+            $table->uuid('wbp_profile_id')->nullable(false);
+            $table->uuid('saksi_id')->nullable(false);
             $table->timestamps();
+            $table->softDeletes();
+
+            $table->foreign('penyidikan_id')->references('id')->on('penyidikan');
+            $table->foreign('wbp_profile_id')->references('id')->on('wbp_profile');
+            $table->foreign('saksi_id')->references('id')->on('saksi');
         });
     }
 

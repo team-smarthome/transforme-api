@@ -12,8 +12,16 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('histori_vonis', function (Blueprint $table) {
-            $table->id();
+            $table->uuid("id")->primary();
+            $table->foreignUuid("sidang_id")->nullable(false);
+            $table->string("hasil_vonis",100)->nullable();
+            $table->string("masa_tahanan_tahun",100)->nullable();
+            $table->string("masa_tahanan_bulan",100)->nullable();
+            $table->string("masa_tahanan_hari",100)->nullable();
             $table->timestamps();
+            $table->softDeletes();
+
+            $table->foreign("sidang_id")->references("id")->on("sidang");
         });
     }
 

@@ -12,8 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('percakapan', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
+            $table->uuid('user_id_1');
+            $table->uuid('user_id_2');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

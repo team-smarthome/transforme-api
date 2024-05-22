@@ -12,8 +12,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('user_log', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
+            $table->string('nama_user_log', 100)->nullable();
+            $table->timestamp('timestamp')->nullable();
+            $table->uuid('user_id')->nullable();
             $table->timestamps();
+            $table->softDeletes();
+
+            $table->foreign('user_id')->references('id')->on('users');
         });
     }
 

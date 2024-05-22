@@ -12,8 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('version', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
+            $table->string('link', 100)->nullable();
+            $table->string('version_name', 100)->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

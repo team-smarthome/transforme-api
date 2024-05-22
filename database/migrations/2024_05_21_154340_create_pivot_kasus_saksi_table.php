@@ -12,8 +12,15 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('pivot_kasus_saksi', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
+            $table->uuid('kasus_id')->nullable(false);
+            $table->uuid('saksi_id')->nullable(false);
+            $table->longText('keterangan')->nullable();
             $table->timestamps();
+            $table->softDeletes();
+
+            $table->foreign('kasus_id')->references('id')->on('kasus');
+            $table->foreign('saksi_id')->references('id')->on('saksi');
         });
     }
 

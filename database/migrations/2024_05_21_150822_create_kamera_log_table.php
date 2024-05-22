@@ -12,8 +12,17 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('kamera_log', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
+            $table->uuid('wbp_profile_id')->nullable();
+            $table->string('image', 255)->nullable();
+            $table->timestamp('timestamp')->useCurrent();
+            $table->uuid('kamera_id')->nullable(false);
+            $table->string('foto_wajah_fr', 255)->nullable();
             $table->timestamps();
+            $table->softDeletes();
+
+            $table->foreign('wbp_profile_id')->references('id')->on('wbp_profile');
+            $table->foreign('kamera_id')->references('id')->on('kamera');
         });
     }
 

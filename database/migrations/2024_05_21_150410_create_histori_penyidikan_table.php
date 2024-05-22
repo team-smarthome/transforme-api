@@ -12,8 +12,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('histori_penyidikan', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
+            $table->uuid('penyidikan_id')->nullable();
+            $table->string('hasil_penyidikan', 100)->nullable();
+            $table->string('lama_masa_tahanan', 100)->nullable();
             $table->timestamps();
+            $table->softDeletes();
+
+            $table->foreign('penyidikan_id')->references('id')->on('penyidikan');
         });
     }
 

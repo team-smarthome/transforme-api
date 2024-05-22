@@ -12,8 +12,17 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('pengadilan_militer', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
+            $table->string('nama_pengadilan_militer', 100)->nullable(false);
+            $table->uuid('provinsi_id')->nullable(false);
+            $table->uuid('kota_id')->nullable(false);
+            $table->string('latitude', 100)->nullable();
+            $table->string('longitude', 100)->nullable();
             $table->timestamps();
+            $table->softDeletes();
+
+            $table->foreign('provinsi_id')->references('id')->on('provinsi');
+            $table->foreign('kota_id')->references('id')->on('kota');
         });
     }
 

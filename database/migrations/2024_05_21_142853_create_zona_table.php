@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('zona', function (Blueprint $table) {
-            $table->uuid("id");
+            $table->uuid("id")->primary();
             $table->string("nama_zona",100)->nullable(false);
             $table->timestamps();
             $table->softDeletes();
