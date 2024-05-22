@@ -49,4 +49,29 @@ class ApiResponse
         $collection = $query->paginate($max_data);
         return self::pagination($collection, $message);
     }
+    public static function created($data = [], $message = 'Successfully created Data')
+    {
+        return response()->json([
+            'status' => 'success',
+            'message' => $message,
+            'data' => $data
+        ], 201);
+    }
+
+    public static function updated($data = [], $message = 'Successfully updated Data')
+    {
+        return response()->json([
+            'status' => 'success',
+            'message' => $message,
+            'data' => $data
+        ], 200);
+    }
+
+    public static function deleted($message = 'Successfully deleted Data')
+    {
+        return response()->json([
+            'status' => 'success',
+            'message' => $message
+        ], 200);
+    }
 }
