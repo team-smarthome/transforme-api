@@ -15,7 +15,7 @@ class GrupPetugasSeeder extends Seeder
     public function run(): void
     {
         $grup_petugas = [
-            ['id' => Str::uuid(), 'nama_grup_petugas' => 'Udin', 'ketua_grup' => "udin", 'created_at' => now(), 'updated_at' => now()],
+            ['id' => Str::uuid(), 'nama_grup_petugas' => 'Grup Tadika Mesra', 'ketua_grup' => "udin", 'created_at' => now(), 'updated_at' => now()],
         ];
         DB::table('grup_petugas')->insert($grup_petugas);
     }

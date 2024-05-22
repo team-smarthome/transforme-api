@@ -15,7 +15,7 @@ class KotaSeeder extends Seeder
     public function run(): void
     {
         $kota = [
-            ['id' => Str::uuid(), 'nama_kota' => 'Udin', 'provinsi_id' => 'b815fde4-9c35-4bd4-bb66-2113c348140b', 'created_at' => now(), 'updated_at' => now()],
+            ['id' => Str::uuid(), 'nama_kota' => 'Jakarta Selatan', 'provinsi_id' => '15585b43-f9fc-428a-b5b8-1e414183a8f8', 'created_at' => now(), 'updated_at' => now()],
         ];
         DB::table('kota')->insert($kota);
     }
