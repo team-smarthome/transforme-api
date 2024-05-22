@@ -30,3 +30,19 @@ Route::delete('/ahli/{id}', [AhliController::class, 'destroy']);
 // Route::get('/user', function (Request $request) {
 //     return $request->user();
 // })->middleware('auth:sanctum');
+
+
+Route::get('/pangkat', [PangkatController::class, 'index']);
+Route::post('/pangkat', [PangkatController::class, 'store']);
+
+Route::get('/lokasi-kesatuan', [LokasiKesatuanController::class, 'index']);
+Route::post('/lokasi-kesatuan', [LokasiKesatuanController::class, 'store']);
+
+Route::get('/kesatuan', [kesatuanController::class, 'index']);
+Route::post('/kesatuan', [kesatuanController::class, 'store']);
+
+Route::get('/status-kawin', [StatusKawinController::class, 'index']);
+Route::post('/status-kawin', [StatusKawinController::class, 'store']);
+
+Route::get('/pendidikan', [PendidikanController::class, 'index']);
+Route::post('/pendidikan', [PendidikanController::class, 'store']);

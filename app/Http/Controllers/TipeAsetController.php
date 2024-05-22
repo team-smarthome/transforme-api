@@ -4,25 +4,25 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Helpers\ApiResponse;
-use App\Models\Agama;
+use App\Models\TipeAset;
 use Illuminate\Database\QueryException;
 use Exception;
-use App\Http\Requests\AgamaRequest;
+use App\Http\Requests\TipeAsetRequest;
 
 
-class AgamaController extends Controller
+class TipeAsetController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
-    { 
+    {
         {
             try {
                 if (request('search')) {
-                    $query = Agama::where('nama_agama', 'like', '%' . request('search') . '%')->latest();
+                    $query = TipeAset::where('nama_tipe', 'like', '%' . request('search') . '%')->latest();
                 } else {
-                    $query = Agama::latest();
+                    $query = TipeAset::latest();
                 }
     
                 return ApiResponse::paginate($query);
@@ -44,19 +44,17 @@ class AgamaController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(AgamaRequest $request)
+    public function store(TipeAsetRequest $request)
     {
         try {
-            $agama = Agama::create($request->validated());
+            $tipe_aset = TipeAset::create($request->validated());
 
-            return ApiResponse::created($agama);
+            return ApiResponse::created($tipe_aset);
     
         } catch (QueryException $e) {
-            // Menangani kesalahan query database, seperti pelanggaran constraint unik
             return ApiResponse::error('Database error', $e->getMessage(), 500);
     
         } catch (Exception $e) {
-            // Menangani semua kesalahan lain yang tidak terduga
             return ApiResponse::error('An unexpected error occurred', $e->getMessage(), 500);
         }
     }
@@ -66,9 +64,9 @@ class AgamaController extends Controller
      */
     public function show(string $id)
     {
-        $agama = Agama::findOrFail($id);
+        $tipe_aset = TipeAset::findOrFail($id);
 
-        return response()->json($agama, 200);
+        return response()->json($tipe_aset, 200);
     }
 
     /**
@@ -82,39 +80,43 @@ class AgamaController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(AgamaRequest $request, string $id)
+    public function update(TipeAsetRequest $request, string $id)
     {
-        $agama = Agama::findOrFail($id);
-
-        $namaEditAgama = $request->input('nama_agama');
-        $existingAgama = Agama::where('nama_agama', $agama->nama_agama)->first();
-
-        if ($existingAgama && $existingAgama->id !== $id) {
-            return ApiResponse::error('Nama agama sudah ada.', null, 422);
+        try {
+            $tipe_aset = TipeAset::findOrFail($id);
+        } catch (ModelNotFoundException $e) {
+            return ApiResponse::error('Tipe Aset tidak ditemukan.', null, 404);
         }
-
-        $agama->update($request->all());
-
-        return ApiResponse::updated($agama);
+    
+        $namaEditTipeAset = $request->input('nama_tipe');
+        $existingTipeAset = TipeAset::where('nama_tipe', $tipe_aset->nama_tipe)->first();
+    
+        if ($existingTipeAset && $existingTipeAset->id !== $id) {
+            return ApiResponse::error('Nama Tipe Aset sudah ada.', null, 422);
+        }
+    
+        $tipe_aset->update($request->all());
+    
+        return ApiResponse::updated($tipe_aset);
     }
+    
 
     /**
      * Remove the specified resource from storage.
      */
     public function destroy(string $id)
     {
-        $agama = Agama::findOrFail($id);    
-        $agama->delete();
+        $tipe_aset = TipeAset::findOrFail($id);
+        $tipe_aset->delete();
 
         return ApiResponse::deleted();
     }
 
     public function restore($id)
     {
-        $agama = Agama::withTrashed()->findOrFail($id);
-        $agama->restore();
+        $tipe_aset = TipeAset::withTrashed()->findOrFail($id);
+        $tipe_aset->restore();
 
-        return response()->json($agama);
+        return response()->json($tipe_aset);
     }
 }
-
