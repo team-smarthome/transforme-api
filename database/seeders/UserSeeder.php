@@ -20,7 +20,7 @@ class UserSeeder extends Seeder
             ['id' => Str::uuid(),
             'username' => 'udin',
             'password' => Hash::make($password),
-            "user_role_id" => "856cc916-b107-4e93-bed9-5fd67dc41925",
+            "user_role_id" => "55eef949-57e7-4f48-9740-4f758183ea62",
             "email" => "udin@gmail.com",
             "phone" => "08123123123", 
             "lokasi_otmil_id" => "e92d314d-d0a2-4032-960a-f7c34d0c610e",

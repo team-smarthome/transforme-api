@@ -14,7 +14,7 @@ use App\Http\Controllers\TipeAsetController;
 use App\Http\Controllers\LokasiOtmilController;
 
 Route::prefix("master")
-  ->middleware([AuthSanctumMiddleware::class])
+  // ->middleware([AuthSanctumMiddleware::class])
   ->group(function () {
     Route::get('agama', [AgamaController::class, 'index']);
     Route::post('agama', [AgamaController::class, 'store']);
