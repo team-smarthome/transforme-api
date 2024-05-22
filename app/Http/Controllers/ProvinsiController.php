@@ -14,11 +14,13 @@ class ProvinsiController extends Controller
     public function index()
     {
         try {
-            if (request('search')) {
-                $query = Provinsi::where('nama_provinsi','like','%'. request('search') .'%')->latest();
-            } else {
-                $query = Provinsi::latest();
-            }
+            // if (request('search')) {
+            //     $keyword = $request->input('search');
+            //     $query = Provinsi::where('nama_provinsi','like','%'. $keyword .'%')->latest();
+            // } else {
+            //     $query = Provinsi::latest();
+            // }
+            $query = Provinsi::latest();
             return ApiResponse::paginate($query);
         } catch (\Exception $e) {
             return ApiResponse::error('Failed to get Data.', $e->getMessage());

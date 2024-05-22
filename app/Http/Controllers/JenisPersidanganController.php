@@ -4,7 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Helpers\ApiResponse;
+use App\Http\Requests\JenisPersidanganRequest;
 use App\Models\JenisPersidangan;
+use Exception;
+use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Validator;
 
 class JenisPersidanganController extends Controller
@@ -12,11 +15,12 @@ class JenisPersidanganController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         try {
             if (request('search')) {
-                $query = JenisPersidangan::where('nama_jenis_persidangan','like','%'. request('search') .'%')->latest();
+                $keyword = $request->input('search');
+                $query = JenisPersidangan::where('nama_jenis_persidangan','like','%'. $keyword .'%')->latest();
             } else {
                 $query = JenisPersidangan::latest();
             }
@@ -38,26 +42,17 @@ class JenisPersidanganController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(JenisPersidanganRequest $request)
     {
-        // Validasi input
-        $validator = Validator::make($request->all(), [
-            'nama_jenis_persidangan' => 'required|string|max:255',
-        ]);
-
-        if ($validator->fails()) {
-            return ApiResponse::error('Validation error', $validator->errors(), 422);
-        }
-
         try {
             // Simpan data ke database
-            $jenisPersidangan = JenisPersidangan::create([
-                'nama_jenis_persidangan' => $request->input('nama_jenis_persidangan'),
-            ]);
+            $jenisPersidangan = JenisPersidangan::create($request->validated());
 
-            return ApiResponse::success('Data successfully created', $jenisPersidangan, 201);
-        } catch (\Exception $e) {
-            return ApiResponse::error('Failed to store data', $e->getMessage(), 500);
+            return ApiResponse::created($jenisPersidangan);
+        } catch (QueryException $e) {
+            return ApiResponse::error('Database error', $e->getMessage(), 500);
+        } catch (Exception $e) {
+            return ApiResponse::error('An unexpected error occurred', $e->getMessage(), 500);
         }
     }
 
@@ -66,7 +61,8 @@ class JenisPersidanganController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $jenisPersidangan = JenisPersidangan::findOrFail($id);
+        return response()->json($jenisPersidangan, 200);
     }
 
     /**
@@ -80,9 +76,21 @@ class JenisPersidanganController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(JenisPersidanganRequest $request, string $id)
     {
-        //
+        $request->validate(['nama_jenis_persidangan' => 'required|string|max:255',]);
+
+        $jenisPersidangan = JenisPersidangan::findOrFail($id);
+
+        $existingJenisPersidangan = JenisPersidangan::where('nama_jenis_persidangan', $jenisPersidangan->id)->first();
+
+        if ($existingJenisPersidangan && $existingJenisPersidangan->id !== $id) {
+            return ApiResponse::error('Nama jenis persidangan sudah ada.', null, 422);
+        }
+
+        $jenisPersidangan->update($request->all());
+
+        return ApiResponse::updated($jenisPersidangan);
     }
 
     /**
@@ -90,6 +98,16 @@ class JenisPersidanganController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $jenisPersidangan = JenisPersidangan::findOrFail($id);
+        $jenisPersidangan->delete();
+
+        return ApiResponse::deleted();
+    }
+
+    public function restore($id){
+        $jenisPersidangan = JenisPersidangan::withTrashed()->findOrFail($id);
+        $jenisPersidangan->restore();
+
+        return response()->json($jenisPersidangan);
     }
 }
