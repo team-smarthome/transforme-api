@@ -4,15 +4,22 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AgamaController;
 use App\Http\Controllers\UserController;
+use App\Http\Middleware\AuthSanctumMiddleware;
 use App\Http\Controllers\TipeAsetController;
 use App\Http\Controllers\LokasiOtmilController;
 
+Route::prefix("master")
+  ->middleware([AuthSanctumMiddleware::class])
+  ->group(function () {
+    Route::get('agama', [AgamaController::class, 'index']);
+    Route::post('agama', [AgamaController::class, 'store']);
+    Route::get('agama/{id}', [AgamaController::class, 'show']);
+    Route::put('agama/{id}', [AgamaController::class, 'update']);
+    Route::delete('agama/{id}', [AgamaController::class, 'destroy']);
+  });
+
+
 Route::post('login', [UserController::class, 'login']);
-Route::get('agama', [AgamaController::class, 'index']);
-Route::post('agama', [AgamaController::class, 'store']);
-Route::get('agama/{id}', [AgamaController::class, 'show']);
-Route::put('agama/{id}', [AgamaController::class, 'update']);
-Route::delete('agama/{id}', [AgamaController::class, 'destroy']);
 Route::get('tipe_aset', [TipeAsetController::class, 'index']);
 Route::post('tipe_aset', [TipeAsetController::class, 'store']);
 Route::get('tipe_aset/{id}', [TipeAsetController::class, 'show']);
