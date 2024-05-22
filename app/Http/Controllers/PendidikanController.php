@@ -2,65 +2,39 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\pendidikan;
-use App\Http\Controllers\Controller;
+use App\Helpers\ApiResponse;
+use App\Models\Pendidikan;
 use Illuminate\Http\Request;
 
 class PendidikanController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+  public function index()
+  {
     {
-        //
-    }
+      try {
+        if (request('search')) {
+          $query = Pendidikan::where('nama_pendidikan', 'like', '%' . request('search') . '%')->latest();
+        } else {
+          $query = Pendidikan::latest();
+        }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
+        return ApiResponse::paginate($query);
+      } catch (\Exception $e) {
+        return ApiResponse::error('Failed to get Data.', $e->getMessage());
+      }
     }
+  }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
+  public function store(Request $request)
+  {
+    $request->validate([
+      'nama_pendidikan', 'tahun_lulus' => 'required|max:100'
+    ]);
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(pendidikan $pendidikan)
-    {
-        //
-    }
+    $pendidikan = Pendidikan::create($request->all());
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(pendidikan $pendidikan)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, pendidikan $pendidikan)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(pendidikan $pendidikan)
-    {
-        //
-    }
+    return ApiResponse::success([
+      'data' => $pendidikan
+    ]);
+  }
 }

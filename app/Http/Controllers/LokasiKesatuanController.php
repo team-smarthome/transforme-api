@@ -2,65 +2,40 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\lokasi_kesatuan;
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\LokasiKesatuan;
+use Symfony\Component\HttpFoundation\Response;
+use App\Helpers\ApiResponse;
 
 class LokasiKesatuanController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+  public function index(Request $request)
+  {
     {
-        //
-    }
+      try {
+        if (request('search')) {
+          $query = LokasiKesatuan::where('nama_lokasi_kesatuan', 'like', '%' . request('search') . '%')->latest();
+        } else {
+          $query = LokasiKesatuan::latest();
+        }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
+        return ApiResponse::paginate($query);
+      } catch (\Exception $e) {
+        return ApiResponse::error('Failed to get Data.', $e->getMessage());
+      }
     }
+  }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
+  public function store(Request $request)
+  {
+    $request->validate([
+      'nama_lokasi_kesatuan' => 'required|string|max:100'
+    ]);
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(lokasi_kesatuan $lokasi_kesatuan)
-    {
-        //
-    }
+    $lokasiKesatuan = LokasiKesatuan::create($request->all());
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(lokasi_kesatuan $lokasi_kesatuan)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, lokasi_kesatuan $lokasi_kesatuan)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(lokasi_kesatuan $lokasi_kesatuan)
-    {
-        //
-    }
+    return ApiResponse::success([
+      'data' => $lokasiKesatuan
+    ]);
+  }
 }
