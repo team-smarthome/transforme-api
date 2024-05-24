@@ -11,7 +11,7 @@
 
 ### Jangan lupa setiap kali ingin mengerjakan selalu pull branch development-stagging
 ```bash
-git pull origin development-stagging
+git pull origin development-stagging-v2
 ```
 ### Cara Install
 ```bash
