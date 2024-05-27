@@ -6,9 +6,9 @@ use Illuminate\Http\Request;
 use App\Helpers\ApiResponse;
 use App\Http\Requests\JenisPersidanganRequest;
 use App\Models\JenisPersidangan;
-use Exception;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Validator;
+use Exception;
 
 class JenisPersidanganController extends Controller
 {
@@ -78,11 +78,11 @@ class JenisPersidanganController extends Controller
      */
     public function update(JenisPersidanganRequest $request, string $id)
     {
-        $request->validate(['nama_jenis_persidangan' => 'required|string|max:255',]);
+        $request->validate(['nama_jenis_persidangan' => 'required|string|max:255']);
 
         $jenisPersidangan = JenisPersidangan::findOrFail($id);
 
-        $existingJenisPersidangan = JenisPersidangan::where('nama_jenis_persidangan', $jenisPersidangan->id)->first();
+        $existingJenisPersidangan = JenisPersidangan::where('nama_jenis_persidangan', $jenisPersidangan->nama_jenis_persidangan)->first();
 
         if ($existingJenisPersidangan && $existingJenisPersidangan->id !== $id) {
             return ApiResponse::error('Nama jenis persidangan sudah ada.', null, 422);
