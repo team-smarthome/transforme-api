@@ -4,6 +4,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AgamaController;
 use App\Http\Controllers\BidangKeahlianController;
+use App\Http\Controllers\GedungLemasmilController;
+use App\Http\Controllers\GedungOtmilController;
 use App\Http\Controllers\JenisPidanaController;
 use App\Http\Controllers\kesatuanController;
 use App\Http\Controllers\LokasiKesatuanController;
@@ -62,6 +64,18 @@ Route::post('/status_wbp_kasus', [StatusWbpKasusController::class, 'store']);
 
 Route::get('/jenis_pidana', [JenisPidanaController::class, 'index']);
 Route::post('/jenis_pidana', [JenisPidanaController::class, 'store']);
+
+Route::get('/gedung_otmil', [GedungOtmilController::class, 'index']);
+Route::post('/gedung_otmil', [GedungOtmilController::class, 'store']);
+Route::get('/gedung_otmil', [GedungOtmilController::class, 'show']);
+Route::put('/gedung_otmil', [GedungOtmilController::class, 'update']);
+Route::delete('/gedung_otmil', [GedungOtmilController::class, 'destroy']);
+
+Route::get('/gedung_lemasmil', [GedungLemasmilController::class, 'index']);
+Route::post('/gedung_lemasmil', [GedungLemasmilController::class, 'store']);
+Route::get('/gedung_lemasmil', [GedungLemasmilController::class, 'show']);
+Route::put('/gedung_lemasmil', [GedungLemasmilController::class, 'update']);
+Route::delete('/gedung_lemasmil', [GedungLemasmilController::class, 'destroy']);
 foreach ($routeFiles as $routeFile) {
     require $routeFile;
 }
