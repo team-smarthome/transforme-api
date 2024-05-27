@@ -14,14 +14,10 @@ class ProvinsiSeeder extends Seeder
      */
     public function run(): void
     {
-        $Provinsi = [
-            [
-                "id" => Str::uuid(),
-                "nama_provinsi" => "Aceh",
-                "created_at" => now(),
-                "updated_at" => now(),
-            ]
+        $provinsi = [
+            [ "id" => "a00fa162-5cd1-475e-ad81-03426a7f7952", "nama_provinsi" => "Aceh", "created_at" => now(),"updated_at" => now(),],
+            ['id' => "bd304f3c-b18d-4982-8e41-1a3606bdf06e", 'nama_provinsi' => 'Jakarta', 'created_at' => now(), 'updated_at' => now()],
         ];
-        DB::table("provinsi")->insert($Provinsi);
+        DB::table('provinsi')->insert($provinsi);
     }
 }

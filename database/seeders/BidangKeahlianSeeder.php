@@ -15,7 +15,7 @@ class BidangKeahlianSeeder extends Seeder
     public function run(): void
     {
         $bidang_keahlian = [
-            ['id' => Str::uuid(), 'nama_bidang_keahlian' => 'Penembak Jitu', 'created_at' => now(), 'updated_at' => now()],
+            ['id' => "65521a02-2aad-40ef-942b-7ead78ff8cbc", 'nama_bidang_keahlian' => 'Ndak Tau', 'created_at' => now(), 'updated_at' => now()],
         ];
         DB::table('bidang_keahlian')->insert($bidang_keahlian);
     }
