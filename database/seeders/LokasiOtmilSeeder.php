@@ -15,7 +15,7 @@ class LokasiOtmilSeeder extends Seeder
     public function run(): void
     {
         $lokasi_otmil = [
-            ['id' => Str::uuid(), 'nama_lokasi_otmil' => 'Jakarta Otmil',
+            ['id' => "890cc9b1-b01f-4d1f-9075-a6a96e851b25", 'nama_lokasi_otmil' => 'Jakarta Otmil',
             'latitude' => '123456', 'longitude' => '123456',
             'panjang' => '123456', 'lebar' => '123456',
             'created_at' => now(), 'updated_at' => now()],

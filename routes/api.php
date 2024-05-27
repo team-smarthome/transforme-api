@@ -16,15 +16,9 @@ use App\Http\Controllers\TipeAsetController;
 use App\Http\Controllers\LokasiOtmilController;
 use App\Http\Controllers\StatusWbpKasusController;
 
-Route::prefix("master")
-  ->middleware([AuthSanctumMiddleware::class])
-  ->group(function () {
-    Route::get('agama', [AgamaController::class, 'index']);
-    Route::post('agama', [AgamaController::class, 'store']);
-    Route::get('agama/{id}', [AgamaController::class, 'show']);
-    Route::put('agama/{id}', [AgamaController::class, 'update']);
-    Route::delete('agama/{id}', [AgamaController::class, 'destroy']);
-  });
+
+// Load all routes in the 'api' folder dynamically
+$routeFiles = glob(__DIR__ . '/api/*.php');
 
 
 Route::post('login', [UserController::class, 'login']);
@@ -68,3 +62,6 @@ Route::post('/status_wbp_kasus', [StatusWbpKasusController::class, 'store']);
 
 Route::get('/jenis_pidana', [JenisPidanaController::class, 'index']);
 Route::post('/jenis_pidana', [JenisPidanaController::class, 'store']);
+foreach ($routeFiles as $routeFile) {
+    require $routeFile;
+}
