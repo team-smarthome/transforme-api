@@ -17,16 +17,16 @@ class UserSeeder extends Seeder
     {
         $password = "test1234";
         $users = 
-            ['id' => Str::uuid(),
+            ['id' => "f9c91240-d833-4f17-928d-c73c3edcc30b",
             'username' => 'udin',
             'password' => Hash::make($password),
-            "user_role_id" => "856cc916-b107-4e93-bed9-5fd67dc41925",
+            "user_role_id" => "f1943be9-e062-4815-9a1c-613b1b2260e2",
             "email" => "udin@gmail.com",
             "phone" => "08123123123", 
-            "lokasi_otmil_id" => "e92d314d-d0a2-4032-960a-f7c34d0c610e",
-            "lokasi_lemasmil_id" => "5bd5f9da-81df-420e-9e93-d0092b5be656",
+            "lokasi_otmil_id" => "890cc9b1-b01f-4d1f-9075-a6a96e851b25",
+            "lokasi_lemasmil_id" => "48633be0-b005-4029-8bbb-293db9564ba0",
             "is_suspended" => 0,
-            "petugas_id" => "a8c5fbc7-4fbb-407b-8c23-42fc5932dbfa",
+            "petugas_id" => "873313dd-863a-48f1-a09a-d113e26632b1",
             "image" => "udin.jpg",
             "last_login" => now(),
             "expiry_date" => now(),

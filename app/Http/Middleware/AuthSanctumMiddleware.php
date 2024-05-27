@@ -6,20 +6,51 @@ use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
+use App\Models\UserRole;
 
 class AuthSanctumMiddleware
 {
-  /**
-   * Handle an incoming request.
-   *
-   * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
-   */
-  public function handle(Request $request, Closure $next)
-  {
-    if (Auth::guard('sanctum')->check()) {
-      return $next($request);
-    }
+    /**
+     * Handle an incoming request.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \Closure  $next
+     * @param  mixed  ...$roles
+     * @return mixed
+     */
+    public function handle(Request $request, Closure $next, ...$roles)
+    {
+        if (Auth::guard('sanctum')->check()) {
+            $user = Auth::guard('sanctum')->user();
 
-    return response()->json(['status' => 401, 'message' => 'Unauthorized'], 401);
-  }
+            $currentAccessToken = $user->currentAccessToken();  
+            $latestAccessToken = $user->tokens()->latest()->first();
+    
+            if (!$currentAccessToken || $currentAccessToken->id !== $latestAccessToken->id) {
+                return response()->json(['status' => "OK", 'message' => 'You are logged in'], 200);
+            }
+            // Query untuk mendapatkan role_name dari user
+            $userRole = UserRole::where('id', function ($query) use ($user) {
+                $query->select('user_role_id')
+                    ->from('users')
+                    ->where('id', $user->id);
+            })->first();
+
+            if ($userRole && in_array($userRole->role_name, $roles)) {
+                return $next($request);
+            } else {
+              if (!$userRole) {
+                return response()->json(['status' => "NO", 'message' => 'Forbidden'], 403);
+            } else {
+                if ($userRole->role_name == 'operator') {
+                    return response()->json(['status' => "NO", 'message' => 'Must be admin or superadmin'], 403);
+                } else if ($userRole->role_name == 'admin') {
+                    return response()->json(['status' => "NO", 'message' => 'Must be superadmin'], 403);
+                }
+            }
+            }
+        }
+
+        return response()->json(['status' => "NO", 'message' => 'Unauthorized'], 401);
+    }
 }

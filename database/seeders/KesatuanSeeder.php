@@ -15,7 +15,7 @@ class KesatuanSeeder extends Seeder
     public function run(): void
     {
         $kesatuan = [
-            ['id' => Str::uuid(), 'nama_kesatuan' => 'Kesatuan Jakarta', 'lokasi_kesatuan_id' => "a9227b10-31e2-49f5-8131-6ebddfe54f5d", 'created_at' => now(), 'updated_at' => now()],
+            ['id' => "18ff69b7-3d9f-4a60-a602-5baf4f3cc081", 'nama_kesatuan' => 'Kesatuan Jakarta', 'lokasi_kesatuan_id' => "d54069af-78d0-49fa-aaa4-6e53819eb13a", 'created_at' => now(), 'updated_at' => now()],
         ];
         DB::table('kesatuan')->insert($kesatuan);
     }

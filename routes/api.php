@@ -62,36 +62,6 @@ Route::prefix("master")
     Route::delete('agama/{id}', [AgamaController::class, 'destroy']);
   });
 
-
-Route::post('login', [UserController::class, 'login']);
-Route::get('tipe_aset', [TipeAsetController::class, 'index']);
-Route::post('tipe_aset', [TipeAsetController::class, 'store']);
-Route::get('tipe_aset/{id}', [TipeAsetController::class, 'show']);
-Route::put('tipe_aset/{id}', [TipeAsetController::class, 'update']);
-Route::delete('tipe_aset/{id}', [TipeAsetController::class, 'destroy']);
-Route::get('lokasi_otmil', [LokasiOtmilController::class, 'index']);
-Route::post('lokasi_otmil', [LokasiOtmilController::class, 'store']);
-Route::get('lokasi_otmil/{id}', [LokasiOtmilController::class, 'show']);
-Route::put('lokasi_otmil/{id}', [LokasiOtmilController::class, 'update']);
-Route::delete('lokasi_otmil/{id}', [LokasiOtmilController::class, 'destroy']);
-
-Route::apiResource('lokasi_otmil', LokasiOtmilController::class);
-// Route::get('/user', function (Request $request) {
-//     return $request->user();
-// })->middleware('auth:sanctum');
-
-
-Route::get('/pangkat', [PangkatController::class, 'index']);
-Route::post('/pangkat', [PangkatController::class, 'store']);
-
-Route::get('/lokasi-kesatuan', [LokasiKesatuanController::class, 'index']);
-Route::post('/lokasi-kesatuan', [LokasiKesatuanController::class, 'store']);
-
-Route::get('/kesatuan', [kesatuanController::class, 'index']);
-Route::post('/kesatuan', [kesatuanController::class, 'store']);
-
-Route::get('/status-kawin', [StatusKawinController::class, 'index']);
-Route::post('/status-kawin', [StatusKawinController::class, 'store']);
-
-Route::get('/pendidikan', [PendidikanController::class, 'index']);
-Route::post('/pendidikan', [PendidikanController::class, 'store']);
+foreach ($routeFiles as $routeFile) {
+    require $routeFile;
+}
