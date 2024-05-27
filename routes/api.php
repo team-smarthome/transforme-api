@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AgamaController;
 use App\Http\Controllers\BidangKeahlianController;
+use App\Http\Controllers\JenisPidanaController;
 use App\Http\Controllers\kesatuanController;
 use App\Http\Controllers\LokasiKesatuanController;
 use App\Http\Controllers\PangkatController;
@@ -64,3 +65,6 @@ Route::post('/bidang_keahlian', [BidangKeahlianController::class, 'store']);
 
 Route::get('/status_wbp_kasus', [StatusWbpKasusController::class, 'index']);
 Route::post('/status_wbp_kasus', [StatusWbpKasusController::class, 'store']);
+
+Route::get('/jenis_pidana', [JenisPidanaController::class, 'index']);
+Route::post('/jenis_pidana', [JenisPidanaController::class, 'store']);
