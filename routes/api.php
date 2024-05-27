@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AgamaController;
+use App\Http\Controllers\BidangKeahlianController;
 use App\Http\Controllers\kesatuanController;
 use App\Http\Controllers\LokasiKesatuanController;
 use App\Http\Controllers\PangkatController;
@@ -12,6 +13,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Middleware\AuthSanctumMiddleware;
 use App\Http\Controllers\TipeAsetController;
 use App\Http\Controllers\LokasiOtmilController;
+use App\Http\Controllers\StatusWbpKasusController;
 
 Route::prefix("master")
   ->middleware([AuthSanctumMiddleware::class])
@@ -45,14 +47,20 @@ Route::apiResource('lokasi_otmil', LokasiOtmilController::class);
 Route::get('/pangkat', [PangkatController::class, 'index']);
 Route::post('/pangkat', [PangkatController::class, 'store']);
 
-Route::get('/lokasi-kesatuan', [LokasiKesatuanController::class, 'index']);
-Route::post('/lokasi-kesatuan', [LokasiKesatuanController::class, 'store']);
+Route::get('/lokasi_kesatuan', [LokasiKesatuanController::class, 'index']);
+Route::post('/lokasi_kesatuan', [LokasiKesatuanController::class, 'store']);
 
 Route::get('/kesatuan', [kesatuanController::class, 'index']);
 Route::post('/kesatuan', [kesatuanController::class, 'store']);
 
-Route::get('/status-kawin', [StatusKawinController::class, 'index']);
-Route::post('/status-kawin', [StatusKawinController::class, 'store']);
+Route::get('/status_kawin', [StatusKawinController::class, 'index']);
+Route::post('/status_kawin', [StatusKawinController::class, 'store']);
 
 Route::get('/pendidikan', [PendidikanController::class, 'index']);
 Route::post('/pendidikan', [PendidikanController::class, 'store']);
+
+Route::get('/bidang_keahlian', [BidangKeahlianController::class, 'index']);
+Route::post('/bidang_keahlian', [BidangKeahlianController::class, 'store']);
+
+Route::get('/status_wbp_kasus', [StatusWbpKasusController::class, 'index']);
+Route::post('/status_wbp_kasus', [StatusWbpKasusController::class, 'store']);
