@@ -4,13 +4,13 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Helpers\ApiResponse;
-use App\Http\Requests\JenisPersidanganRequest;
-use App\Models\JenisPersidangan;
+use App\Http\Requests\JaksaRequest;
+use App\Models\Jaksa;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Validator;
 use Exception;
 
-class JenisPersidanganController extends Controller
+class JaksaController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -20,9 +20,9 @@ class JenisPersidanganController extends Controller
         try {
             if (request('search')) {
                 $keyword = $request->input('search');
-                $query = JenisPersidangan::where('nama_jenis_persidangan','like','%'. $keyword .'%')->latest();
+                $query = Jaksa::where('nama_jaksa','like','%'. $keyword .'%')->latest();
             } else {
-                $query = JenisPersidangan::latest();
+                $query = Jaksa::latest();
             }
 
             return ApiResponse::paginate($query);
@@ -42,13 +42,11 @@ class JenisPersidanganController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(JenisPersidanganRequest $request)
+    public function store(JaksaRequest $request)
     {
         try {
-            // Simpan data ke database
-            $jenisPersidangan = JenisPersidangan::create($request->validated());
-
-            return ApiResponse::created($jenisPersidangan);
+            $jaksa = Jaksa::create($request->validated());
+            return ApiResponse::created($jaksa);
         } catch (QueryException $e) {
             return ApiResponse::error('Database error', $e->getMessage(), 500);
         } catch (Exception $e) {
@@ -61,8 +59,8 @@ class JenisPersidanganController extends Controller
      */
     public function show(string $id)
     {
-        $jenisPersidangan = JenisPersidangan::findOrFail($id);
-        return response()->json($jenisPersidangan, 200);
+        $jaksa = Jaksa::findOrFail($id);
+        return response()->json($jaksa, 200);
     }
 
     /**
@@ -76,21 +74,30 @@ class JenisPersidanganController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(JenisPersidanganRequest $request, string $id)
+    public function update(JaksaRequest $request, string $id)
     {
-        $request->validate(['nama_jenis_persidangan' => 'required|string|max:255']);
+        $request->validate([
+            'nrp_jaksa' => 'required|string|max:100',
+            'nama_jaksa' => 'required|string|max:100',
+            'alamat' => 'required|string|max:100',
+            'nomor_telepon' => 'required|string|max:100',
+            'email' => 'required|string|max:100',
+            'jabatan' => 'required|string|max:100',
+            'spesialisasi_hukum' => 'required|string|max:100',
+            'divisi' => 'required|string|max:100',
+            'tanggal_pensiun' => 'required|string|max:100'
+        ]);
 
-        $jenisPersidangan = JenisPersidangan::findOrFail($id);
+        $jaksa = Jaksa::findOrFail($id);
 
-        $existingJenisPersidangan = JenisPersidangan::where('nama_jenis_persidangan', $jenisPersidangan->nama_jenis_persidangan)->first();
+        $existingJaksa = Jaksa::where('nama_jaksa', $jaksa->nama_jaksa)->first();
 
-        if ($existingJenisPersidangan && $existingJenisPersidangan->id !== $id) {
-            return ApiResponse::error('Nama jenis persidangan sudah ada.', null, 422);
+        if ($existingJaksa && $existingJaksa->id !== $id) {
+            return ApiResponse::error('Nama jaksa sudah ada.', null, 422);
         }
 
-        $jenisPersidangan->update($request->all());
-
-        return ApiResponse::updated($jenisPersidangan);
+        $jaksa->update($request->all());
+        return ApiResponse::updated($jaksa);
     }
 
     /**
@@ -98,16 +105,16 @@ class JenisPersidanganController extends Controller
      */
     public function destroy(string $id)
     {
-        $jenisPersidangan = JenisPersidangan::findOrFail($id);
-        $jenisPersidangan->delete();
+        $jaksa = Jaksa::findOrFail($id);
+        $jaksa->delete();
 
         return ApiResponse::deleted();
     }
 
     public function restore($id){
-        $jenisPersidangan = JenisPersidangan::withTrashed()->findOrFail($id);
-        $jenisPersidangan->restore();
+        $jaksa = Jaksa::withTrashed()->findOrFail($id);
+        $jaksa->restore();
 
-        return response()->json($jenisPersidangan);
+        return response()->json($jaksa);
     }
 }
