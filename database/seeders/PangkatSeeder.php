@@ -15,7 +15,7 @@ class PangkatSeeder extends Seeder
     public function run(): void
     {
         $pangkat = [
-            ['id' => Str::uuid(), 'nama_pangkat' => 'Letnan Senior','created_at' => now(), 'updated_at' => now()],
+            ['id' => "4ec3de3b-169f-4313-9b3d-0cef9ae3cbda", 'nama_pangkat' => 'Letnan Senior','created_at' => now(), 'updated_at' => now()],
         ];
         DB::table('pangkat')->insert($pangkat);
     }

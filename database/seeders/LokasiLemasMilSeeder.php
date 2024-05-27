@@ -15,7 +15,7 @@ class LokasiLemasMilSeeder extends Seeder
     public function run(): void
     {
         $lokasi_lemasmil = [
-            ['id' => Str::uuid(), 'nama_lokasi_lemasmil' => 'Jakarta Lemasmil',
+            ['id' => "48633be0-b005-4029-8bbb-293db9564ba0", 'nama_lokasi_lemasmil' => 'Jakarta Lemasmil',
             'latitude' => '123456', 'longitude' => '123456',
             'panjang' => '123456', 'lebar' => '123456',
             'created_at' => now(), 'updated_at' => now()],

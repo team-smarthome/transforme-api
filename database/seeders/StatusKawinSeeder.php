@@ -15,7 +15,7 @@ class StatusKawinSeeder extends Seeder
     public function run(): void
     {
         $status_kawin = [
-            ['id' => Str::uuid(), 'nama_status_kawin' => 'Belum Menikah', 'created_at' => now(), 'updated_at' => now()],
+            ['id' => "dfdfcf57-8ec1-49fc-b160-8f796546b6ce", 'nama_status_kawin' => 'Belum Menikah', 'created_at' => now(), 'updated_at' => now()],
         ];
         DB::table('status_kawin')->insert($status_kawin);
     }

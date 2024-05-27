@@ -15,7 +15,7 @@ class MatraSeeder extends Seeder
     public function run(): void
     {
         $matra = [
-            ['id' => Str::uuid(), 'nama_matra' => 'Angkatan Laut','created_at' => now(), 'updated_at' => now()],
+            ['id' => "4b7d979d-b5bd-487b-8429-c8b9b12af860", 'nama_matra' => 'Angkatan Laut','created_at' => now(), 'updated_at' => now()],
         ];
         DB::table('matra')->insert($matra);
     }

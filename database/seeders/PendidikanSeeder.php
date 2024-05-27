@@ -15,7 +15,7 @@ class PendidikanSeeder extends Seeder
     public function run(): void
     {
         $pendidikan = [
-            ['id' => Str::uuid(), 'nama_pendidikan' => 'Sarjana Teknik', 'tahun_lulus' => 2019, 'created_at' => now(), 'updated_at' => now()],
+            ['id' => "997f13b9-4177-4163-81e7-f5d998b2c53e", 'nama_pendidikan' => 'Sarjana Teknik', 'tahun_lulus' => 2019, 'created_at' => now(), 'updated_at' => now()],
         ];
         DB::table('pendidikan')->insert($pendidikan);
     }

@@ -15,7 +15,7 @@ class AgamaSeeder extends Seeder
     public function run(): void
     {
         $agama = [
-            ['id' => Str::uuid(), 'nama_agama' => 'Islam', 'created_at' => now(), 'updated_at' => now()],
+            ['id' => "d8ff707f-81f6-46ba-b645-73f379ffd9cf", 'nama_agama' => 'Islam', 'created_at' => now(), 'updated_at' => now()],
         ];
         DB::table('agama')->insert($agama);
     }
