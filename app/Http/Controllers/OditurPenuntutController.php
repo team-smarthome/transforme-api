@@ -16,9 +16,8 @@ class OditurPenuntutController extends Controller
      */
     public function index()
     {
-        
             try {
-                if(request('id')) {
+                if(request('oditur_penuntut_id')) {
                     $query = OditurPenuntut::where('id', request('oditur_penuntut_id'));
                     if (request('nip') && $query->exists()) {
                         $query = OditurPenuntut::where('nip', 'like', '%' . request('nip') . '%');
@@ -98,7 +97,7 @@ class OditurPenuntutController extends Controller
     public function update(OditurPenuntutRequest $request)
     {
         try {
-            $id = $request->input('id');
+            $id = $request->input('oditur_penuntut_id');
             $oditur_penuntut = OditurPenuntut::findOrFail($id);
             $nipEditOditurPenuntut = $request->input('nip');
             $existingOditurPenuntut = OditurPenuntut::where('nip', $nipEditOditurPenuntut)->exists();
@@ -112,17 +111,16 @@ class OditurPenuntutController extends Controller
         } catch (Exception $e) {
             return ApiResponse::error('An unexpected error occurred', $e->getMessage(), 500);
         }
-        
         return ApiResponse::updated($oditur_penuntut);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Request $request)
     {
         try {
-            $id = $request->input('id');
+            $id = $request->input('oditur_penuntut_id');
             $oditur_penuntut = OditurPenuntut::findOrFail($id);
             $oditur_penuntut->delete();
 

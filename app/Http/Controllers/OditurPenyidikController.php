@@ -18,7 +18,7 @@ class OditurPenyidikController extends Controller
     public function index()
     {
             try {
-                if (request('id')) {
+                if (request('oditur_penyidik_id')) {
                     $query = OditurPenyidik::where('id', request('oditur_penyidik_id'));
                     if (request('nip') && $query->exists()) {
                         $query = OditurPenyidik::where('nip', 'like', '%' . request('nip') . '%');
@@ -97,7 +97,7 @@ class OditurPenyidikController extends Controller
     public function update(OditurPenyidikRequest $request)
     {
         try {
-            $id = $request->input('id');
+            $id = $request->input('oditur_penyidik_id');
             $oditur_penyidik = OditurPenyidik::findOrFail($id);
             $nipEditOditurPenyidik = $request->input('nip');
             $existingOditurPenyidik = OditurPenyidik::where('nip', $nipEditOditurPenyidik)->exists();
@@ -122,7 +122,7 @@ class OditurPenyidikController extends Controller
     public function destroy(Request $request)
     {
         try {
-            $id = $request->input('id');
+            $id = $request->input('oditur_penyidik_id');
             $oditur_penyidik = OditurPenyidik::findOrFail($id);
             $oditur_penyidik->delete();
 
