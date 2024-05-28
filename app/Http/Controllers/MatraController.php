@@ -12,12 +12,12 @@ class MatraController extends Controller
     public function index()
     {
         try {
-            // if (request('search')) {
-            //     $keyword = Matra::where('nama_matra', 'LIKE', '%' . request('search') . '%')->latest();
-            // } else {
-            //     $keyword = Matra::latest();
-            // }
-            $keyword = Matra::latest();
+            if (request('nama_matra')) {
+                $keyword = Matra::where('nama_matra', 'LIKE', '%' . request('nama_matra') . '%')->latest();
+            } else {
+                $keyword = Matra::latest();
+            }
+
             return ApiResponse::paginate($keyword);
         } catch (\Exception $e) {
             return ApiResponse::error('Failed to get Data.', $e->getMessage());
@@ -32,7 +32,7 @@ class MatraController extends Controller
 
         $dataMatra = Matra::create($request->all());
 
-        return ApiResponse::success([
+        return ApiResponse::created([
             'data' => $dataMatra
         ]);
     }
@@ -62,8 +62,23 @@ class MatraController extends Controller
         $dataMatra = Matra::where('id', $matra_id)->firstOrFail();
         $dataMatra->update($request->all());
 
-        return ApiResponse::success([
+        return ApiResponse::updated([
             'data' => $dataMatra
+        ]);
+    }
+
+    public function destroy(Request $request)
+    {
+        $request->validate([
+            'matra_id' => 'required|string|max:100'
+        ]);
+
+        $matra_id = $request->input('matra_id');
+        $dataMatra = Matra::where('id', $matra_id)->firstOrFail();
+        $dataMatra->delete();
+
+        return ApiResponse::deleted([
+            'message' => 'Data deleted successfully'
         ]);
     }
 }

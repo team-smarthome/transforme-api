@@ -5,12 +5,13 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class RuanganOtmil extends Model
 {
     use HasFactory, SoftDeletes, HasUuids;
-    
+
     protected $table = "ruangan_otmil"    ;
     protected $keyType = "uuid";
     public $incrementing = false;
@@ -36,6 +37,11 @@ class RuanganOtmil extends Model
     public function lantaiOtmil(): BelongsTo
     {
         return $this->belongsTo(LantaiOtmil::class, "lantai_otmil_id", "id");
+    }
+
+    public function gelang(): HasMany
+    {
+        return $this->hasMany(Gelang::class, "ruangan_otmil_id", "id");
     }
 
 }
