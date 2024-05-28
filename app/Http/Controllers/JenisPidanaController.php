@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Helpers\ApiResponse;
-use App\Http\Requests\JenisPidanaRequest;
 use App\Models\JenisPidana;
+use Illuminate\Http\Request;
+use App\Http\Requests\JenisPidanaRequest;
 use Illuminate\Database\QueryException;
 use Spatie\FlareClient\Api;
 
@@ -28,7 +28,6 @@ class JenisPidanaController extends Controller
             return ApiResponse::error('Failed to get Data.', $e->getMessage());
         }
     }
-
     /**
      * Show the form for creating a new resource.
      */
