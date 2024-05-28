@@ -16,8 +16,8 @@ class JenisPerkaraSeeder extends Seeder
     {
         $jenisPerkara = [
             [
-                'id' => Str::uuid(),
-                'kategori_perkara_id' => '9c24304a-c34d-405f-a3a9-ae64496e7495',
+                'id' => '4c7b0b7e-328f-41ef-a443-6879e45c6ae2',
+                'kategori_perkara_id' => '8df5515e-814f-406c-a995-812f042d3c84',
                 'nama_jenis_perkara' => 'Random',
                 'pasal' => 'Random',
                 'vonis_tahun_perkara' => 2,
