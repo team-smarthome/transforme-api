@@ -30,4 +30,9 @@ class GedungOtmil extends Model
     {
         return $this->belongsTo(LokasiOtmil::class, 'lokasi_otmil_id', 'id'); // banyak gedung dimiliki oleh satu lokasi otmil
     }
+
+    public function lantaiOtmil(): HasMany
+    {
+        return $this->hasMany(LantaiOtmil::class, 'gedung_otmil_id', 'id');
+    }
 }
