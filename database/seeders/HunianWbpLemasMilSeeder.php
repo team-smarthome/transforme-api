@@ -16,11 +16,11 @@ class HunianWbpLemasMilSeeder extends Seeder
     {
         $hunianWbpLemasmil = [
             [
-                'id' => Str::uuid(),
-                'lokasi_lemasmil_id' => '',
-                'nama_hunian_wbp_lemasmil' => 'Markas',
+                'id' => "0993f968-a25f-4908-8bc4-68980bb49f22",
+                'lokasi_lemasmil_id' => '48633be0-b005-4029-8bbb-293db9564ba0',
+                'nama_hunian_wbp_lemasmil' => 'Rumah',
                 'created_at' => now(),
-                'updated_at' => now()
+                'updated_at' => now(),
             ]
         ];
         DB::table('hunian_wbp_lemasmil')->insert($hunianWbpLemasmil);

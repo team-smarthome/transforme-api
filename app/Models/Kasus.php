@@ -4,13 +4,19 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Kasus extends Model
 {
     use SoftDeletes, HasUuids;
+    protected $table = 'kasus';
+    protected $keyType = 'uuid';
+    public $incrementing = false;
+    public $timestamps = true;
+
     protected $fillable = [
         'nama_kasus',
         'nomor_kasus',
@@ -23,18 +29,32 @@ class Kasus extends Model
         'waktu_pelaporan_kasus',
         'zona_waktu',
         'tanggal_mulai_penyidikan',
-        'tanggal_mulai_sidang',
+        'tanggal_mulai_sidang'
     ];
-    protected $table = 'kasus';
-    protected $keyType = 'uuid';
-    public $incrementing = false;
-    public $timestamps = true;
 
-    public function kategoriPerkara(): BelongsTo{
-        return $this->belongsTo(KategoriPerkara::class,'kategori_perkara_id', 'id');
+    public function barangBuktiKasus(): HasMany
+    {
+        return $this->hasMany(BarangBuktiKasus::class, 'kasus_id', 'id');
     }
 
-    public function jenisPerkara(): BelongsTo{
-        return $this->belongsTo(JenisPerkara::class,'jenis_perkara_id','id');
+    public function wbpProfile(): BelongsTo
+    {
+        return $this->belongsTo(WbpProfile::class, 'wbp_profile_id', 'id');
     }
+
+    public function kategoriPerkara(): BelongsTo
+    {
+        return $this->belongsTo(KategoriPerkara::class, 'kategori_perkara_id', 'id');
+    }
+
+    public function jenisPerkara(): BelongsTo
+    {
+        return $this->belongsTo(JenisPerkara::class, 'jenis_perkara_id', 'id');
+    }
+
+    public function saksi(): HasMany
+    {
+        return $this->hasMany(Saksi::class, 'kasus_id', 'id');
+    }
+
 }

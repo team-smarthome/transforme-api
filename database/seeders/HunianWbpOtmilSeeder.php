@@ -16,8 +16,8 @@ class HunianWbpOtmilSeeder extends Seeder
     {
         $hunianWbpOtmil = [
             [
-                'id' => Str::uuid(),
-                'lokasi_otmil_id' => '9c24546a-e8fd-4b1c-9d94-20ca5040e0d7',
+                'id' => "60a3465d-5038-4268-b8da-c001fae0e63f",
+                'lokasi_otmil_id' => '890cc9b1-b01f-4d1f-9075-a6a96e851b25',
                 'nama_hunian_wbp_otmil' => 'Rumah',
                 'created_at' => now(),
                 'updated_at' => now(),
