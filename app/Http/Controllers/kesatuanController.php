@@ -15,8 +15,13 @@ class kesatuanController extends Controller
     $keyword = $request->input('search');
 
     $findData = Kesatuan::with('lokasiKesatuan')
-      ->where('nama_kesatuan', 'LIKE', '%' . $keyword . '%')
-      ->get();
+        ->where(function($query) use ($keyword) {
+            $query->where('nama_kesatuan', 'LIKE', '%' . $keyword . '%')
+                  ->orWhereHas('lokasiKesatuan', function($q) use ($keyword) {
+                      $q->where('nama_lokasi_kesatuan', 'LIKE', '%' . $keyword . '%');
+                  });
+        })
+        ->get();
 
     return ApiResponse::success([
       'data' => KesatuanResource::collection($findData),

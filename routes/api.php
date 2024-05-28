@@ -59,17 +59,17 @@ Route::post('/pendidikan', [PendidikanController::class, 'store']);
 Route::get('/bidang_keahlian', [BidangKeahlianController::class, 'index']);
 Route::post('/bidang_keahlian', [BidangKeahlianController::class, 'store']);
 
-Route::get('/status_wbp_kasus', [StatusWbpKasusController::class, 'index']);
-Route::post('/status_wbp_kasus', [StatusWbpKasusController::class, 'store']);
+Route::get('/status-wbp-kasus', [StatusWbpKasusController::class, 'index']);
+Route::post('/status-wbp-kasus', [StatusWbpKasusController::class, 'store']);
 
 Route::get('/jenis_pidana', [JenisPidanaController::class, 'index']);
 Route::post('/jenis_pidana', [JenisPidanaController::class, 'store']);
 
-Route::get('/gedung_otmil', [GedungOtmilController::class, 'index']);
-Route::post('/gedung_otmil', [GedungOtmilController::class, 'store']);
-Route::get('/gedung_otmil', [GedungOtmilController::class, 'show']);
-Route::put('/gedung_otmil', [GedungOtmilController::class, 'update']);
-Route::delete('/gedung_otmil', [GedungOtmilController::class, 'destroy']);
+// Route::get('/gedung-otmil', [GedungOtmilController::class, 'index']);
+// Route::post('/gedung-otmil', [GedungOtmilController::class, 'store']);
+// Route::get('/gedung-otmil', [GedungOtmilController::class, 'show']);
+// Route::put('/gedung-otmil', [GedungOtmilController::class, 'update']);
+// Route::delete('/gedung-otmil', [GedungOtmilController::class, 'destroy']);
 
 Route::get('/gedung_lemasmil', [GedungLemasmilController::class, 'index']);
 Route::post('/gedung_lemasmil', [GedungLemasmilController::class, 'store']);
