@@ -16,13 +16,13 @@ class JenisPidanaSeeder extends Seeder
     {
         $JenisPidana = [
             [
-                "id" => Str::uuid(),
+                "id" => 'c48bf881-b8b7-4ae4-a8da-ae7dab96d82a',
                 "nama_jenis_pidana" => "Pidana Mati",
                 "created_at" => now(),
                 "updated_at" => now(),
             ],
             [
-                "id"=> Str::uuid(),
+                "id"=> '5746fccc-ee4a-43aa-a5dd-c7cd1b9b2892',
                 "nama_jenis_pidana" => "Pidana Penjara",
                 "created_at" => now(),
                 "updated_at"=> now(),

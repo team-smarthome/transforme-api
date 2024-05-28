@@ -16,9 +16,9 @@ class KategoriPerkaraSeeder extends Seeder
     {
         $kategoriPerkara = [
             [
-                'id' => Str::uuid(),
+                'id' => '8df5515e-814f-406c-a995-812f042d3c84',
                 'nama_kategori_perkara' => 'Perkara Perdata',
-                'jenis_pidana_id'=> '9c1f0c3a-e5fe-450f-99ef-e912ae328c2c',
+                'jenis_pidana_id'=> '5746fccc-ee4a-43aa-a5dd-c7cd1b9b2892',
                 'created_at'=> now(),
                 'updated_at'=> now(),
             ],

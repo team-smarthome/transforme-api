@@ -16,7 +16,7 @@ class ZonaSeeder extends Seeder
     {
         $zona = [
             [
-                'id' => Str::uuid(),
+                'id' => 'e6884cad-d514-4db3-b4cc-5ab2465c6b99',
                 'nama_zona' => 'Zona Merah',
                 'created_at' => now(),
                 'updated_at' => now(),
