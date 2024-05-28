@@ -9,12 +9,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class BidangKeahlian extends Model
 {
-  use HasFactory, SoftDeletes, HasUuids;
-
-  protected $table = 'bidang_keahlian';
-  protected $keyType = 'uuid';
-  public $incrementing = false;
-  public $timestamps = true;
-
-  protected $fillable = ['nama_bidang_keahlian'];
+    use SoftDeletes, HasUuids;
+    protected $table = "bidang_keahlian";
+    protected $fillable = ['nama_bidang_keahlian'];
+    protected $keyType = "uuid";
+    public $incrementing = false;
+    public $timestamps = true;
 }
