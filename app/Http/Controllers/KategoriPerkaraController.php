@@ -14,10 +14,15 @@ class KategoriPerkaraController extends Controller
      */
     public function index(Request $request)
     {
-        $keyword = $request->input("search");
+        if ($request->has('kategori_perkara_id')) {
+            $kategori_perkara = KategoriPerkara::findOrFail($request->kategori_perkara_id);
+            return response()->json($kategori_perkara, 200);
+        }
 
-        $findData = KategoriPerkara::with('jenisPidana')->where('nama_kategori_perkara','like','%'.$keyword.'%')->get();
-
+        if($request->has('nama_kategori_perkara')){
+            $findData = KategoriPerkara::with('jenisPidana')->where('nama_kategori_perkara','like','%'. $request->nama_kategori_perkara .'%')->get();
+        }
+        
         return KategoriPerkaraResource::collection($findData);
     }
 

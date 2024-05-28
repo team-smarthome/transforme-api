@@ -17,9 +17,13 @@ class JenisPidanaController extends Controller
     public function index(Request $request)
     {
         try {
-            if (request('search')) {
-                $keyword = $request->input('search');
-                $query = JenisPidana::where('nama_jenis_pidana','LIKE','%'. $keyword .'%')->latest();
+            if ($request->has('jenis_pidana_id')) {
+                $jenis_pidana = JenisPidana::findOrFail($request->jenis_pidana_id);
+                return response()->json($jenis_pidana, 200);
+            }
+
+            if ($request->has('nama_jenis_pidana')) {
+                $query = JenisPidana::where('nama_jenis_pidana','LIKE','%'. $request->nama_jenis_pidana .'%')->latest();
             } else {
                 $query = JenisPidana::latest();
             }
@@ -55,8 +59,9 @@ class JenisPidanaController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Request $request)
     {
+        $id = $request->input('id');
         $jenisPidana = JenisPidana::findOrFail($id);
 
         return response()->json($jenisPidana, 200);
@@ -73,10 +78,9 @@ class JenisPidanaController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(JenisPidanaRequest $request, string $id)
+    public function update(JenisPidanaRequest $request)
     {
-        $request->validate(['nama_jenis_pidana' => 'required|string|max:255']);
-
+        $id = $request->input('id');
         $jenisPidana = JenisPidana::findOrFail($id);
 
         $existingJenisPidana = JenisPidana::where('nama_jenis_pidana', $jenisPidana->nama_jenis_pidana)->first();
@@ -92,8 +96,9 @@ class JenisPidanaController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Request $request)
     {
+        $id = $request->input('id');
         $jenisPidana = JenisPidana::findOrFail($id);
         $jenisPidana->delete();
 

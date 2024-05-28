@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Helpers\ApiResponse;
 use App\Http\Requests\BidangKeahlianRequest;
 use App\Models\BidangKeahlian;
+use Exception;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Validator;
 
@@ -17,9 +18,13 @@ class BidangKeahlianController extends Controller
     public function index(Request $request)
     {
         try {
-            if (request('search')) {
-                $keyword = $request->input('search');
-                $query = BidangKeahlian::where('nama_bidang_keahlian', 'like', '%' . $keyword . '%')->latest();
+            if ($request->has('bidang_keahlian_id')) {
+                $bidang_keahlian = BidangKeahlian::findOrFail($request->bidang_keahlian_id);
+                return response()->json($bidang_keahlian, 200);
+            }
+
+            if ($request->has('nama_bidang_keahlian')) {
+                $query = BidangKeahlian::where('nama_bidang_keahlian', 'like', '%' . $request->nama_bidang_keahlian . '%')->latest();
             } else {
                 $query = BidangKeahlian::latest();
             }
@@ -49,14 +54,17 @@ class BidangKeahlianController extends Controller
             return ApiResponse::created($bidangKeahlian);
         } catch (QueryException $e) {
             return ApiResponse::error('Database error', $e->getMessage(), 500);
+        } catch(Exception $e) {
+            return ApiResponse::error('An unexpected error occurred.', $e->getMessage(), 500);
         }
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Request $request)
     {
+        $id = $request->input('id');
         $bidangKeahlian = BidangKeahlian::findOrFail($id);
         return response()->json($bidangKeahlian, 200);
     }
@@ -72,10 +80,9 @@ class BidangKeahlianController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(BidangKeahlianRequest $request, string $id)
+    public function update(BidangKeahlianRequest $request)
     {
-        $request->validate(['nama_bidang_keahlian' => 'required|string|max:255']);
-
+        $id = $request->input('id');
         $bidangKeahlian = BidangKeahlian::findOrFail($id);
 
         $existingBidangKeahlian = BidangKeahlian::where('nama_bidang_keahlian', $bidangKeahlian->nama_bidang_keahlian)->first();
@@ -91,8 +98,9 @@ class BidangKeahlianController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Request $request)
     {
+        $id = $request->input('id');
         $bidangKeahlian = BidangKeahlian::findOrFail($id);
         $bidangKeahlian->delete();
 

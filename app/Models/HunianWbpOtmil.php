@@ -16,8 +16,11 @@ class HunianWbpOtmil extends Model
         'lokasi_otmil_id',
         'nama_hunian_wbp_otmil'
     ];
+    protected $keyType = 'uuid';
+    public $incrementing = false;
+    public $timestamps = true;
 
     public function lokasiOtmil(): BelongsTo{
-        return $this->belongsTo(HunianWbpOtmil::class,'lokasi_otmil_id', 'id');
+        return $this->belongsTo(LokasiOtmil::class,'lokasi_otmil_id', 'id');
     }
 }

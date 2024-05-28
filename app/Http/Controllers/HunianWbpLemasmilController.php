@@ -3,12 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\ApiResponse;
-use App\Models\HunianWbpOtmil;
+use App\Http\Resources\HunianWbpLemasmilResource;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
-use App\Http\Resources\HunianWbpOtmilResource;
+use App\Models\HunianWbpLemasmil;
 
-class HunianWbpOtmilController extends Controller
+class HunianWbpLemasmilController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -17,19 +17,19 @@ class HunianWbpOtmilController extends Controller
     {
         $perPage = $request->input('per_page', 10);
 
-        if ($request->has('hunian_wbp_otmil_id')) {
-            $hunian_wbp_otmil = HunianWbpOtmil::findOrFail($request->hunian_wbp_otmil_id);
-            return response()->json($hunian_wbp_otmil, 200);
+        if ($request->has('hunian_wbp_lemasmil_id')) {
+            $hunian_wbp_lemasmil = HunianWbpLemasmil::findOrFail($request->hunian_wbp_lemasmil_id);
+            return response()->json($hunian_wbp_lemasmil, 200);
         }
 
-        if($request->has('nama_hunian_wbp_otmil')) {
-            $findData = HunianWbpOtmil::with('lokasiOtmil')->where('nama_hunian_wbp_otmil','like','%'.$request->nama_hunian_wbp_otmil.'%');
+        if ($request->has('nama_hunian_wbp_lemasmil')) {
+            $findData = HunianWbpLemasmil::with('lokasiLemasmil')->where('nama_hunian_wbp_lemasmil', 'like', '%' . $request->nama_hunian_wbp_lemasmil . '%')->get();
         }
 
         $paginatedData = $findData->paginate($perPage);
 
         return ApiResponse::success([
-            'data' => HunianWbpOtmilResource::collection($paginatedData),
+            'data' => HunianWbpLemasmilResource::collection($paginatedData),
             'pagination' => [
                 'total' => $paginatedData->total(),
                 'per_page' => $paginatedData->perPage(),
@@ -55,13 +55,13 @@ class HunianWbpOtmilController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'lokasi_otmil_id' => 'required|string|max:100',
-            'nama_hunian_wbp_otmil' => 'required|string|max:100'
+            'lokasi_lemasmil_id' => 'required|string|max:100',
+            'nama_hunian_wbp_lemasmil' => 'required|string|max:100'
         ]);
 
-        $hunianWbpOtmil = HunianWbpOtmil::create($request->all());
+        $hunianWbpLemasmil = HunianWbpLemasmil::create($request->all());
         return ApiResponse::success([
-            'data' => new HunianWbpOtmilResource($hunianWbpOtmil)
+            'data' => new HunianWbpLemasmilResource($hunianWbpLemasmil)
         ]);
     }
 
@@ -71,8 +71,8 @@ class HunianWbpOtmilController extends Controller
     public function show(Request $request)
     {
         $id = $request->input('id');
-        $hunianWbpOtmil = HunianWbpOtmil::findOrFail( $id );
-        return response()->json($hunianWbpOtmil, 200);
+        $hunianWbpLemasmil = HunianWbpLemasmil::findOrFail($id);
+        return response()->json($hunianWbpLemasmil, 200);
     }
 
     /**
@@ -89,22 +89,17 @@ class HunianWbpOtmilController extends Controller
     public function update(Request $request)
     {
         $id = $request->input('id');
-        // $request->validate([
-        //     'lokasi_otmil_id' => 'required|string|max:100',
-        //     'nama_hunian_wbp_otmil' => 'required|string|max:100'
-        // ]);
+        $hunianWbpLemasmil = HunianWbpLemasmil::findOrFail($id);
 
-        $hunianWbpOtmil = HunianWbpOtmil::findOrFail( $id );
+        $existingHunianWbpLemasmil = HunianWbpLemasmil::where('nama_hunian_wbp_lemasmil', $hunianWbpLemasmil->nama_hunian_wbp_lemasmil)->first();
 
-        $existingHunianWbpOtmil = HunianWbpOtmil::where('nama_hunian_wbp_otmil', $hunianWbpOtmil->nama_hunian_wbp_otmil)->first();
-
-        if ($existingHunianWbpOtmil && $existingHunianWbpOtmil->id !== $id) {
-            return ApiResponse::error('Nama hunian wbp otmil sudah ada.', null, 422);
+        if ($existingHunianWbpLemasmil && $existingHunianWbpLemasmil->id !== $id) {
+            return ApiResponse::error('Nama hunian wbp lemasmil sudah ada.', null, 422);
         }
 
-        $hunianWbpOtmil->update($request->all());
+        $hunianWbpLemasmil->update($request->all());
         return ApiResponse::success([
-            'data' => new HunianWbpOtmilResource($hunianWbpOtmil)
+            'data' => new HunianWbpLemasmilResource($hunianWbpLemasmil)
         ]);
     }
 
@@ -114,16 +109,16 @@ class HunianWbpOtmilController extends Controller
     public function destroy(Request $request)
     {
         $id = $request->input('id');
-        $hunianWbpOtmil = HunianWbpOtmil::findOrFail($id);
-        $hunianWbpOtmil->delete();
+        $hunianWbpLemasmil = HunianWbpLemasmil::findOrFail($id);
+        $hunianWbpLemasmil->delete();
 
         return ApiResponse::deleted();
     }
 
     public function restore($id){
-        $hunianWbpOtmil = HunianWbpOtmil::withTrashed()->findOrFail($id);
-        $hunianWbpOtmil->restore();
+        $hunianWbpLemasmil = HunianWbpLemasmil::withTrashed()->findOrFail($id);
+        $hunianWbpLemasmil->restore();
 
-        return response()->json($hunianWbpOtmil);
+        return response()->json($hunianWbpLemasmil);
     }
 }

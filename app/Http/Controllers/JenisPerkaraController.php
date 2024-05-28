@@ -14,11 +14,30 @@ class JenisPerkaraController extends Controller
      */
     public function index(Request $request)
     {
-        $keyword = $request->input("search");
+        $perPage = $request->input('per_page', 10);
 
-        $findData = JenisPerkara::with("kategoriPerkara")->where("nama_jenis_perkara","LIKE","%".$keyword."%")->get();
+        if($request->has('jenis_perkara_id')){
+            $jenis_perkara = JenisPerkara::findOrFail($request->jenis_perkara_id);
+            return response()->json($jenis_perkara, 200);
+        }
 
-        return ApiResponse::success(['data' => JenisPerkaraResource::collection($findData)]);
+        if($request->has('nama_jenis_perkara')){
+            $findData = JenisPerkara::with("kategoriPerkara")->where("nama_jenis_perkara","LIKE","%".$request->nama_jenis_perkara."%");
+        }
+
+        $paginatedData = $findData->paginate($perPage);
+
+        return ApiResponse::success([
+            'data' => JenisPerkaraResource::collection($paginatedData),
+            'pagination' => [
+                'total' => $paginatedData->total(),
+                'per_page' => $paginatedData->perPage(),
+                'current_page' => $paginatedData->currentPage(),
+                'last_page' => $paginatedData->lastPage(),
+                'from' => $paginatedData->firstItem(),
+                'to' => $paginatedData->lastItem(),
+            ]
+        ]);
     }
 
     /**
