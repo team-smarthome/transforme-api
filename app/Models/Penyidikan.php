@@ -6,15 +6,14 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Penyidikan extends Model
 {
     use HasFactory, SoftDeletes, HasUuids;
 
-    protected $keyType = 'uuid';
     protected $table = 'penyidikan';
+    protected $keyType = 'uuid';
     public $incrementing = false;
     public $timestamps = true;
 
@@ -31,7 +30,7 @@ class Penyidikan extends Model
         'waktu_selesai_penyidikan',
         'dokumen_bap_id',
         'wbp_profile_id',
-        'sakski_id',
+        'saksi_id',
         'oditur_penyidikan_id',
         'zona_waktu'
     ];
@@ -41,12 +40,7 @@ class Penyidikan extends Model
         return $this->belongsTo(Kasus::class, 'kasus_id', 'id'); // banyak penyidikan dimiliki oleh satu kasus
     }
 
-    public function bap(): BelongsTo
-    {
-        return $this->belongsTo(DokumenBap::class, 'dokumen_bap_id', 'id'); // banyak penyidikan dimiliki oleh satu dokumen bap
-    }
-
-    public function wbp(): BelongsTo
+    public function wbpProfile(): BelongsTo
     {
         return $this->belongsTo(WbpProfile::class, 'wbp_profile_id', 'id'); // banyak penyidikan dimiliki oleh satu wbp
     }
@@ -60,9 +54,4 @@ class Penyidikan extends Model
     {
         return $this->belongsTo(OditurPenyidik::class, 'oditur_penyidikan_id', 'id'); // banyak penyidikan dimiliki oleh satu oditur
     }
-
-    // public function historiPenyidikan(): HasMany
-    // {
-    //     return $this->hasMany(HistoriPenyidikan::class, 'penyidikan_id', 'id'); // satu penyidikan memiliki banyak histori penyidikan
-    // }
 }

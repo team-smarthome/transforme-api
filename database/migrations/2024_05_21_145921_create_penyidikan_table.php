@@ -29,7 +29,7 @@ return new class extends Migration
             $table->foreign('kasus_id')->references('id')->on('kasus');
             $table->foreign('wbp_profile_id')->references('id')->on('wbp_profile');
             $table->foreign('saksi_id')->references('id')->on('saksi');
-            $table->foreign('oditur_penyidikan_id')->references('id')->on('oditur');
+            $table->foreign('oditur_penyidikan_id')->references('id')->on('oditur_penyidik');
         });
     }
 
