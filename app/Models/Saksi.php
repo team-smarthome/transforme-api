@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Saksi extends Model
 {
@@ -31,8 +32,8 @@ class Saksi extends Model
         return $this->belongsTo(Kasus::class, 'kasus_id', 'id'); // banyak saksi dimiliki oleh satu kasus
     }
 
-    public function penyidikan(): BelongsTo
+    public function penyidikan(): HasMany
     {
-        return $this->belongsTo(Penyidikan::class, 'saksi_id', 'id'); //  banyak saksi dimiliki oleh satu penyidikan
+        return $this->hasMany(Penyidikan::class, 'saksi_id', 'id'); // satu saksi memiliki banyak penyidikan
     }
 }
