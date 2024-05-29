@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class RuanganLemasmil extends Model
 {
@@ -32,5 +33,20 @@ class RuanganLemasmil extends Model
     public function gelang(): HasMany
     {
         return $this->hasMany(Gelang::class, 'ruangan_lemasmil_id', 'id');
+    }
+
+    public function lokasiLemasmil(): BelongsTo
+    {
+        return $this->belongsTo(LokasiLemasmil::class, 'lokasi_lemasmil_id', 'id');
+    }
+
+    public function zona(): BelongsTo
+    {
+        return $this->belongsTo(Zona::class, 'zona_id', 'id');
+    }
+
+    public function lantaiLemasmil(): BelongsTo
+    {
+        return $this->belongsTo(LantaiLemasmil::class, 'lantai_lemasmil_id', 'id');
     }
 }
