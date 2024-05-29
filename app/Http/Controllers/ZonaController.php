@@ -18,9 +18,13 @@ class ZonaController extends Controller
     public function index(Request $request)
     {
         try {
-            if (request('search')) {
-                $keyword = $request->input('search');
-                $query = Zona::where('nama_zona','LIKE','%'. $keyword . '%')->latest();
+            if ($request->has('zona_id')) {
+                $zona = Zona::findOrFail($request->zona_id);
+                return response()->json($zona, 200);
+            }
+
+            if ($request->has('nama_zona')) {
+                $query = Zona::where('nama_zona','LIKE','%'. $request->nama_zona . '%')->latest();
             } else{
                 $query = Zona::latest();
             }
