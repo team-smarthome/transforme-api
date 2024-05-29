@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+
 
 class Zona extends Model
 {
@@ -15,4 +17,9 @@ class Zona extends Model
     protected $keyType = 'uuid';
     public $incrementing = false;
     public $timestamps = true;
+
+    public function ruanganLemasmil()
+    {
+        return $this->hasMany(RuanganLemasmil::class, 'zona_id', 'id');
+    }
 }
