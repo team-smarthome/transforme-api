@@ -2,138 +2,171 @@
 
 namespace App\Http\Controllers;
 
-use App\Helpers\ApiResponse;
-use App\Http\Resources\PenyidikanResource;
 use Illuminate\Http\Request;
 use App\Models\Penyidikan;
+use App\Http\Requests\PenyidikanRequest;
+use App\Helpers\ApiResponse;
+use Exception;
 
 class PenyidikanController extends Controller
 {
+    /**
+     * Display a listing of the resource.
+     */
     public function index()
     {
-        $nrp = request()->input('nrp');
-        $nama_wbp = request()->input('nama_wbp');
-        $nama_saksi = request()->input('nama_saksi');
-        $nip = request()->input('nip');
-        $nama_oditur = request()->input('nama_oditur');
-        $nama_kasus = request()->input('nama_kasus');
-        $nomor_kasus = request()->input('nomor_kasus');
-        $nama_jenis_perkara = request()->input('nama_jenis_perkara');
-        $nama_kategori_perkara = request()->input('nama_kategori_perkara');
-        $agenda_penyidikan = request()->input('agenda_penyidikan');
-        $nomor_penyidikan = request()->input('nomor_penyidikan');
-        $perPage = request()->input('per_page', 10);
+    try {
+        $query = Penyidikan::with(['kasus', 'wbpProfile', 'saksi', 'oditurPenyidik']);
+        $filterableColumns = [
+            'penyidikan_id' => 'id',
+            'nomor_penyidikan' => 'nomor_penyidikan',
+            'agenda_penyidikan' => 'agenda_penyidikan',
+            'dokumen_bap_id' => 'dokumen_bap_id',
+            'wbp_profile_id' => 'wbp_profile_id',
+            'saksi_id' => 'saksi_id',
+            'oditur_penyidikan_id' => 'oditur_penyidikan_id',
+            'zona_waktu' => 'zona_waktu'
+        ];
+        foreach ($filterableColumns as $requestKey => $column) {
+            if ($value = request($requestKey)) {
+                $query->where($column, 'like', '%' . $value . '%');
+            }
+        }
 
+        $query->latest();
+        return ApiResponse::paginate($query);
+
+    } catch (\Exception $e) {
+        return ApiResponse::error('Failed to get Data.', $e->getMessage());
+    }
+}
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        //
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(PenyidikanRequest $request)
+    {
         try {
-            $query = Penyidikan::with(['kasus.jenisPerkara', 'kasus.kategoriPerkara', 'bap', 'wbp', 'saksi', 'oditurPenyidik'])
-                ->where(function ($query) use ($nrp, $nama_wbp, $nama_saksi, $nip, $nama_oditur, $nama_kasus, $nomor_kasus, $nama_jenis_perkara, $nama_kategori_perkara, $agenda_penyidikan, $nomor_penyidikan) {
-                    if (!empty($nrp)) {
-                        $query->whereHas('wbp', function ($q) use ($nrp) {
-                            $q->where('nrp', 'LIKE', '%' . $nrp . '%');
-                        });
-                    }
-
-                    if (!empty($nama_wbp)) {
-                        $query->whereHas('wbp', function ($q) use ($nama_wbp) {
-                            $q->where('nama', 'LIKE', '%' . $nama_wbp . '%');
-                        });
-                    }
-
-                    if (!empty($nama_saksi)) {
-                        $query->whereHas('saksi', function ($q) use ($nama_saksi) {
-                            $q->where('nama_saksi', 'LIKE', '%' . $nama_saksi . '%');
-                        });
-                    }
-
-                    if (!empty($nip)) {
-                        $query->whereHas('oditurPenyidik', function ($q) use ($nip) {
-                            $q->where('nip', 'LIKE', '%' . $nip . '%');
-                        });
-                    }
-
-                    if (!empty($nama_oditur)) {
-                        $query->whereHas('oditurPenyidik', function ($q) use ($nama_oditur) {
-                            $q->where('nama_oditur', 'LIKE', '%' . $nama_oditur . '%');
-                        });
-                    }
-
-                    if (!empty($nama_kasus)) {
-                        $query->whereHas('kasus', function ($q) use ($nama_kasus) {
-                            $q->where('nama_kasus', 'LIKE', '%' . $nama_kasus . '%');
-                        });
-                    }
-
-                    if (!empty($nomor_kasus)) {
-                        $query->whereHas('kasus', function ($q) use ($nomor_kasus) {
-                            $q->where('nomor_kasus', 'LIKE', '%' . $nomor_kasus . '%');
-                        });
-                    }
-
-                    if (!empty($nama_jenis_perkara)) {
-                        $query->whereHas('kasus.jenisPerkara', function ($q) use ($nama_jenis_perkara) {
-                            $q->where('nama_jenis_perkara', 'LIKE', '%' . $nama_jenis_perkara . '%');
-                        });
-                    }
-
-                    if (!empty($nama_kategori_perkara)) {
-                        $query->whereHas('kasus.kategoriPerkara', function ($q) use ($nama_kategori_perkara) {
-                            $q->where('nama_kategori_perkara', 'LIKE', '%' . $nama_kategori_perkara . '%');
-                        });
-                    }
-
-                    if (!empty($agenda_penyidikan)) {
-                        $query->where('agenda_penyidikan', 'LIKE', '%' . $agenda_penyidikan . '%');
-                    }
-
-                    if (!empty($nomor_penyidikan)) {
-                        $query->where('nomor_penyidikan', 'LIKE', '%' . $nomor_penyidikan . '%');
-                    }
-
-                    // if (!empty($nama_kategori_perkara)) {
-                    //     $query->whereHas('kas
-                });
-
-            $paginatedData = $query->paginate($perPage);
-            return ApiResponse::success([
-                'data' => PenyidikanResource::collection($paginatedData),
-                'pagination' => [
-                    'total' => $paginatedData->total(),
-                    'per_page' => $paginatedData->perPage(),
-                    'current_page' => $paginatedData->currentPage(),
-                    'last_page' => $paginatedData->lastPage(),
-                    'from' => $paginatedData->firstItem(),
-                    'to' => $paginatedData->lastItem(),
-                ]
+            $penyidikan =  new Penyidikan([
+                'nomor_penyidikan' => $request->nomor_penyidikan,
+                'kasus_id' => $request->kasus_id,
+                'waktu_dimulai_penyidikan' => $request->waktu_dimulai_penyidikan,
+                'agenda_penyidikan' => $request->agenda_penyidikan,
+                'waktu_selesai_penyidikan' => $request->waktu_selesai_penyidikan,
+                'dokumen_bap_id' => $request->dokumen_bap_id,
+                'wbp_profile_id' => $request->wbp_profile_id,
+                'saksi_id' => $request->saksi_id,
+                'oditur_penyidikan_id' => $request->oditur_penyidikan_id,
+                'zona_waktu' => $request->zona_waktu
             ]);
-        } catch (\Exception $e) {
-            return ApiResponse::error('Failed to get data.', $e->getMessage());
+
+            if (Penyidikan::where('nomor_penyidikan', $request->nomor_penyidikan)->exists()) {
+                return ApiResponse::error('Failed to create Penyidikan', 'Nomor Penyidikan already exists', 400);
+            }
+
+            if ($penyidikan->save()) {
+                $data = $penyidikan->toArray();
+                $formattedData = array_merge(['id' => $penyidikan->id], $data);
+                return ApiResponse::created($formattedData);
+            } else {
+                return ApiResponse::error('Failed to create Data.', 'Failed to create Data.', 500);
+            }
+
+        } catch (QueryException $e) {
+            return ApiResponse::error('Database error', $e->getMessage(), 500);
+    
+        } catch (Exception $e) {
+            return ApiResponse::error('An unexpected error occurred', $e->getMessage(), 500);
+
         }
     }
 
-    public function store(Request $request)
+    /**
+     * Display the specified resource.
+     */
+    public function show(string $id)
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(string $id)
+    {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(PenyidikanRequest $request)
     {
         try {
-            $request->validate([
-                'nomor_penyidikan' => 'required|string|max:36',
-                'kasus_id' => 'required|string|max:36',
-                'waktu_dimulai_penyidikan' => 'required|string|max:100',
-                'agenda_penyidikan' => 'required|string|max:100',
-                'waktu_selesai_penyidikan' => 'required|string|max:100',
-                'dokumen_bap_id' => 'required|string|max:100',
-                'wbp_profile_id' => 'required|string|max:36',
-                'saksi_id' => 'string|max:36',
-                'oditur_penyidikan_id' => 'required|string|max:36',
-                'zona_waktu' => 'required|string|max:100',
-            ]);
+            $id = $request->input('penyidikan_id');
+            $penyidikan = Penyidikan::findOrfail($id);
+            if (!$penyidikan) {
+                return ApiResponse::error('Penyidikan not found', 'Penyidikan not found', 404);
+            }
 
-            $penyidikan = Penyidikan::create($request->all());
+            $penyidikan->nomor_penyidikan = $request->nomor_penyidikan;
+            $penyidikan->kasus_id = $request->kasus_id;
+            $penyidikan->waktu_dimulai_penyidikan = $request->waktu_dimulai_penyidikan;
+            $penyidikan->agenda_penyidikan = $request->agenda_penyidikan;
+            $penyidikan->waktu_selesai_penyidikan = $request->waktu_selesai_penyidikan;
+            $penyidikan->dokumen_bap_id = $request->dokumen_bap_id;
+            $penyidikan->wbp_profile_id = $request->wbp_profile_id;
+            $penyidikan->saksi_id = $request->saksi_id;
+            $penyidikan->oditur_penyidikan_id = $request->oditur_penyidikan_id;
+            $penyidikan->zona_waktu = $request->zona_waktu;
 
-            return ApiResponse::created([
-                'data' => new PenyidikanResource($penyidikan),
-            ]);
+            if ($penyidikan->save()) {
+                return ApiResponse::success('Penyidikan updated', $penyidikan);
+            } else {
+                return ApiResponse::error('Failed to update Penyidikan', 'Unknown error', 500);
+            }
 
-        } catch (\Exception $e) {
-            return ApiResponse::error('Failed to create data.', $e->getMessage());
+        } catch (QueryException $e) {
+            return ApiResponse::error('Database error', $e->getMessage(), 500);
+    
+        } catch (Exception $e) {
+            return ApiResponse::error('An unexpected error occurred', $e->getMessage(), 500);
+
+        }
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(Request $request)
+    {
+        try {
+            $id = $request->input('penyidikan_id');
+            $penyidikan = Penyidikan::findOrfail($id);
+            if (!$penyidikan) {
+                return ApiResponse::error('Penyidikan not found', 'Penyidikan not found', 404);
+            }
+
+            if ($penyidikan->delete()) {
+                return ApiResponse::deleted();
+            } else {
+                return ApiResponse::error('Failed to delete Penyidikan', 'Unknown error', 500);
+            }
+
+        } catch (QueryException $e) {
+            return ApiResponse::error('Database error', $e->getMessage(), 500);
+    
+        } catch (Exception $e) {
+            return ApiResponse::error('An unexpected error occurred', $e->getMessage(), 500);
+
         }
     }
 }
