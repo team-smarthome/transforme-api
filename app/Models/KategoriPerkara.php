@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class KategoriPerkara extends Model
 {
@@ -24,5 +25,10 @@ class KategoriPerkara extends Model
     public function jenisPidana(): BelongsTo
     {
         return $this->belongsTo(JenisPidana::class, 'jenis_pidana_id', 'id');
+    }
+
+    public function kategoriPerkara(): HasMany
+    {
+        return $this->hasMany(Kasus::class, 'kategori_perkara_id', 'id');
     }
 }

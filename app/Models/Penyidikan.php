@@ -41,9 +41,9 @@ class Penyidikan extends Model
         return $this->belongsTo(Kasus::class, 'kasus_id', 'id'); // banyak penyidikan dimiliki oleh satu kasus
     }
 
-    public function bap(): HasMany
+    public function bap(): BelongsTo
     {
-        return $this->hasMany(DokumenBap::class, 'dokumen_bap_id', 'id'); // banyak dokumen bap dimiliki oleh satu penyidikan
+        return $this->belongsTo(DokumenBap::class, 'dokumen_bap_id', 'id'); // banyak penyidikan dimiliki oleh satu dokumen bap
     }
 
     public function wbp(): BelongsTo
@@ -53,11 +53,16 @@ class Penyidikan extends Model
 
     public function saksi(): BelongsTo
     {
-        return $this->belongsTo(Saksi::class, 'sakski_id', 'id'); // banyak penyidikan dimiliki oleh satu saksi
+        return $this->belongsTo(Saksi::class, 'saksi_id', 'id'); // banyak penyidikan dimiliki oleh satu saksi
     }
 
-    public function oditur(): BelongsTo
+    public function oditurPenyidik(): BelongsTo
     {
-        return $this->belongsTo(Oditur::class, 'oditur_penyidikan_id', 'id'); // banyak penyidikan dimiliki oleh satu oditur
+        return $this->belongsTo(OditurPenyidik::class, 'oditur_penyidikan_id', 'id'); // banyak penyidikan dimiliki oleh satu oditur
     }
+
+    // public function historiPenyidikan(): HasMany
+    // {
+    //     return $this->hasMany(HistoriPenyidikan::class, 'penyidikan_id', 'id'); // satu penyidikan memiliki banyak histori penyidikan
+    // }
 }

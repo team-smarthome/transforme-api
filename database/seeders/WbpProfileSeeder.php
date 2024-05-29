@@ -16,7 +16,7 @@ class WbpProfileSeeder extends Seeder
     {
         $wbp_profile = [
             [
-                'id' => "10cfa0a1-5ab3-4daa-9292-29397946316e",
+                'id' => "12cfa0a1-5ab3-4daa-9292-29397946312w",
                 'nama' => "Udin",
                 'pangkat_id' => "4ec3de3b-169f-4313-9b3d-0cef9ae3cbda",
                 'kesatuan_id' => '18ff69b7-3d9f-4a60-a602-5baf4f3cc081',
@@ -46,7 +46,7 @@ class WbpProfileSeeder extends Seeder
                 'hubungan_kontak_keluarga' => 'Ipar',
                 'nomor_kontak_keluarga' => '1234567890',
                 'matra_id' => '4b7d979d-b5bd-487b-8429-c8b9b12af860',
-                'nrp' => '4343443434',
+                'nrp' => '8987766',
                 'tanggal_ditahan_otmil' => now(),
                 'tanggal_ditahan_lemasmil' => now(),
                 'tanggal_penetapan_tersangka' => now(),
