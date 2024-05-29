@@ -86,29 +86,44 @@ class BarangBuktiKasusController extends Controller
      */
     public function store(BarangBuktiKasusRequest $request)
     {
-        $barangBuktiKasus = new BarangBuktiKasus([
-            'kasus_id' => $request->kasus_id,
-            'nama_bukti_kasus' => $request->nama_bukti_kasus,
-            'nomor_barang_bukti' => $request->nomor_barang_bukti,
-            'keterangan' => $request->keterangan,
-            'tanggal_diambil' => $request->tanggal_diambil,
-            'longitude' => $request->longitude,
-            'jenis_perkara_id' => $request->jenis_perkara_id,
-        ]);
-        if ($request->hasFile('dokumen_barang_bukti')) {
-            $dokumenPath = $request->file('dokumen_barang_bukti')->store('public/barang_bukti_kasus_file');
-            $barangBuktiKasus->dokumen_barang_bukti = str_replace('public/', '', $dokumenPath);
+        try {
+            $barangBuktiKasus = new BarangBuktiKasus([
+                'kasus_id' => $request->kasus_id,
+                'nama_bukti_kasus' => $request->nama_bukti_kasus,
+                'nomor_barang_bukti' => $request->nomor_barang_bukti,
+                'keterangan' => $request->keterangan,
+                'tanggal_diambil' => $request->tanggal_diambil,
+                'longitude' => $request->longitude,
+                'jenis_perkara_id' => $request->jenis_perkara_id,
+            ]);
+        
+            if ($request->hasFile('dokumen_barang_bukti')) {
+                $originalDokumenName = $request->file('dokumen_barang_bukti')->getClientOriginalName();
+                $dokumenPath = $request->file('dokumen_barang_bukti')->storeAs('public/barang_bukti_kasus_file', $originalDokumenName);
+                $barangBuktiKasus->dokumen_barang_bukti = str_replace('public/', '', $dokumenPath);
+            }
+        
+            if ($request->hasFile('gambar_barang_bukti')) {
+                $originalGambarName = $request->file('gambar_barang_bukti')->getClientOriginalName();
+                $gambarPath = $request->file('gambar_barang_bukti')->storeAs('public/barang_bukti_kasus_image', $originalGambarName);
+                $barangBuktiKasus->gambar_barang_bukti = str_replace('public/', '', $gambarPath);
+            }
+        
+            if ($barangBuktiKasus->save()) {
+                return ApiResponse::created($barangBuktiKasus);
+            } else {
+                return ApiResponse::error('Failed to create data.', 500);
+            }
+        } catch (QueryException $e) {
+            return ApiResponse::error('Database error', $e->getMessage(), 500);
+    
+        } catch (Exception $e) {
+            return ApiResponse::error('An unexpected error occurred', $e->getMessage(), 500);
         }
-        if ($request->hasFile('gambar_barang_bukti')) {
-            $gambarPath = $request->file('gambar_barang_bukti')->store('public/barang_bukti_kasus_image');
-            $barangBuktiKasus->gambar_barang_bukti = str_replace('public/', '', $gambarPath);
-        }
-        if ($barangBuktiKasus->save()) {
-            return ApiResponse::created($barangBuktiKasus);
-        } else {
-            return ApiResponse::error('Failed to create data.', 500);
-        }
+
+
     }
+    
 
     /**
      * Display the specified resource.
@@ -131,33 +146,42 @@ class BarangBuktiKasusController extends Controller
      */
     public function update(BarangBuktiKasusRequest $request)
     {
-        $id = $request->input('barang_bukti_kasus_id');
-        $barangBuktiKasus = BarangBuktiKasus::findOrFail($id);
-
-        // $barangBuktiKasus->kasus_id = $request->kasus_id;
-        // $barangBuktiKasus->nama_bukti_kasus = $request->nama_bukti_kasus;
-        // $barangBuktiKasus->nomor_barang_bukti = $request->nomor_barang_bukti;
-        // $barangBuktiKasus->keterangan = $request->keterangan;
-        // $barangBuktiKasus->tanggal_diambil = $request->tanggal_diambil;
-        // $barangBuktiKasus->longitude = $request->longitude;
-        // $barangBuktiKasus->jenis_perkara_id = $request->jenis_perkara_id;
-
-        if ($request->hasFile('dokumen_barang_bukti')) {
-            $dokumenPath = $request->file('dokumen_barang_bukti')->store('public/barang_bukti_kasus');
-            $barangBuktiKasus->dokumen_barang_bukti = str_replace('public/', '', $dokumenPath);
-        }
-
-        if ($request->hasFile('gambar_barang_bukti')) {
-            $gambarPath = $request->file('gambar_barang_bukti')->store('public/barang_bukti_kasus');
-            $barangBuktiKasus->gambar_barang_bukti = str_replace('public/', '', $gambarPath);
-        }
-
-        if ($barangBuktiKasus->save()) {
-            return ApiResponse::updated($barangBuktiKasus);
-        } else {
-            return ApiResponse::error('Failed to update data.', 500);
+        try {
+            $id = $request->input('barang_bukti_kasus_id');
+            $barangBuktiKasus = BarangBuktiKasus::findOrFail($id);
+    
+            $barangBuktiKasus->kasus_id = $request->kasus_id;
+            $barangBuktiKasus->nama_bukti_kasus = $request->nama_bukti_kasus;
+            $barangBuktiKasus->nomor_barang_bukti = $request->nomor_barang_bukti;
+            $barangBuktiKasus->keterangan = $request->keterangan;
+            $barangBuktiKasus->tanggal_diambil = $request->tanggal_diambil;
+            $barangBuktiKasus->longitude = $request->longitude;
+            $barangBuktiKasus->jenis_perkara_id = $request->jenis_perkara_id;
+    
+            if ($request->hasFile('dokumen_barang_bukti')) {
+                $originalDokumenName = $request->file('dokumen_barang_bukti')->getClientOriginalName();
+                $dokumenPath = $request->file('dokumen_barang_bukti')->storeAs('public/barang_bukti_kasus_file', $originalDokumenName);
+                $barangBuktiKasus->dokumen_barang_bukti = str_replace('public/', '', $dokumenPath);
+            }
         
+            if ($request->hasFile('gambar_barang_bukti')) {
+                $originalGambarName = $request->file('gambar_barang_bukti')->getClientOriginalName();
+                $gambarPath = $request->file('gambar_barang_bukti')->storeAs('public/barang_bukti_kasus_image', $originalGambarName);
+                $barangBuktiKasus->gambar_barang_bukti = str_replace('public/', '', $gambarPath);
+            }
+            if ($barangBuktiKasus->save()) {
+                return ApiResponse::updated($barangBuktiKasus);
+            } else {
+                return ApiResponse::error('Failed to update data.', 500);
+            
+            }
+        } catch (QueryException $e) {
+            return ApiResponse::error('Database error', $e->getMessage(), 500);
+        } catch (Exception $e) {
+            return ApiResponse::error('An unexpected error occurred', $e->getMessage(), 500);
         }
+
+
     }
 
     /**
