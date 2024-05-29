@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class HunianWbpOtmil extends Model
 {
@@ -22,5 +23,10 @@ class HunianWbpOtmil extends Model
 
     public function lokasiOtmil(): BelongsTo{
         return $this->belongsTo(LokasiOtmil::class,'lokasi_otmil_id', 'id');
+    }
+
+    public function hunianWBPOtmil(): HasMany
+    {
+        return $this->hasMany(WbpProfile::class, 'hunian_wbp_otmil_id', 'id');
     }
 }

@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Penyidikan extends Model
@@ -34,4 +36,33 @@ class Penyidikan extends Model
         'zona_waktu'
     ];
 
+    public function kasus(): BelongsTo
+    {
+        return $this->belongsTo(Kasus::class, 'kasus_id', 'id'); // banyak penyidikan dimiliki oleh satu kasus
+    }
+
+    public function bap(): BelongsTo
+    {
+        return $this->belongsTo(DokumenBap::class, 'dokumen_bap_id', 'id'); // banyak penyidikan dimiliki oleh satu dokumen bap
+    }
+
+    public function wbp(): BelongsTo
+    {
+        return $this->belongsTo(WbpProfile::class, 'wbp_profile_id', 'id'); // banyak penyidikan dimiliki oleh satu wbp
+    }
+
+    public function saksi(): BelongsTo
+    {
+        return $this->belongsTo(Saksi::class, 'saksi_id', 'id'); // banyak penyidikan dimiliki oleh satu saksi
+    }
+
+    public function oditurPenyidik(): BelongsTo
+    {
+        return $this->belongsTo(OditurPenyidik::class, 'oditur_penyidikan_id', 'id'); // banyak penyidikan dimiliki oleh satu oditur
+    }
+
+    // public function historiPenyidikan(): HasMany
+    // {
+    //     return $this->hasMany(HistoriPenyidikan::class, 'penyidikan_id', 'id'); // satu penyidikan memiliki banyak histori penyidikan
+    // }
 }

@@ -57,4 +57,14 @@ class Kasus extends Model
         return $this->hasMany(Saksi::class, 'kasus_id', 'id');
     }
 
+    public function penyidikan(): HasMany
+    {
+        return $this->hasMany(Penyidikan::class, 'kasus_id', 'id');
+    }
+
+    public function kasusWbp(): HasMany
+    {
+        return $this->hasMany(WbpProfile::class, 'kasus_id', 'id');
+    }
+
 }

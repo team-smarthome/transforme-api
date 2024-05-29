@@ -37,4 +37,11 @@ class Gelang extends Model
         return $this->belongsTo(RuanganLemasmil::class, 'ruangan_lemasmil_id', 'id');
     }
 
+    // relation gelang masih salam
+    public function gelangWbp()
+    {
+        return $this->hasOne(WbpProfile::class); // satu gelang punya satu wbp
+        // return $this->belongsTo(WbpProfile::class);
+        // return $this->belongsTo(WbpProfile::class, 'gelang_id', 'id');
+    }
 }
