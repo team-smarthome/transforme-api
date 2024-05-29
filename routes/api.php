@@ -3,6 +3,9 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/user1', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
+// Load all routes in the 'api' folder dynamically
+$routeFiles = glob(__DIR__ . '/api/*.php');
+
+foreach ($routeFiles as $routeFile) {
+    require $routeFile;
+}

@@ -2,114 +2,59 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
-
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Str;
-use Laravel\Sanctum\HasApiTokens;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Notifications\Notifiable;
-use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Database\Eloquent\Concerns\HasUuids;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Database\Eloquent\Relations\BelongsTo; 
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable, HasUuids, SoftDeletes;
+    use HasFactory, Notifiable, HasApiTokens, SoftDeletes, HasUuids;
+    protected $table = 'users';
+    protected $keyType = 'uuid';
+    public $incrementing = false;
+    public $timestamps = true;
 
-  /**
-   * The attributes that are mass assignable.
-   *
-   * @var array<int, string>
-   */
-  protected $guarded = [];
+    protected $fillable = [
+        'username',
+        'password',
+        'email',
+        'phone',
+        'user_role_id',
+        'lokasi_otmil_id',
+        'lokasi_lemasmil_id',
+        'is_suspended',
+        'petugas_id',
+        'image',
+        'last_login',
+        'expiry_date',
+    ];
 
-  /**
-   * Indicates if the model's ID is auto-incrementing.
-   *
-   * @var bool
-   */
-  public $incrementing = false;
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
 
-  /**
-   * The data type of the auto-incrementing ID.
-   *
-   * @var string
-   */
-  protected $keyType = 'string';
+    public function role(): BelongsTo
+    {
+        return $this->belongsTo(UserRole::class, 'user_role_id', 'id');
+    }
+    public function petugas(): BelongsTo
+    {
+        return $this->belongsTo(Petugas::class, 'petugas_id', 'id');
+    }
 
-  /**
-   * The attributes that should be hidden for serialization.
-   *
-   * @var array<int, string>
-   */
-  protected $hidden = [
-    'password',
-    'remember_token',
-  ];
+    public function lokasiOtmil(): BelongsTo
+    {
+        return $this->belongsTo(LokasiOtmil::class, 'lokasi_otmil_id', 'id');
+    }
 
-  /**
-   * The attributes that should be cast.
-   *
-   * @var array<string, string>
-   */
-  protected $casts = [
-    'id' => 'string',
-    'email_verified_at' => 'datetime',
-    'password' => 'hashed',
-  ];
+    public function lokasiLemasmil(): BelongsTo
+    {
+        return $this->belongsTo(LokasiLemasmil::class, 'lokasi_lemasmil_id', 'id');
+    }
 
-  /**
-   * Get the employe associated with the user.
-   */
-//   public function employee(): BelongsTo
-//   {
-//     return $this->belongsTo(Employee::class);
-//   }
-
-  /**
-   * The roles that belong to the user
-   */
-//   public function roles(): BelongsToMany
-//   {
-//     return $this->belongsToMany(Role::class)
-//       ->withTimestamps();
-//   }
-
-//   public function userLogs(): HasMany
-//   {
-//     return $this->hasMany(UserLog::class);
-//   }
-
-  /**
-   * The "booted" method of the model.
-   */
-  // protected static function booted(): void
-  // {
-  //   static::creating(function (Model $model) {
-  //     $model->{$model->getKeyName()} = Str::uuid();
-  //   });
-  // }
-
-  /**
-   * Get the route key for the model.
-   */
-  public function getRouteKeyName(): string
-  {
-    return 'nip';
-  }
-
-  /**
-   * Retrieve the model for a bound value.
-   */
-//   public function resolveRouteBinding($value, $field = null): Model|null
-//   {
-//     return $this->whereHas('employee', fn (Builder $query) => $query->where($this->getRouteKeyName(), $value))
-//       ->firstOrFail();
-//   }
 }

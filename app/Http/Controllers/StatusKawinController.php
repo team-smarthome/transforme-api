@@ -2,65 +2,41 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\status_kawin;
-use App\Http\Controllers\Controller;
+use App\Models\StatusKawin;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Illuminate\Http\Response;
+use App\Helpers\ApiResponse;
 
 class StatusKawinController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+  public function index()
+  {
     {
-        //
-    }
+      try {
+        if (request('search')) {
+          $query = StatusKawin::where('nama_status_kawin', 'like', '%' . request('search') . '%')->latest();
+        } else {
+          $query = StatusKawin::latest();
+        }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
+        return ApiResponse::paginate($query);
+      } catch (\Exception $e) {
+        return ApiResponse::error('Failed to get Data.', $e->getMessage());
+      }
     }
+  }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
+  public function store(Request $request)
+  {
+    $request->validate([
+      'nama_status_kawin' => 'required|string|max:100'
+    ]);
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(status_kawin $status_kawin)
-    {
-        //
-    }
+    $statusKawin = StatusKawin::create($request->all());
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(status_kawin $status_kawin)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, status_kawin $status_kawin)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(status_kawin $status_kawin)
-    {
-        //
-    }
+    return ApiResponse::success([
+      'data' => $statusKawin
+    ]);
+  }
 }

@@ -2,65 +2,83 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\matra;
-use App\Http\Controllers\Controller;
+use App\Helpers\ApiResponse;
+use App\Models\Matra;
 use Illuminate\Http\Request;
+use PhpParser\Node\Stmt\TryCatch;
 
 class MatraController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        try {
+            if (request('nama_matra')) {
+                $keyword = Matra::where('nama_matra', 'LIKE', '%' . request('nama_matra') . '%')->latest();
+            } else {
+                $keyword = Matra::latest();
+            }
+
+            return ApiResponse::paginate($keyword);
+        } catch (\Exception $e) {
+            return ApiResponse::error('Failed to get Data.', $e->getMessage());
+        }
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'nama_matra' => 'required|string|max:100'
+        ]);
+
+        $dataMatra = Matra::create($request->all());
+
+        return ApiResponse::created([
+            'data' => $dataMatra
+        ]);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(matra $matra)
+    public function show(Request $request)
     {
-        //
+        $request->validate([
+            'matra_id' => 'required|string|max:100'
+        ]);
+
+        $matra_id = $request->input('matra_id');
+        $dataMatra = Matra::where('id', $matra_id)->firstOrFail();
+
+        return ApiResponse::success([
+            'data' => $dataMatra
+        ]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(matra $matra)
+    public function update(Request $request)
     {
-        //
+        $request->validate([
+            'matra_id' => 'required|string|max:100',
+            'nama_matra' => 'required|string|max:100'
+        ]);
+
+        $matra_id = $request->input('matra_id');
+        $dataMatra = Matra::where('id', $matra_id)->firstOrFail();
+        $dataMatra->update($request->all());
+
+        return ApiResponse::updated([
+            'data' => $dataMatra
+        ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, matra $matra)
+    public function destroy(Request $request)
     {
-        //
-    }
+        $request->validate([
+            'matra_id' => 'required|string|max:100'
+        ]);
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(matra $matra)
-    {
-        //
+        $matra_id = $request->input('matra_id');
+        $dataMatra = Matra::where('id', $matra_id)->firstOrFail();
+        $dataMatra->delete();
+
+        return ApiResponse::deleted([
+            'message' => 'Data deleted successfully'
+        ]);
     }
 }

@@ -2,19 +2,37 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\zona;
-use App\Http\Controllers\Controller;
-use App\Http\Requests\StorezonaRequest;
-use App\Http\Requests\UpdatezonaRequest;
+use Illuminate\Http\Request;
+use App\Helpers\ApiResponse;
+use App\Http\Requests\ZonaRequest;
+use App\Models\Zona;
+use Exception;
+use Illuminate\Database\Events\QueryExecuted;
+use Illuminate\Database\QueryException;
 
 class ZonaController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        try {
+            if ($request->has('zona_id')) {
+                $zona = Zona::findOrFail($request->zona_id);
+                return response()->json($zona, 200);
+            }
+
+            if ($request->has('nama_zona')) {
+                $query = Zona::where('nama_zona','LIKE','%'. $request->nama_zona . '%')->latest();
+            } else{
+                $query = Zona::latest();
+            }
+
+            return ApiResponse::paginate($query);
+        } catch (\Exception $e) {
+            return ApiResponse::error('Failed to get Data.', $e->getMessage());
+        }
     }
 
     /**
@@ -28,15 +46,23 @@ class ZonaController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StorezonaRequest $request)
+    public function store(ZonaRequest $request)
     {
-        //
+        try {
+            $zona = Zona::create($request->validated());
+
+            return ApiResponse::created($zona);
+        } catch (QueryException $e) {
+            return ApiResponse::error('Database error', $e->getMessage(), 500);
+        } catch (Exception $e) {
+            return ApiResponse::error('An unexpected error occurred', $e->getMessage(), 500);
+        }
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(zona $zona)
+    public function show(string $id)
     {
         //
     }
@@ -44,7 +70,7 @@ class ZonaController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(zona $zona)
+    public function edit(string $id)
     {
         //
     }
@@ -52,7 +78,7 @@ class ZonaController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdatezonaRequest $request, zona $zona)
+    public function update(Request $request, string $id)
     {
         //
     }
@@ -60,7 +86,7 @@ class ZonaController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(zona $zona)
+    public function destroy(string $id)
     {
         //
     }

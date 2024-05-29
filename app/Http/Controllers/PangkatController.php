@@ -2,65 +2,44 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\pangkat;
-use App\Http\Controllers\Controller;
+use App\Http\Resources\PangkatResource;
+use App\Models\Pangkat;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use App\Helpers\ApiResponse;
+
 
 class PangkatController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+  public function index()
+  {
     {
-        //
-    }
+      try {
+        if (request('search')) {
+          $query = Pangkat::where('nama_pangkat', 'like', '%' . request('search') . '%')->latest();
+        } else {
+          $query = Pangkat::latest();
+        }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
+        return ApiResponse::paginate($query);
+      } catch (\Exception $e) {
+        return ApiResponse::error('Failed to get Data.', $e->getMessage());
+      }
     }
+  }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(pangkat $pangkat)
-    {
-        //
-    }
+  public function store(Request $request)
+  {
+    $request->validate([
+      'nama_pangkat' => 'required|string|max:100'
+    ]);
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(pangkat $pangkat)
-    {
-        //
-    }
+    $pangkat = Pangkat::create($request->all());
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, pangkat $pangkat)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(pangkat $pangkat)
-    {
-        //
-    }
+    return ApiResponse::success([
+      'data' => $pangkat
+    ]);
+  }
 }

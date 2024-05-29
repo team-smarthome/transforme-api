@@ -2,65 +2,37 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\status_wbp_kasus;
-use App\Http\Controllers\Controller;
+use App\Helpers\ApiResponse;
+use App\Models\StatusWbpKasus;
 use Illuminate\Http\Request;
 
 class StatusWbpKasusController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        try {
+            if (request('search')) {
+                $query = StatusWbpKasus::where('nama_status_wbp_kasus', 'like', '%' . request('search') . '%')->latest();
+            } else {
+                $query = StatusWbpKasus::latest();
+            }
+
+            return ApiResponse::paginate($query);
+        } catch (\Throwable $e) {
+            return ApiResponse::error('Failed to get Data.', $e->getMessage());
+        }
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
-    }
+        $request->validate([
+            'nama_status_wbp_kasus' => 'required|string|max:100'
+        ]);
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(status_wbp_kasus $status_wbp_kasus)
-    {
-        //
-    }
+        $statusWbp = StatusWbpKasus::create($request->all());
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(status_wbp_kasus $status_wbp_kasus)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, status_wbp_kasus $status_wbp_kasus)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(status_wbp_kasus $status_wbp_kasus)
-    {
-        //
+        return ApiResponse::success([
+            'data' => $statusWbp
+        ]);
     }
 }
