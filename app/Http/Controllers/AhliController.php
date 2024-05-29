@@ -17,11 +17,13 @@ class AhliController extends Controller
     public function index(Request $request)
     {
         try {
-            if (request('search')) {
-                $keyword = $request->input('search');
-                $query = Ahli::where('nama_ahli','like','%'. $keyword . '%')
-                ->orWhere('bidang_ahli', 'like', '%' . $keyword . '%')
-                ->orWhere('bukti_keahlian', 'like', '%' . $keyword . '%')->latest();
+            if ($request->has('ahli_id')) {
+                $ahli = Ahli::findOrFail($request->ahli_id);
+                return response()->json($ahli, 200);
+            }
+
+            if ($request->has('nama_ahli')) {
+                $query = Ahli::where('nama_ahli','like','%'. $request->nama_ahli . '%')->latest();
             } else {
                 $query = Ahli::latest();
             }
@@ -59,8 +61,9 @@ class AhliController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Request $request)
     {
+        $id = $request->input('id');
         $ahli = Ahli::findOrFail($id);
         return response()->json($ahli, 200);
     }
@@ -76,46 +79,29 @@ class AhliController extends Controller
     /**
      * Update the specified resource in storage.
      */
-public function update(AhliRequest $request, string $id)
-{
-    $ahli = Ahli::findOrFail($id);
+    public function update(AhliRequest $request)
+    {
+        $id = $request->input('id');
+        $ahli = Ahli::findOrFail($id);
 
-    $request->validate([
-        'nama_ahli' => 'required|string|max:255',
-        'bidang_ahli' => 'required|string|max:255',
-        'bukti_keahlian' => 'required|string|max:255'
-    ]);
+        // Check if the updated name already exists
+        $existingAhli = Ahli::where('nama_ahli', $ahli->nama_ahli)->first();
+        
+        if ($existingAhli && $existingAhli->id !== $id) {
+            return ApiResponse::error('Nama ahli sudah ada.', null, 422);
+        }
 
-    // Check if the updated name already exists
-    $existingAhli = Ahli::where('nama_ahli', $request->nama_ahli)->where('id', '!=', $id)->first();
-    if ($existingAhli) {
-        return ApiResponse::error('Nama ahli sudah ada.', null, 422);
+        $ahli->update($request->all());
+        return ApiResponse::updated($ahli);
     }
-
-    // Check if the updated field of expertise already exists
-    $existingBidang = Ahli::where('bidang_ahli', $request->bidang_ahli)->where('id', '!=', $id)->first();
-    if ($existingBidang) {
-        return ApiResponse::error('Bidang ahli sudah ada.', null, 422);
-    }
-
-    // Check if the updated proof of expertise already exists
-    $existingBukti = Ahli::where('bukti_keahlian', $request->bukti_keahlian)->where('id', '!=', $id)->first();
-    if ($existingBukti) {
-        return ApiResponse::error('Bukti keahlian sudah ada.', null, 422);
-    }
-
-    // Update the Ahli
-    $ahli->update($request->all());
-
-    return ApiResponse::updated($ahli);
-}
 
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Request $request)
     {
+        $id = $request->input('id');
         $ahli = Ahli::findOrFail($id);
         $ahli->delete();
 

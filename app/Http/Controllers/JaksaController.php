@@ -18,9 +18,13 @@ class JaksaController extends Controller
     public function index(Request $request)
     {
         try {
-            if (request('search')) {
-                $keyword = $request->input('search');
-                $query = Jaksa::where('nama_jaksa','like','%'. $keyword .'%')->latest();
+            if ($request->has('jaksa_id')) {
+                $jaksa = Jaksa::findOrFail($request->jaksa_id);
+                return response()->json($jaksa, 200);
+            }
+
+            if ($request->has('nama_jaksa')) {
+                $query = Jaksa::where('nama_jaksa','like','%'. $request->nama_jaksa .'%')->latest();
             } else {
                 $query = Jaksa::latest();
             }
@@ -57,8 +61,9 @@ class JaksaController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Request $request)
     {
+        $id = $request->input('id');
         $jaksa = Jaksa::findOrFail($id);
         return response()->json($jaksa, 200);
     }
@@ -74,20 +79,9 @@ class JaksaController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(JaksaRequest $request, string $id)
+    public function update(JaksaRequest $request)
     {
-        $request->validate([
-            'nrp_jaksa' => 'required|string|max:100',
-            'nama_jaksa' => 'required|string|max:100',
-            'alamat' => 'required|string|max:100',
-            'nomor_telepon' => 'required|string|max:100',
-            'email' => 'required|string|max:100',
-            'jabatan' => 'required|string|max:100',
-            'spesialisasi_hukum' => 'required|string|max:100',
-            'divisi' => 'required|string|max:100',
-            'tanggal_pensiun' => 'required|string|max:100'
-        ]);
-
+        $id = $request->input('id');
         $jaksa = Jaksa::findOrFail($id);
 
         $existingJaksa = Jaksa::where('nama_jaksa', $jaksa->nama_jaksa)->first();
@@ -103,8 +97,9 @@ class JaksaController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Request $request)
     {
+        $id = $request->input('id');
         $jaksa = Jaksa::findOrFail($id);
         $jaksa->delete();
 

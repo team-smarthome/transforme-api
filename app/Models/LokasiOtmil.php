@@ -33,4 +33,9 @@ class LokasiOtmil extends Model
     {
         return $this->hasMany(GedungOtmil::class, 'lokasi_otmil_id', 'id');
     }
+
+    public function lantaiOtmil(): HasMany
+    {
+        return $this->hasMany(LantaiOtmil::class, 'lokasi_otmil_id', 'id');
+    }
 }
