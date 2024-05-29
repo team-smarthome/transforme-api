@@ -159,16 +159,16 @@ class BarangBuktiKasusController extends Controller
             $barangBuktiKasus->jenis_perkara_id = $request->jenis_perkara_id;
     
             if ($request->hasFile('dokumen_barang_bukti')) {
-                $originalDokumenName = $request->file('dokumen_barang_bukti')->getClientOriginalName();
-                $dokumenPath = $request->file('dokumen_barang_bukti')->storeAs('public/barang_bukti_kasus_file', $originalDokumenName);
+                $dokumenPath = $request->file('dokumen_barang_bukti')->store('public/barang_bukti_kasus');
                 $barangBuktiKasus->dokumen_barang_bukti = str_replace('public/', '', $dokumenPath);
             }
-        
+    
             if ($request->hasFile('gambar_barang_bukti')) {
-                $originalGambarName = $request->file('gambar_barang_bukti')->getClientOriginalName();
-                $gambarPath = $request->file('gambar_barang_bukti')->storeAs('public/barang_bukti_kasus_image', $originalGambarName);
+                $gambarPath = $request->file('gambar_barang_bukti')->store('public/barang_bukti_kasus');
                 $barangBuktiKasus->gambar_barang_bukti = str_replace('public/', '', $gambarPath);
             }
+    
+
             if ($barangBuktiKasus->save()) {
                 return ApiResponse::updated($barangBuktiKasus);
             } else {
