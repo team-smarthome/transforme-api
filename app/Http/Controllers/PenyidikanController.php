@@ -75,6 +75,20 @@ class PenyidikanController extends Controller
                         });
                     }
 
+                    if (!empty($nama_kategori_perkara)) {
+                        $query->whereHas('kasus.kategoriPerkara', function ($q) use ($nama_kategori_perkara) {
+                            $q->where('nama_kategori_perkara', 'LIKE', '%' . $nama_kategori_perkara . '%');
+                        });
+                    }
+
+                    if (!empty($agenda_penyidikan)) {
+                        $query->where('agenda_penyidikan', 'LIKE', '%' . $agenda_penyidikan . '%');
+                    }
+
+                    if (!empty($nomor_penyidikan)) {
+                        $query->where('nomor_penyidikan', 'LIKE', '%' . $nomor_penyidikan . '%');
+                    }
+
                     // if (!empty($nama_kategori_perkara)) {
                     //     $query->whereHas('kas
                 });
@@ -94,7 +108,32 @@ class PenyidikanController extends Controller
         } catch (\Exception $e) {
             return ApiResponse::error('Failed to get data.', $e->getMessage());
         }
+    }
 
-        // $penyidikan = Penyidikan::with(['kasus.jenisPerkara', 'kasus.kategoriPerkara', 'bap', 'wbp', 'saksi', 'oditurPenyidik'])->get();
+    public function store(Request $request)
+    {
+        try {
+            $request->validate([
+                'nomor_penyidikan' => 'required|string|max:36',
+                'kasus_id' => 'required|string|max:36',
+                'waktu_dimulai_penyidikan' => 'required|string|max:100',
+                'agenda_penyidikan' => 'required|string|max:100',
+                'waktu_selesai_penyidikan' => 'required|string|max:100',
+                'dokumen_bap_id' => 'required|string|max:100',
+                'wbp_profile_id' => 'required|string|max:36',
+                'saksi_id' => 'string|max:36',
+                'oditur_penyidikan_id' => 'required|string|max:36',
+                'zona_waktu' => 'required|string|max:100',
+            ]);
+
+            $penyidikan = Penyidikan::create($request->all());
+
+            return ApiResponse::created([
+                'data' => new PenyidikanResource($penyidikan),
+            ]);
+
+        } catch (\Exception $e) {
+            return ApiResponse::error('Failed to create data.', $e->getMessage());
+        }
     }
 }
