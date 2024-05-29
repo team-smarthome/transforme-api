@@ -30,4 +30,9 @@ class Saksi extends Model
     {
         return $this->belongsTo(Kasus::class, 'kasus_id', 'id'); // banyak saksi dimiliki oleh satu kasus
     }
+
+    public function penyidikan(): BelongsTo
+    {
+        return $this->belongsTo(Penyidikan::class, 'saksi_id', 'id'); //  banyak saksi dimiliki oleh satu penyidikan
+    }
 }

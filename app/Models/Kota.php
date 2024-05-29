@@ -6,8 +6,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Relations\BelongsTo; 
-use Illuminate\Database\Eloquent\Relations\HasMany; 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Kota extends Model
 {
@@ -26,5 +26,10 @@ class Kota extends Model
     public function provinsi()
     {
         return $this->belongsTo(Provinsi::class, 'provinsi_id', 'id');
+    }
+
+    public function kotaWbp(): HasMany
+    {
+        return $this->hasMany(WbpProfile::class, 'kota_id', 'id');
     }
 }
