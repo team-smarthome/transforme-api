@@ -6,6 +6,7 @@ use App\Http\Middleware\AuthSanctumMiddleware;
 
 Route::middleware([AuthSanctumMiddleware::class . ':operator,admin,superadmin'])->group(function () {
     Route::get('penyidikan', [PenyidikanController::class, 'index']);
+    Route::post('penyidikan', [PenyidikanController::class, 'store']);
 });
 
 Route::middleware([AuthSanctumMiddleware::class . ':admin,superadmin'])->group(function () {
