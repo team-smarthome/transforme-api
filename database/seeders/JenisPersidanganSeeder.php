@@ -16,7 +16,7 @@ class JenisPersidanganSeeder extends Seeder
     {
         $JenisPersidangan = [
             [
-                'id' => Str::uuid(),
+                'id' => "e63a5156-f621-45e7-9e39-5e255c6ee059",
                 'nama_jenis_persidangan' => 'Sidang Umum',
                 'created_at' => now(),
                 'updated_at' => now(),

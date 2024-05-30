@@ -16,7 +16,7 @@ class AhliSeeder extends Seeder
     {
         $ahli = [
             [
-                "id" => Str::uuid(),
+                "id" => "bcfdd5e2-079e-4c71-8bd1-aaa762cbcf9a",
                 "nama_ahli" => "Rizki",
                 "bidang_ahli" => "Navigasi",
                 "bukti_keahlian" => "Sertifikasi",
