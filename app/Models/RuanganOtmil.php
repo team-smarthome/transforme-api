@@ -44,5 +44,10 @@ class RuanganOtmil extends Model
         return $this->hasMany(Gelang::class, "ruangan_otmil_id", "id");
     }
 
+    public function aksesRuangan(): BelongsTo
+    {
+        return $this->belongsTo(AksesRuangan::class, "ruangan_otmil_id", "id");
+    }
+
 }
 
