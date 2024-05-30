@@ -13,17 +13,17 @@ return new class extends Migration
     {
         Schema::create('wbp_perkara', function (Blueprint $table) {
             $table->uuid("id")->primary();
-            $table->foreignUuid("kategori_perkara_id")->nullable(false);
-            $table->foreignUuid("jenis_perkara_id")->nullable(false);
+            $table->foreignUuid("kategori_perkara_id")->nullable();
+            $table->foreignUuid("jenis_perkara_id")->nullable();
             $table->integer("vonis_tahun")->nullable();
             $table->integer("vonis_bulan")->nullable();
             $table->integer("vonis_hari")->nullable();
             $table->date("tanggal_ditahan_otmil")->nullable();
             $table->date("tanggal_ditahan_lemasmil")->nullable();
-            $table->foreignUuid("lokasi_otmil_id")->nullable(false);
-            $table->foreignUuid("lokasi_lemasmil_id")->nullable(false);
+            $table->foreignUuid("lokasi_otmil_id")->nullable();
+            $table->foreignUuid("lokasi_lemasmil_id")->nullable();
             $table->integer("residivis")->nullable();
-            $table->foreignUuid("wbp_profile_id")->nullable(false);
+            $table->foreignUuid("wbp_profile_id")->nullable();
             $table->timestamps();
             $table->softDeletes();
 

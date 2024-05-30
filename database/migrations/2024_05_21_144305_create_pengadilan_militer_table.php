@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('pengadilan_militer', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->string('nama_pengadilan_militer', 100)->nullable(false);
-            $table->uuid('provinsi_id')->nullable(false);
-            $table->uuid('kota_id')->nullable(false);
+            $table->uuid('provinsi_id')->nullable();
+            $table->uuid('kota_id')->nullable();
             $table->string('latitude', 100)->nullable();
             $table->string('longitude', 100)->nullable();
             $table->timestamps();
