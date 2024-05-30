@@ -1,0 +1,131 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use App\Models\Aset;
+use App\Http\Requests\AsetRequest;
+use App\Helpers\ApiResponse;
+use Exception;
+
+class AsetController extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     */
+    public function index()
+    {
+        try {
+            $query = Aset::with(['tipeAset', 'ruanganOtmil', 'ruanganLemasmil']);
+            $filterableColumns = [
+                'aset_id' => 'id',
+                'nama_aset' => 'nama_aset',
+                'tipe_aset_id' => 'tipe_aset_id',
+                'ruangan_otmil_id' => 'ruangan_otmil_id',
+                'ruangan_lemasmil_id' => 'ruangan_lemasmil_id',
+                'kondisi' => 'kondisi',
+                'keterangan' => 'keterangan',
+                'tanggal_masuk' => 'tanggal_masuk',
+                'serial_number' => 'serial_number',
+                'model' => 'model',
+                'image' => 'image',
+                'merek' => 'merek',
+                'garansi' => 'garansi'
+            ];
+            foreach ($filterableColumns as $requestKey => $column) {
+                if ($value = request($requestKey)) {
+                    $query->where($column, 'like', '%' . $value . '%');
+                }
+            }
+
+            $query->latest();
+            return ApiResponse::paginate($query);
+        } catch (\Exception $e) {
+            return ApiResponse::error('Failed to get Data.', $e->getMessage());
+        }
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        //
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(AsetRequest $request)
+    {
+        try {
+            $aset =  new Aset([
+                'nama_aset' => $request->nama_aset,
+                'tipe_aset_id' => $request->tipe_aset_id,
+                'ruangan_otmil_id' => $request->ruangan_otmil_id,
+                'ruangan_lemasmil_id' => $request->ruangan_lemasmil_id,
+                'kondisi' => $request->kondisi,
+                'keterangan' => $request->keterangan,
+                'tanggal_masuk' => $request->tanggal_masuk,
+                'serial_number' => $request->serial_number,
+                'model' => $request->model,
+                'image' => $request->image,
+                'merek' => $request->merek,
+                'garansi' => $request->garansi
+            ]);
+
+            if (Aset::where('nama_aset', $request->nama_aset)->exists()) {
+                return ApiResponse::error('Failed to create Aset.', 'Aset already exists.');
+            }
+
+            if ($request->hasFile('aset')) {
+                $originalGambarName = $request->file('aset')->getClientOriginalName();
+                $gambarPath = $request->file('aset')->storeAs('public/aset_images', $originalGambarName);
+                $aset->aset = str_replace('public/', '', $gambarPath);
+            }
+
+            if ($aset->save()) {
+                return ApiResponse::created($aset);
+            } else {
+                return ApiResponse::error('Failed to create Aset.', 'Unknown error.');
+            }
+
+
+
+        } catch (Exception $e) {
+            return ApiResponse::error('Failed to create Aset.', $e->getMessage());
+        }
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(string $id)
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(string $id)
+    {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, string $id)
+    {
+        //
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(string $id)
+    {
+        //
+    }
+}

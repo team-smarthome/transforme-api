@@ -44,5 +44,10 @@ class RuanganOtmil extends Model
         return $this->hasMany(Gelang::class, "ruangan_otmil_id", "id");
     }
 
+    public function aset(): HasMany
+    {
+        return $this->hasMany(Aset::class, "ruangan_otmil_id", "id");
+    }
+
 }
 
