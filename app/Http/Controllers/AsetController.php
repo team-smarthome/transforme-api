@@ -78,10 +78,9 @@ class AsetController extends Controller
                 return ApiResponse::error('Failed to create Aset.', 'Aset already exists.');
             }
 
-            if ($request->hasFile('aset')) {
-                $originalGambarName = $request->file('aset')->getClientOriginalName();
-                $gambarPath = $request->file('aset')->storeAs('public/aset_images', $originalGambarName);
-                $aset->aset = str_replace('public/', '', $gambarPath);
+            if ($request->hasFile('image')) {
+                $gambarPath = $request->file('image')->store('public/aset_image');
+                $aset->image = str_replace('public/', '', $gambarPath);
             }
 
             if ($aset->save()) {
@@ -89,9 +88,6 @@ class AsetController extends Controller
             } else {
                 return ApiResponse::error('Failed to create Aset.', 'Unknown error.');
             }
-
-
-
         } catch (Exception $e) {
             return ApiResponse::error('Failed to create Aset.', $e->getMessage());
         }
@@ -116,16 +112,60 @@ class AsetController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(AsetRequest $request)
     {
-        //
+        try {
+            $id = $request->input('aset_id');
+            $aset = Aset::find($id);
+            if (!$aset) {
+                return ApiResponse::error('Failed to update Aset.', 'Aset not found.');
+            }
+
+            $aset->nama_aset = $request->nama_aset;
+            $aset->tipe_aset_id = $request->tipe_aset_id;
+            $aset->ruangan_otmil_id = $request->ruangan_otmil_id;
+            $aset->ruangan_lemasmil_id = $request->ruangan_lemasmil_id;
+            $aset->kondisi = $request->kondisi;
+            $aset->keterangan = $request->keterangan;
+            $aset->tanggal_masuk = $request->tanggal_masuk;
+            $aset->serial_number = $request->serial_number;
+            $aset->model = $request->model;
+            $aset->image = $request->image;
+            $aset->merek = $request->merek;
+            $aset->garansi = $request->garansi;
+
+            if ($request->hasFile('image')) {
+                $gambarPath = $request->file('image')->store('public/aset_image');
+                $aset->image = str_replace('public/', '', $gambarPath);
+            }
+            if ($aset->save()) {
+                return ApiResponse::updated($aset);
+                return ApiResponse::error('Failed to update Aset.', 'Unknown error.');
+            }
+        } catch (Exception $e) {
+            return ApiResponse::error('Failed to update Aset.', $e->getMessage());
+        }
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Request $request)
     {
-        //
+        try {
+            $id = $request->input('aset_id');
+            $aset = Aset::find($id);
+            if (!$aset) {
+                return ApiResponse::error('Failed to delete Aset.', 'Aset not found.');
+            }
+
+            if ($aset->delete()) {
+                return ApiResponse::deleted();
+            } else {
+                return ApiResponse::error('Failed to delete Aset.', 'Unknown error.');
+            }
+        } catch (Exception $e) {
+            return ApiResponse::error('Failed to delete Aset.', $e->getMessage());
+        }
     }
 }

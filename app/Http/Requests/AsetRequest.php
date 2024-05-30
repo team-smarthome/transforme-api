@@ -33,7 +33,7 @@ class AsetRequest extends FormRequest
             'tanggal_masuk' => 'nullable|date',
             'serial_number' => 'nullable|string|max:255',
             'model' => 'nullable|string|max:255',
-            'image' => 'nullable|string|max:255',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:10240',
             'merek' => 'nullable|string|max:255',
             'garansi' => 'nullable|string|max:255'
         ];
@@ -68,8 +68,8 @@ class AsetRequest extends FormRequest
             'serial_number.max' => 'Serial Number maksimal 255 karakter',
             'model.string' => 'Model harus berupa string',
             'model.max' => 'Model maksimal 255 karakter',
-            'image.string' => 'Image harus berupa string',
-            'image.max' => 'Image maksimal 255 karakter',
+            'image.mimes' => 'Gambar harus berupa file jpeg, png, jpg, gif',
+            'image.max' => 'Gambar maksimal 10MB',
             'merek.string' => 'Merek harus berupa string',
             'merek.max' => 'Merek maksimal 255 karakter',
             'garansi.string' => 'Garansi harus berupa string',
