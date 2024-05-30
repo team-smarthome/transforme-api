@@ -43,59 +43,59 @@ class WbpProfileController extends Controller
                 'matra',
                 'kasus.jenisPerkara.kategoriPerkara'
             ])->where(function ($query)
-                use ($nrp, $nama, $is_isolated, $alamat, $tanggal_penetapan_tersangka, $tanggal_penetapan_terdakwa, $tanggal_penetapan_terpidana, $tanggal_ditahan_otmil, $tanggal_ditahan_lemasmil, $tanggal_masa_penahanan_otmil, $agama_id, $ruangan_id, $gelang_id) {
-                    if (!empty($nrp)) {
-                        $query->where('nrp', 'LIKE', '%' . $nrp . '%');
-                    }
+            use ($nrp, $nama, $is_isolated, $alamat, $tanggal_penetapan_tersangka, $tanggal_penetapan_terdakwa, $tanggal_penetapan_terpidana, $tanggal_ditahan_otmil, $tanggal_ditahan_lemasmil, $tanggal_masa_penahanan_otmil, $agama_id, $ruangan_id, $gelang_id) {
+                if (!empty($nrp)) {
+                    $query->where('nrp', 'LIKE', '%' . $nrp . '%');
+                }
 
-                    if (!empty($nama)) {
-                        $query->where('nama', 'LIKE', '%' . $nama . '%');
-                    }
+                if (!empty($nama)) {
+                    $query->where('nama', 'LIKE', '%' . $nama . '%');
+                }
 
-                    if (!empty($is_isolated)) {
-                        $query->where('is_isolated', 'LIKE', '%' . $is_isolated . '%');
-                    }
+                if (!empty($is_isolated)) {
+                    $query->where('is_isolated', 'LIKE', '%' . $is_isolated . '%');
+                }
 
-                    if (!empty($alamat)) {
-                        $query->where('alamat', 'LIKE', '%' . $alamat . '%');
-                    }
+                if (!empty($alamat)) {
+                    $query->where('alamat', 'LIKE', '%' . $alamat . '%');
+                }
 
-                    if (!empty($tanggal_penetapan_tersangka)) {
-                        $query->where('tanggal_penetapan_tersangka', 'LIKE', '%' . $tanggal_penetapan_tersangka . '%');
-                    }
+                if (!empty($tanggal_penetapan_tersangka)) {
+                    $query->where('tanggal_penetapan_tersangka', 'LIKE', '%' . $tanggal_penetapan_tersangka . '%');
+                }
 
-                    if (!empty($tanggal_penetapan_terdakwa)) {
-                        $query->where('tanggal_penetapan_terdakwa', 'LIKE', '%' . $tanggal_penetapan_terdakwa . '%');
-                    }
+                if (!empty($tanggal_penetapan_terdakwa)) {
+                    $query->where('tanggal_penetapan_terdakwa', 'LIKE', '%' . $tanggal_penetapan_terdakwa . '%');
+                }
 
-                    if (!empty($tanggal_penetapan_terpidana)) {
-                        $query->where('tanggal_penetapan_terpidana', 'LIKE', '%' . $tanggal_penetapan_terpidana . '%');
-                    }
+                if (!empty($tanggal_penetapan_terpidana)) {
+                    $query->where('tanggal_penetapan_terpidana', 'LIKE', '%' . $tanggal_penetapan_terpidana . '%');
+                }
 
-                    if (!empty($tanggal_ditahan_otmil)) {
-                        $query->where('tanggal_ditahan_otmil', 'LIKE', '%' . $tanggal_ditahan_otmil . '%');
-                    }
+                if (!empty($tanggal_ditahan_otmil)) {
+                    $query->where('tanggal_ditahan_otmil', 'LIKE', '%' . $tanggal_ditahan_otmil . '%');
+                }
 
-                    if (!empty($tanggal_ditahan_lemasmil)) {
-                        $query->where('tanggal_ditahan_lemasmil', 'LIKE', '%' . $tanggal_ditahan_lemasmil . '%');
-                    }
+                if (!empty($tanggal_ditahan_lemasmil)) {
+                    $query->where('tanggal_ditahan_lemasmil', 'LIKE', '%' . $tanggal_ditahan_lemasmil . '%');
+                }
 
-                    if (!empty($tanggal_masa_penahanan_otmil)) {
-                        $query->where('tanggal_masa_penahanan_otmil', 'LIKE', '%' . $tanggal_masa_penahanan_otmil . '%');
-                    }
+                if (!empty($tanggal_masa_penahanan_otmil)) {
+                    $query->where('tanggal_masa_penahanan_otmil', 'LIKE', '%' . $tanggal_masa_penahanan_otmil . '%');
+                }
 
-                    if (!empty($agama_id)) {
-                        $query->where('agama_id', 'LIKE', '%' . $agama_id . '%');
-                    }
+                if (!empty($agama_id)) {
+                    $query->where('agama_id', 'LIKE', '%' . $agama_id . '%');
+                }
 
-                    if (!empty($ruangan_id)) {
-                        $query->where('ruangan_id', 'LIKE', '%' . $ruangan_id . '%');
-                    }
+                if (!empty($ruangan_id)) {
+                    $query->where('ruangan_id', 'LIKE', '%' . $ruangan_id . '%');
+                }
 
-                    if (!empty($gelang_id)) {
-                        $query->where('gelang_id', 'LIKE', '%' . $gelang_id . '%');
-                    }
-                });
+                if (!empty($gelang_id)) {
+                    $query->where('gelang_id', 'LIKE', '%' . $gelang_id . '%');
+                }
+            });
 
             $paginatedData = $query->paginate($perPage);
             return ApiResponse::success([

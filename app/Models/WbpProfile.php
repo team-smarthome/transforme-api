@@ -141,4 +141,10 @@ class WbpProfile extends Model
     {
         return $this->belongsTo(Kasus::class, 'kasus_id', 'id');
     }
+
+    // akses ruangan
+    public function aksesRuanganOtmil(): HasMany
+    {
+        return $this->hasMany(AksesRuangan::class, 'wbp_profile_id', 'id');
+    }
 }
