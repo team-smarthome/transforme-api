@@ -54,4 +54,9 @@ class RuanganLemasmil extends Model
     {
         return $this->hasMany(Aset::class, 'ruangan_lemasmil_id', 'id');
     }
+    
+    public function aksesRuangan(): BelongsTo
+    {
+        return $this->belongsTo(AksesRuangan::class, "ruangan_lemasmil_id", "id");
+    }
 }

@@ -141,4 +141,9 @@ class WbpProfile extends Model
     {
         return $this->belongsTo(Kasus::class, 'kasus_id', 'id');
     }
+
+    public function aksesRuangan():BelongsTo
+    {
+        return $this->belongsTo(AksesRuangan::class, 'wbp_profile_id', 'id');
+    }
 }
