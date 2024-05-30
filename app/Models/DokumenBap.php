@@ -30,4 +30,10 @@ class DokumenBap extends Model
         return $this->hasMany(Penyidikan::class, 'penyidikan_id', 'id'); // banyak dokumen bap dimiliki oleh satu penyidikan
     }
 
+
+    public function bap(): HasMany
+    {
+        return $this->hasMany(Bap::class, 'penyidikan_id', 'id');
+    }
+
 }
