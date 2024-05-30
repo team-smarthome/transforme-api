@@ -6,9 +6,9 @@ use Illuminate\Http\Request;
 use App\Helpers\ApiResponse;
 use App\Http\Requests\JenisPersidanganRequest;
 use App\Models\JenisPersidangan;
-use Exception;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Validator;
+use Exception;
 
 class JenisPersidanganController extends Controller
 {
@@ -18,9 +18,13 @@ class JenisPersidanganController extends Controller
     public function index(Request $request)
     {
         try {
-            if (request('search')) {
-                $keyword = $request->input('search');
-                $query = JenisPersidangan::where('nama_jenis_persidangan','like','%'. $keyword .'%')->latest();
+            if ($request->has('jenis_persidangan_id')) {
+                $jenis_persidangan = JenisPersidangan::findOrFail($request->jenis_persidangan_id);
+                return response()->json($jenis_persidangan, 200);
+            }
+
+            if($request->has('nama_jenis_persidangan')) {
+                $query = JenisPersidangan::where('nama_jenis_persidangan','like','%'. $request->nama_jenis_persidangan .'%')->latest();
             } else {
                 $query = JenisPersidangan::latest();
             }
@@ -59,8 +63,9 @@ class JenisPersidanganController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Request $request)
     {
+        $id = $request->input('id');
         $jenisPersidangan = JenisPersidangan::findOrFail($id);
         return response()->json($jenisPersidangan, 200);
     }
@@ -76,28 +81,29 @@ class JenisPersidanganController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(JenisPersidanganRequest $request, string $id)
+    public function update(JenisPersidanganRequest $request)
     {
-        $request->validate(['nama_jenis_persidangan' => 'required|string|max:255',]);
+        $id = $request->input('id');
+        $jenis_persidangan = JenisPersidangan::findOrFail($id);
 
-        $jenisPersidangan = JenisPersidangan::findOrFail($id);
-
-        $existingJenisPersidangan = JenisPersidangan::where('nama_jenis_persidangan', $jenisPersidangan->id)->first();
+        $namaEditingJenisPersidangan = $request->input('nama_jenis_persidangan');
+        $existingJenisPersidangan = JenisPersidangan::where('nama_jenis_persidangan', $jenis_persidangan->nama_jenis_persidangan)->first();
 
         if ($existingJenisPersidangan && $existingJenisPersidangan->id !== $id) {
             return ApiResponse::error('Nama jenis persidangan sudah ada.', null, 422);
         }
 
-        $jenisPersidangan->update($request->all());
+        $jenis_persidangan->update($request->all());
 
-        return ApiResponse::updated($jenisPersidangan);
+        return ApiResponse::updated($jenis_persidangan);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Request $request)
     {
+        $id = $request->input('id');
         $jenisPersidangan = JenisPersidangan::findOrFail($id);
         $jenisPersidangan->delete();
 

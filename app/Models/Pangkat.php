@@ -19,4 +19,9 @@ class Pangkat extends Model
     // protected $hidden = ['created_at', 'updated_at'];
 
     protected $fillable = ['nama_pangkat'];
+
+    public function pangkatWbp()
+    {
+        return $this->hasMany(WbpProfile::class, 'pangkat_id', 'id');
+    }
 }

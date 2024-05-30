@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
-use Illuminate\Database\Eloquent\Relations\HasMany; 
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class LokasiLemasmil extends Model
 {
@@ -24,8 +24,23 @@ class LokasiLemasmil extends Model
         'lebar'
     ];
 
-    public function user(): HashMany
+    public function user(): HasMany
     {
         return $this->hasMany(User::class, 'lokasi_lemasmil_id', 'id');
+    }
+
+    public function gedungLemasmil(): HasMany
+    {
+        return $this->hasMany(GedungLemasmil::class, 'lokasi_lemasmil_id', 'id');
+    }
+
+    public function lantaiLemasmil(): HashMany
+    {
+        return $this->hasMany(LantaiLemasmil::class, 'lokasi_lemasmil_id', 'id');
+    }
+
+    public function ruanganLemasmil(): HasMany
+    {
+        return $this->hasMany(RuanganLemasmil::class, 'lokasi_lemasmil_id', 'id');
     }
 }
