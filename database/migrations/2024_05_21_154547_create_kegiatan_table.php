@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('kegiatan', function (Blueprint $table) {
             $table->uuid("id")->primary();
             $table->string("nama_kegiatan",100)->nullable(false);
-            $table->foreignUuid("ruangan_otmil_id")->nullable(false);
-            $table->foreignUuid("ruangan_lemasmil_id")->nullable(false);
+            $table->foreignUuid("ruangan_otmil_id")->nullable();
+            $table->foreignUuid("ruangan_lemasmil_id")->nullable();
             $table->string("status_kegiatan",100)->nullable();
             $table->dateTime("waktu_mulai_kegiatan")->nullable();
             $table->dateTime("waktu_selesai_kegiatan")->nullable();

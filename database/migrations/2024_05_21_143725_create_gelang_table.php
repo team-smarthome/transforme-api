@@ -17,8 +17,8 @@ return new class extends Migration
             $table->string("nama_gelang",100)->nullable(false);
             $table->date("tanggal_pasang")->nullable();
             $table->date("tanggal_aktivasi")->nullable();
-            $table->foreignUuid("ruangan_otmil_id")->nullable(false);
-            $table->foreignUuid("ruangan_lemasmil_id")->nullable(false);
+            $table->foreignUuid("ruangan_otmil_id")->nullable();
+            $table->foreignUuid("ruangan_lemasmil_id")->nullable();
             $table->string("baterai",100)->nullable();
             $table->timestamps();
             $table->softDeletes();

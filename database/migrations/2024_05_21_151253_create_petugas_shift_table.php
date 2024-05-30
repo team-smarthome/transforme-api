@@ -19,11 +19,11 @@ return new class extends Migration
             $table->tinyInteger('status_kehadiran')->nullable();
             $table->datetime('jam_kehadiran')->nullable();
             $table->string('status_izin', 100)->nullable();
-            $table->uuid('penugasan_id')->nullable(false);
-            $table->uuid('ruangan_otmil_id')->nullable(false);
-            $table->uuid('lokasi_otmil_id')->nullable(false);
-            $table->uuid('ruangan_lemasmil_id')->nullable(false);
-            $table->uuid('lokasi_lemasmil_id')->nullable(false);
+            $table->uuid('penugasan_id')->nullable();
+            $table->uuid('ruangan_otmil_id')->nullable();
+            $table->uuid('lokasi_otmil_id')->nullable();
+            $table->uuid('ruangan_lemasmil_id')->nullable();
+            $table->uuid('lokasi_lemasmil_id')->nullable();
             $table->string('status_pengganti', 36)->nullable();
             $table->tinyInteger('lembur')->nullable();
             $table->string('keterangan_lembur', 100)->nullable();

@@ -14,9 +14,9 @@ return new class extends Migration
         Schema::create('aset', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->string('nama_aset', 100)->nullable();
-            $table->uuid('tipe_aset_id')->nullable(false);
-            $table->uuid('ruangan_otmil_id')->nullable(false);
-            $table->uuid('ruangan_lemasmil_id')->nullable(false);
+            $table->uuid('tipe_aset_id')->nullable();
+            $table->uuid('ruangan_otmil_id')->nullable();
+            $table->uuid('ruangan_lemasmil_id')->nullable();
             $table->string('kondisi', 100)->nullable();
             $table->string('keterangan', 100)->nullable();
             $table->date('tanggal_masuk')->nullable();
