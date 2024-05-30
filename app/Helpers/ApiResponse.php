@@ -76,4 +76,12 @@ class ApiResponse
             'message' => $message
         ], 200);
     }
+
+    public static function notFound($message = 'Data not found')
+    {
+        return response()->json([
+            'status' => 'NO',
+            'message' => $message
+        ], 404);
+    }
 }

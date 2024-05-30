@@ -13,32 +13,48 @@ class BapController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index() 
     {
         try {
-            if (request('bap_id')) {
-                $query = Bap::with(["penyidikan", "dokumenBap"])
-                    ->where('id', request('bap_id'));
-                if (request('penyidikan_id') && $query->exists()) {
-                    $query->where('penyidikan_id', 'like', '%' . request('penyidikan_id') . '%');
-                    if (request('dokumen_bap_id') && $query->exists()) {
-                        $query->where('dokumen_bap_id', 'like', '%' . request('dokumen_bap_id') . '%');
-                    }      
+            $query = Bap::with(['penyidikan', 'dokumenBap']);
+            $filterableColumns = [
+                'bap_id' => 'id',
+                'penyidikan_id' => 'penyidikan_id',
+                'dokumen_bap_id' => 'dokumen_bap_id',
+            ];
+            foreach ($filterableColumns as $requestKey => $column) {
+                if ($value = request($requestKey)) {
+                    $query->where($column, 'like', '%' . $value . '%');
                 }
-            } elseif(request('penyidikan_id')) {
-                $query = Bap::with(["penyidikan", "dokumenBap"])
-                    ->where('penyidikan_id', 'like', '%' . request('penyidikan_id') . '%')->latest();
-                if (request('dokumen_bap_id') && $query->exists()) {
-                    $query->where('dokumen_bap_id', 'like', '%' . request('dokumen_bap_id') . '%');
-                }
-            } elseif(request('dokumen_bap_id')) {
-                $query = Bap::with(["penyidikan", "dokumenBap"])
-                    ->where('dokumen_bap_id', 'like', '%' . request('dokumen_bap_id') . '%')->latest();
-            } else {
-                $query = Bap::with(["penyidikan", "dokumenBap"])->latest();
             }
 
-            return ApiResponse::paginate($query);   
+            $query->latest();
+            return ApiResponse::paginate($query);
+
+
+            // if (request('bap_id')) {
+            //     $query = Bap::with(["penyidikan", "dokumenBap"])
+            //         ->where('id', request('bap_id'));
+            //     if (request('penyidikan_id') && $query->exists()) {
+            //         $query->where('penyidikan_id', 'like', '%' . request('penyidikan_id') . '%');
+            //         if (request('dokumen_bap_id') && $query->exists()) {
+            //             $query->where('dokumen_bap_id', 'like', '%' . request('dokumen_bap_id') . '%');
+            //         }      
+            //     }
+            // } elseif(request('penyidikan_id')) {
+            //     $query = Bap::with(["penyidikan", "dokumenBap"])
+            //         ->where('penyidikan_id', 'like', '%' . request('penyidikan_id') . '%')->latest();
+            //     if (request('dokumen_bap_id') && $query->exists()) {
+            //         $query->where('dokumen_bap_id', 'like', '%' . request('dokumen_bap_id') . '%');
+            //     }
+            // } elseif(request('dokumen_bap_id')) {
+            //     $query = Bap::with(["penyidikan", "dokumenBap"])
+            //         ->where('dokumen_bap_id', 'like', '%' . request('dokumen_bap_id') . '%')->latest();
+            // } else {
+            //     $query = Bap::with(["penyidikan", "dokumenBap"])->latest();
+            // }
+
+            // return ApiResponse::paginate($query);   
         } catch (\Exception $e) {
             return ApiResponse::error('Failed to get Data.', $e->getMessage());
         }
