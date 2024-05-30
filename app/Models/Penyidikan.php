@@ -6,7 +6,8 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\SoftDeletes;// satu penyidikan memiliki banyak bap
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Penyidikan extends Model
 {
@@ -53,5 +54,10 @@ class Penyidikan extends Model
     public function oditurPenyidik(): BelongsTo
     {
         return $this->belongsTo(OditurPenyidik::class, 'oditur_penyidikan_id', 'id'); // banyak penyidikan dimiliki oleh satu oditur
+    }
+
+    public function bap(): HasMany
+    {
+        return $this->hasMany(Bap::class, 'penyidikan_id', 'id');
     }
 }
