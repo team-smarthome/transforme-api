@@ -18,8 +18,8 @@ return new class extends Migration
             $table->uuid('user_role_id')->nullable(false);
             $table->string('email', 100)->nullable();
             $table->string('phone', 100)->nullable();
-            $table->uuid('lokasi_otmil_id')->nullable(false);
-            $table->uuid('lokasi_lemasmil_id')->nullable(false);
+            $table->uuid('lokasi_otmil_id')->nullable();
+            $table->uuid('lokasi_lemasmil_id')->nullable();
             $table->boolean('is_suspended')->default(false);
             $table->uuid('petugas_id')->nullable(false);
             $table->string('image', 255)->nullable();
