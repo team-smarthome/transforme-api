@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Sidang;
+use Illuminate\Support\Facades\DB;
 use App\Http\Requests\SidangRequest;
 use App\Helpers\ApiResponse;
 use Exception;
@@ -11,161 +12,306 @@ use Exception;
 
 class SidangController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        try {
-            // $sidang = Sidang::with('oditurPenuntut')->get();
-            // return [
-            //     'status' => 'OK',
-            //     'message' => 'Data sidang berhasil diambil',
-            //     'data' => $sidang
-            // ];
-            $query = Sidang::with('oditurPenuntut');
-            $filterableColumns = [
-                'sidang_id' => 'id',
-                'nama_sidang' => 'nama_sidang',
-                'kasus_id' => 'kasus_id',                
-            ];
-            foreach ($filterableColumns as $requestKey => $column) {
-                if ($value = request($requestKey)) {
-                    $query->where($column, 'like', '%' . $value . '%');
-                }
-            }
-
-            $query->latest();
-            return ApiResponse::paginate($query);
-        } catch (\Exception $e) {
-            return [
-                'status' => 'ERROR',
-                'message' => 'Data sidang gagal diambil',
-                'data' => $e->getMessage()
-            ];
+  /**
+   * Display a listing of the resource.
+   */
+  public function index()
+  {
+    try {
+      // $sidang = Sidang::with('oditurPenuntut')->get();
+      // return [
+      //     'status' => 'OK',
+      //     'message' => 'Data sidang berhasil diambil',
+      //     'data' => $sidang
+      // ];
+      $query = Sidang::with(['oditurPenuntut', 'hakim', 'ahli', 'saksi']);
+      $filterableColumns = [
+        'sidang_id' => 'id',
+        'nama_sidang' => 'nama_sidang',
+        'kasus_id' => 'kasus_id',
+      ];
+      foreach ($filterableColumns as $requestKey => $column) {
+        if ($value = request($requestKey)) {
+          $query->where($column, 'like', '%' . $value . '%');
         }
-    }
+      }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
+      $query->latest();
+      return ApiResponse::paginate($query);
+    } catch (\Exception $e) {
+      return [
+        'status' => 'ERROR',
+        'message' => 'Data sidang gagal diambil',
+        'data' => $e->getMessage()
+      ];
     }
+  }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(SidangRequest $request)
-    {
-        \DB::beginTransaction();
-        try {
-            $sidang = Sidang::create($request->all());
-            $pivotData = [];
-            if ($request->has('oditur_penuntut_id')) {
-                foreach ($request->oditur_penuntut_id as $index => $oditurId) {
-                    $pivotData[] = [
-                        'id' => \Illuminate\Support\Str::uuid(),
-                        'sidang_id' => $sidang->id,
-                        'oditur_penuntut_id' => $oditurId,
-                        'role_ketua' => $request->role_ketua[$index],
-                        'created_at' => now(),
-                        'updated_at' => now()
-                    ];
-                }
-            }
-            \DB::table('pivot_sidang_oditur')->insert($pivotData);
-            \DB::commit();
-            //buat response gabungin $sidang dan $pivotData
-            $sidang->oditurPenuntut = $pivotData;
-            return ApiResponse::created($sidang);
-        } catch (\Exception $e) {
-            \DB::rollBack();
-            return [
-                'status' => 'ERROR',
-                'message' => 'Data sidang gagal disimpan',
-                'data' => $e->getMessage()
-            ];
+  /**
+   * Show the form for creating a new resource.
+   */
+  public function create()
+  {
+    //
+  }
+
+  /**
+   * Store a newly created resource in storage.
+   */
+  public function store(SidangRequest $request)
+  {
+    DB::beginTransaction();
+    try {
+      $sidang = Sidang::create($request->all());
+      $pivotOditurData = [];
+      if ($request->has('oditur_penuntut_id')) {
+        foreach ($request->oditur_penuntut_id as $index => $oditurId) {
+          $pivotOditurData[] = [
+            'id' => \Illuminate\Support\Str::uuid(),
+            'sidang_id' => $sidang->id,
+            'oditur_penuntut_id' => $oditurId,
+            'role_ketua' => $request->role_ketua[$index],
+            'created_at' => now(),
+            'updated_at' => now()
+          ];
         }
-    }
+        DB::table('pivot_sidang_oditur')->insert($pivotOditurData);
+      }
 
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(SidangRequest $request)
-    {
-        \DB::beginTransaction();
-        try {
-            $id = $request->input('sidang_id');
-            $sidang = Sidang::findOrFail($id);
-            $sidang->update($request->all());
-
-            //get pivot data craeted_at for update pivot data
-            $createdAtPivot = \DB::table('pivot_sidang_oditur')->where('sidang_id', $sidang->id)->pluck('created_at')->toArray();
-    
-            // Update pivot data if oditur_penuntut_id is present in request
-            if ($request->has('oditur_penuntut_id')) {
-                $pivotData = [];
-                foreach ($request->oditur_penuntut_id as $index => $oditurId) {
-                    $pivotData[] = [
-                        'id' => \Illuminate\Support\Str::uuid(),
-                        'sidang_id' => $sidang->id,
-                        'oditur_penuntut_id' => $oditurId,
-                        'role_ketua' => $request->role_ketua[$index],
-                        'created_at' => $createdAtPivot[$index],
-                        'updated_at' => now()
-                    ];
-                }
-                \DB::table('pivot_sidang_oditur')->where('sidang_id', $sidang->id)->delete();
-                \DB::table('pivot_sidang_oditur')->insert($pivotData);
-            }
-    
-            \DB::commit();
-            // Response with updated data
-            return ApiResponse::created($sidang);
-        } catch (\Exception $e) {
-            \DB::rollBack();
-            return ApiResponse::error($e->getMessage(), 'Data sidang gagal diperbarui');
+      $pivotHakimData = [];
+      if ($request->has('hakim_id')) {
+        foreach ($request->hakim_id as $index => $hakimId) {
+          $pivotHakimData[] = [
+            'id' => \Illuminate\Support\Str::uuid(),
+            'sidang_id' => $sidang->id,
+            'hakim_id' => $hakimId,
+            'role_ketua' => $request->role_ketua[$index],
+            'created_at' => now(),
+            'updated_at' => now()
+          ];
         }
+        DB::table('pivot_sidang_hakim')->insert($pivotHakimData);
+      }
+      $pivotAhliData = [];
+      if ($request->has('ahli_id')) {
+        foreach ($request->ahli_id as $index => $ahliId)
+          $pivotAhliData[] = [
+            'id' => \Illuminate\Support\Str::uuid(),
+            'sidang_id' => $sidang->id,
+            'ahli_id' => $ahliId,
+            'created_at' => now(),
+            'updated_at' => now()
+          ];
+
+        DB::table('pivot_sidang_ahli')->insert($pivotAhliData);
+      }
+      $pivotSaksiData = [];
+      if ($request->has('saksi_id')) {
+        foreach ($request->saksi_id as $index => $saksiId)
+          $pivotSaksiData[] = [
+            'id' => \Illuminate\Support\Str::uuid(),
+            'sidang_id' => $sidang->id,
+            'saksi_id' => $saksiId,
+            'created_at' => now(),
+            'updated_at' => now()
+          ];
+
+        DB::table('pivot_sidang_saksi')->insert($pivotSaksiData);
+      }
+      DB::commit();
+      //buat response gabungin $sidang dan $pivotData
+      $sidang->oditurPenuntut = $pivotOditurData;
+      $sidang->hakim = $pivotHakimData;
+      $sidang->ahli = $pivotAhliData;
+      $sidang->saksi = $pivotSaksiData;
+      return ApiResponse::created($sidang);
+    } catch (\Exception $e) {
+      DB::rollBack();
+      return [
+        'status' => 'ERROR',
+        'message' => 'Data sidang gagal disimpan',
+        'data' => $e->getMessage()
+      ];
+    }
+  }
+
+
+  /**
+   * Display the specified resource.
+   */
+  public function show(string $id)
+  {
+    //
+  }
+
+  /**
+   * Show the form for editing the specified resource.
+   */
+  public function edit(string $id)
+  {
+    //
+  }
+
+  /**
+   * Update the specified resource in storage.
+   */
+
+  public function update(SidangRequest $request)
+  {
+    DB::beginTransaction();
+    try {
+      $id = $request->input('sidang_id');
+      $sidang = Sidang::findOrFail($id);
+      $sidang->update($request->all());
+
+      // Update pivot data if oditur_penuntut_id is present in request
+      if ($request->has('oditur_penuntut_id')) {
+        $createdAtPivot = DB::table('pivot_sidang_oditur')
+          ->where('sidang_id', $sidang->id)
+          ->pluck('created_at', 'oditur_penuntut_id')
+          ->toArray();
+        $this->updatePivotData($sidang, 'pivot_sidang_oditur', 'oditur_penuntut_id', 'role_ketua', $request->oditur_penuntut_id, $request->role_ketua, $createdAtPivot);
+      }
+
+      // Update pivot data for hakim
+      if ($request->has('hakim_id')) {
+        $createdAtPivot = DB::table('pivot_sidang_hakim')
+          ->where('sidang_id', $sidang->id)
+          ->pluck('created_at', 'hakim_id')
+          ->toArray();
+        $this->updatePivotData($sidang, 'pivot_sidang_hakim', 'hakim_id', 'role_ketua', $request->hakim_id, $request->role_ketua_hakim, $createdAtPivot);
+      }
+
+      // Update pivot data for ahli
+      if ($request->has('ahli_id')) {
+        $createdAtPivot = DB::table('pivot_sidang_ahli')
+          ->where('sidang_id', $sidang->id)
+          ->pluck('created_at', 'ahli_id')
+          ->toArray();
+        $this->updatePivotData($sidang, 'pivot_sidang_ahli', 'ahli_id', null, $request->ahli_id, null, $createdAtPivot);
+      }
+
+      // Update pivot data for saksi
+      if ($request->has('saksi_id')) {
+        $createdAtPivot = DB::table('pivot_sidang_saksi')
+          ->where('sidang_id', $sidang->id)
+          ->pluck('created_at', 'saksi_id')
+          ->toArray();
+        $this->updatePivotData($sidang, 'pivot_sidang_saksi', 'saksi_id', null, $request->saksi_id, null, $createdAtPivot);
+      }
+
+      DB::commit();
+      return ApiResponse::created($sidang);
+    } catch (\Exception $e) {
+      DB::rollBack();
+      return ApiResponse::error($e->getMessage(), 'Data sidang gagal diperbarui');
+    }
+  }
+
+  private function updatePivotData($sidang, $pivotTable, $foreignKey, $roleKey, $ids, $roles, $createdAtPivot)
+  {
+    $pivotData = [];
+    foreach ($ids as $index => $id) {
+      $data = [
+        'id' => \Illuminate\Support\Str::uuid(),
+        'sidang_id' => $sidang->id,
+        $foreignKey => $id,
+        'created_at' => $createdAtPivot[$id] ?? now(), // Gunakan created_at yang ada jika tersedia
+        'updated_at' => now()
+      ];
+      if ($roleKey !== null && isset($roles[$index])) {
+        $data[$roleKey] = $roles[$index];
+      }
+      $pivotData[] = $data;
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Request $request)
-    {
-        \DB::beginTransaction();
-        try {
-            $id = $request->input('sidang_id');
-            $sidang = Sidang::findOrFail($id);
-            $sidang->delete();
-    
-            \DB::table('pivot_sidang_oditur')
-            ->where('sidang_id', $sidang->id)
-            ->update(['deleted_at' => now()]);
-            \DB::commit();
-            return ApiResponse::deleted();
-        } catch (\Exception $e) {
-            \DB::rollBack();
-            return ApiResponse::error($e->getMessage(), 'Data sidang gagal dihapus');
-        }
+    DB::table($pivotTable)->where('sidang_id', $sidang->id)->delete();
+    DB::table($pivotTable)->insert($pivotData);
+  }
+
+  // public function update(SidangRequest $request)
+  // {
+  //   DB::beginTransaction();
+  //   try {
+  //     $id = $request->input('sidang_id');
+  //     $sidang = Sidang::findOrFail($id);
+  //     $sidang->update($request->all());
+
+  //     $createdAtPivot = DB::table('pivot_sidang_oditur')->where('sidang_id', $sidang->id)->pluck('created_at')->toArray();
+
+  //     if ($request->has('oditur_penuntut_id')) {
+  //       $pivotData = [];
+  //       foreach ($request->oditur_penuntut_id as $index => $oditurId) {
+  //         $pivotData[] = [
+  //           'id' => \Illuminate\Support\Str::uuid(),
+  //           'sidang_id' => $sidang->id,
+  //           'oditur_penuntut_id' => $oditurId,
+  //           'role_ketua' => $request->role_ketua[$index],
+  //           'created_at' => $createdAtPivot[$index],
+  //           'updated_at' => now()
+  //         ];
+  //       }
+  //       DB::table('pivot_sidang_oditur')->where('sidang_id', $sidang->id)->delete();
+  //       DB::table('pivot_sidang_oditur')->insert($pivotData);
+  //     }
+
+  //     DB::commit();
+  //     return ApiResponse::created($sidang);
+  //   } catch (\Exception $e) {
+  //     DB::rollBack();
+  //     return ApiResponse::error($e->getMessage(), 'Data sidang gagal diperbarui');
+  //   }
+  // }
+
+  /**
+   * Remove the specified resource from storage.
+   */
+  // public function destroy(Request $request)
+  // {
+  //   DB::beginTransaction();
+  //   try {
+  //     $id = $request->input('sidang_id');
+  //     $sidang = Sidang::findOrFail($id);
+  //     $sidang->delete();
+
+  //     DB::table('pivot_sidang_oditur')
+  //       ->where('sidang_id', $sidang->id)
+  //       ->update(['deleted_at' => now()]);
+  //     DB::commit();
+  //     return ApiResponse::deleted();
+  //   } catch (\Exception $e) {
+  //     DB::rollBack();
+  //     return ApiResponse::error($e->getMessage(), 'Data sidang gagal dihapus');
+  //   }
+  // }
+
+  public function destroy(Request $request)
+  {
+    DB::beginTransaction();
+    try {
+      $id = $request->input('sidang_id');
+      $sidang = Sidang::findOrFail($id);
+      $sidang->delete();
+
+      // Soft delete entries in the pivot tables by updating the deleted_at column
+      $this->softDeletePivotData('pivot_sidang_oditur', $sidang->id);
+      $this->softDeletePivotData('pivot_sidang_hakim', $sidang->id);
+      $this->softDeletePivotData('pivot_sidang_ahli', $sidang->id);
+      $this->softDeletePivotData('pivot_sidang_saksi', $sidang->id);
+
+      DB::commit();
+      return ApiResponse::deleted();
+    } catch (\Exception $e) {
+      DB::rollBack();
+      return ApiResponse::error($e->getMessage(), 'Data sidang gagal dihapus');
     }
+  }
+
+  // Helper function to soft delete entries in pivot tables
+  private function softDeletePivotData($pivotTable, $sidangId)
+  {
+    DB::table($pivotTable)
+      ->where('sidang_id', $sidangId)
+      ->update(['deleted_at' => now()]);
+  }
 }
