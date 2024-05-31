@@ -10,16 +10,16 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class OditurPenuntut extends Model
 {
-    use SoftDeletes, HasUuids;
-    protected $table = 'oditur_penuntut';
-    protected $keyType = 'uuid';
-    public $incrementing = false;
-    public $timestamps = true;
+  use SoftDeletes, HasUuids;
+  protected $table = 'oditur_penuntut';
+  protected $keyType = 'uuid';
+  public $incrementing = false;
+  public $timestamps = true;
 
-    protected $fillable = ['nip', 'nama_oditur', 'alamat'];
+  protected $fillable = ['nip', 'nama_oditur', 'alamat'];
 
-    public function sidang(): BelongsToMany
-    {
-        return $this->belongsToMany(Sidang::class, 'pivot_sidang_oditur', 'oditur_penuntut_id', 'sidang_id')->withPivot('role_ketua');
-    }
+  public function sidang(): BelongsToMany
+  {
+    return $this->belongsToMany(Sidang::class, 'pivot_sidang_oditur', 'oditur_penuntut_id', 'sidang_id')->withPivot('role_ketua');
+  }
 }
