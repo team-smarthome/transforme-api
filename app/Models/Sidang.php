@@ -10,40 +10,52 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 
 class Sidang extends Model
 {
-    use SoftDeletes, HasUuids;
+  use SoftDeletes, HasUuids;
 
-    protected $table = 'sidang';
-    protected $keyType = 'uuid';
-    public $incrementing = false;
-    public $timestamps = true;
+  protected $table = 'sidang';
+  protected $keyType = 'uuid';
+  public $incrementing = false;
+  public $timestamps = true;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<string>
-     */
+  /**
+   * The attributes that are mass assignable.
+   *
+   * @var array<string>
+   */
 
-    protected $fillable = [
-        'nama_sidang',
-        'jadwal_sidang',
-        'perubahan_jadwal_sidang',
-        'kasus_id',
-        'tanggal_sidang',
-        'waktu_mulai_sidang',
-        'pengadilan_militer_id',
-        'agenda_sidang',
-        'hasil_keputusan_sidang',
-        'jenis_persidangan_id',
-        'juru_sita',
-        'juru_pengacara_sidang',
-        'pengawas_peradilan_militer',
-        'wbp_profile_id',
-        'zona_waktu'
-    ];
+  protected $fillable = [
+    'nama_sidang',
+    'jadwal_sidang',
+    'perubahan_jadwal_sidang',
+    'kasus_id',
+    'tanggal_sidang',
+    'waktu_mulai_sidang',
+    'pengadilan_militer_id',
+    'agenda_sidang',
+    'hasil_keputusan_sidang',
+    'jenis_persidangan_id',
+    'juru_sita',
+    'juru_pengacara_sidang',
+    'pengawas_peradilan_militer',
+    'wbp_profile_id',
+    'zona_waktu'
+  ];
 
 
-    public function oditurPenuntut(): BelongsToMany
-    {
-        return $this->belongsToMany(OditurPenuntut::class, 'pivot_sidang_oditur', 'sidang_id', 'oditur_penuntut_id')->withPivot('role_ketua');
-    }
+  public function oditurPenuntut(): BelongsToMany
+  {
+    return $this->belongsToMany(OditurPenuntut::class, 'pivot_sidang_oditur', 'sidang_id', 'oditur_penuntut_id')->withPivot('role_ketua');
+  }
+  public function hakim(): BelongsToMany
+  {
+    return $this->belongsToMany(hakim::class, 'pivot_sidang_hakim', 'sidang_id', 'hakim_id')->withPivot('role_ketua');
+  }
+  public function ahli(): BelongsToMany
+  {
+    return $this->belongsToMany(ahli::class, 'pivot_sidang_ahli', 'sidang_id', 'ahli_id');
+  }
+  public function saksi(): BelongsToMany
+  {
+    return $this->belongsToMany(saksi::class, 'pivot_sidang_saksi', 'sidang_id', 'saksi_id');
+  }
 }
