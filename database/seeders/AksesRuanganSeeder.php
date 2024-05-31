@@ -16,16 +16,15 @@ class AksesRuanganSeeder extends Seeder
     {
         $aksesRuangan = [
             [
-                'id' => Str::uuid()->toString(),
-                'dmac' => "00:00:00:00:00:00",
-                'nama_gateway' => "Gateway 1",
-                'ruangan_otmil_id' => null,
-                'ruangan_lemasmil_id' => "0c9ce687-12ce-435d-8f87-b519b7dd16b2",
-                'wbp_profile_id' => "10cfa0a1-5ab3-4daa-9292-29397946316e",
+                'id' => 'd2eaf770-02a6-4ae7-b216-a2ede0b3652f',
+                'dmac' => '00:0a:95:9d:68:16',
+                'nama_gateway' => 'Gateway 1',
+                'ruangan_otmil_id' => 'f6e62e45-498d-45a8-affd-e5e363c99442',
+                'ruangan_lemasmil_id' => 'db10dd62-c048-44aa-a85e-9c29551704d2',
+                'wbp_profile_id' => '12cfa0a1-5ab3-4daa-9292-29397946312w',
                 'is_permitted' => 1,
                 'created_at' => now(),
-                'updated_at' => now()
-            ],
+            ]
         ];
 
         DB::table('akses_ruangan')->insert($aksesRuangan);

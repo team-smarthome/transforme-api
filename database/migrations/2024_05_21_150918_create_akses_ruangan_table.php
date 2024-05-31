@@ -15,8 +15,8 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->string('dmac', 255)->nullable();
             $table->string('nama_gateway', 255)->nullable();
-            $table->uuid('ruangan_otmil_id')->nullable(false);
-            $table->uuid('ruangan_lemasmil_id')->nullable(false);
+            $table->uuid('ruangan_otmil_id')->nullable();
+            $table->uuid('ruangan_lemasmil_id')->nullable();
             $table->uuid('wbp_profile_id')->nullable(false);
             $table->boolean('is_permitted')->nullable();
             $table->timestamps();

@@ -46,58 +46,27 @@ class PetugasController extends Controller
    * Store a newly created resource in storage.
    */
 
-  // public function store(PetugasRequest $request)
-  // {
-  //   try {
-  //     // Begin transaction
-  //     DB::beginTransaction();
 
-  //     // Handle file upload for foto_wajah
-  //     $fotoWajahPath = null;
-  //     if ($request->hasFile('foto_wajah')) {
-  //       $fotoWajahPath = $request->file('foto_wajah')->store('images', 'public');
-  //     }
 
-  //     // Handle file upload for foto_wajah_fr
-  //     $fotoWajahFrPath = null;
-  //     if ($request->hasFile('foto_wajah_fr')) {
-  //       $fotoWajahFrPath = $request->file('foto_wajah_fr')->store('images', 'public');
-  //     }
-
-  //     // Create petugas
-  //     $petugas = Petugas::create(array_merge($request->validated(), [
-  //       'foto_wajah' => $fotoWajahPath,
-  //       'foto_wajah_fr' => $fotoWajahFrPath,
-  //     ]));
-
-  //     // Commit transaction
-  //     DB::commit();
-
-  //     return ApiResponse::created($petugas);
-  //   } catch (QueryException $e) {
-  //     // Rollback transaction
-  //     DB::rollBack();
-  //     return ApiResponse::error('Database error', $e->getMessage(), 500);
-  //   } catch (Exception $e) {
-  //     // Rollback transaction
-  //     DB::rollBack();
-  //     return ApiResponse::error('An unexpected error occurred', $e->getMessage(), 500);
-  //   }
-  // }
   public function store(PetugasRequest $request)
   {
     try {
+      $data = $request->validated();
+
       if ($request->hasFile('foto_wajah')) {
-        $path = $request->file('foto_wajah')->store('public/petugas_images');
-        $data['foto_wajah'] = Storage::url($path);
+        $path = Storage::putFile('foto_wajah', $request->file('foto_wajah'));
+
+        $data['foto_wajah'] = 'storage/' . str_replace('public/', '', $path);
       }
 
-      // Handle file upload for foto_wajah_fr
       if ($request->hasFile('foto_wajah_fr')) {
-        $path = $request->file('foto_wajah_fr')->store('public/petugas_images');
-        $data['foto_wajah_fr'] = Storage::url($path);
+        $path = Storage::putFile('foto_wajah_fr', $request->file('foto_wajah_fr'));
+
+        $data['foto_wajah_fr'] = 'storage/' . str_replace('public/', '', $path);
       }
-      $petugas = Petugas::create($request->Validated());
+
+
+      $petugas = Petugas::create($data);
 
       return ApiResponse::created($petugas);
     } catch (QueryException $e) {
@@ -106,6 +75,7 @@ class PetugasController extends Controller
       return ApiResponse::error('An unexpected error occurred', $e->getMessage(), 500);
     }
   }
+
 
   /**
    * Display the specified resource.
@@ -118,35 +88,35 @@ class PetugasController extends Controller
   /**
    * Show the form for editing the specified resource.
    */
+
   public function edit(PetugasRequest $request)
   {
     try {
       $id = $request->input('id');
       $petugas = Petugas::findOrFail($id);
+      $data = $request->validated();
 
-      // Handle file upload for foto_wajah
       if ($request->hasFile('foto_wajah')) {
-        // Delete old file if exists
         if ($petugas->foto_wajah) {
-          Storage::disk('public')->delete($petugas->foto_wajah);
+          Storage::delete(str_replace('storage/', 'public/', $petugas->foto_wajah));
         }
 
-        $path = $request->file('foto_wajah')->store('images', 'public');
-        $request->merge(['foto_wajah' => $path]);
+        $path = Storage::putFile('foto_wajah', $request->file('foto_wajah'));
+        // Simpan path dengan format yang diinginkan
+        $data['foto_wajah'] = 'storage/' . str_replace('public/', '', $path);
       }
 
-      // Handle file upload for foto_wajah_fr
       if ($request->hasFile('foto_wajah_fr')) {
-        // Delete old file if exists
         if ($petugas->foto_wajah_fr) {
-          Storage::disk('public')->delete($petugas->foto_wajah_fr);
+          Storage::delete(str_replace('storage/', 'public/', $petugas->foto_wajah_fr));
         }
 
-        $path = $request->file('foto_wajah_fr')->store('images', 'public');
-        $request->merge(['foto_wajah_fr' => $path]);
+        $path = Storage::putFile('foto_wajah_fr', $request->file('foto_wajah_fr'));
+        // Simpan path dengan format yang diinginkan
+        $data['foto_wajah_fr'] = 'storage/' . str_replace('public/', '', $path);
       }
 
-      $petugas->update($request->validated());
+      $petugas->update($data);
 
       return ApiResponse::updated($petugas);
     } catch (QueryException $e) {
@@ -156,13 +126,7 @@ class PetugasController extends Controller
     }
   }
 
-  /**
-   * Update the specified resource in storage.
-   */
 
-  /**
-   * Remove the specified resource from storage.
-   */
   public function destroy(Request $request)
   {
     try {

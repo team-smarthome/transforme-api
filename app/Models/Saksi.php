@@ -36,4 +36,9 @@ class Saksi extends Model
     {
         return $this->hasMany(Penyidikan::class, 'saksi_id', 'id'); // satu saksi memiliki banyak penyidikan
     }
+
+    public function dokumenBap(): HasMany
+    {
+        return $this->hasMany(DokumenBap::class, 'saksi_id', 'id'); // satu saksi memiliki banyak dokumen bap
+    }
 }

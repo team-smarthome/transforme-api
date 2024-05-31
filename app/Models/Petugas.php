@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Petugas extends Model
 {
@@ -45,9 +46,9 @@ class Petugas extends Model
   ];
 
 
-  public function user(): HasMany
+  public function user(): HasOne
   {
-    return $this->hasMany(User::class, 'petugas_id', 'id');
+    return $this->hasOne(User::class, 'petugas_id', 'id');
   }
   public function pangkat(): BelongsTo
   {

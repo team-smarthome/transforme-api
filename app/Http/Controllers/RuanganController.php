@@ -72,7 +72,7 @@ class RuanganController extends Controller
             'posisi_X' => 'nullable',
             'posisi_Y' => 'nullable'
          ]);
-         $ruangan_otmil_id = $request->input('ruangan_otmil_id');
+         $ruangan_otmil_id = $request->input('id');
          $findLantai = RuanganOtmil::where('id', $ruangan_otmil_id)->firstOrFail();
          $findLantai->nama_ruangan_otmil = $request->input('nama_ruangan_otmil');
          $findLantai->lokasi_otmil_id = $request->input('lokasi_otmil_id');
@@ -90,7 +90,7 @@ class RuanganController extends Controller
 
     public function destroy(Request $request)
     {
-        $ruangan_otmil_id = $request->input('ruangan_otmil_id');
+        $ruangan_otmil_id = $request->input('id');
         $ruangan_otmil = RuanganOtmil::findOrFail($ruangan_otmil_id);
         $ruangan_otmil->delete();
 

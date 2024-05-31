@@ -15,8 +15,8 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->string('nama_pintu_akses', 100)->nullable();
             $table->string('mac_address', 100)->nullable();
-            $table->uuid('ruangan_otmil_id')->nullable(false);
-            $table->uuid('ruangan_lemasmil_id')->nullable(false);
+            $table->uuid('ruangan_otmil_id')->nullable();
+            $table->uuid('ruangan_lemasmil_id')->nullable();
             $table->string('status', 100)->nullable();
             $table->string('merk', 100)->nullable();
             $table->string('model', 100)->nullable();

@@ -16,8 +16,8 @@ return new class extends Migration
             $table->uuid('penyidikan_id')->nullable();
             $table->string('nama_dokumen_bap', 100)->nullable();
             $table->string('link_dokumen_bap', 255)->nullable();
-            $table->uuid('wbp_profile_id')->nullable(false);
-            $table->uuid('saksi_id')->nullable(false);
+            $table->uuid('wbp_profile_id')->nullable();
+            $table->uuid('saksi_id')->nullable();
             $table->timestamps();
             $table->softDeletes();
 

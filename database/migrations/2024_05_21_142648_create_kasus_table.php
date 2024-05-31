@@ -16,8 +16,8 @@ return new class extends Migration
             $table->string("nama_kasus",100)->nullable(false);
             $table->string("nomor_kasus",100)->nullable(false);
             $table->uuid("wbp_profile_id")->nullable();
-            $table->uuid("kategori_perkara_id")->nullable(false);
-            $table->uuid("jenis_perkara_id")->nullable(false);
+            $table->uuid("kategori_perkara_id")->nullable();
+            $table->uuid("jenis_perkara_id")->nullable();
             $table->string("lokasi_kasus", 255)->nullable();
             $table->dateTime("waktu_kejadian")->nullable();
             $table->date("tanggal_pelimpahan_kasus")->nullable();

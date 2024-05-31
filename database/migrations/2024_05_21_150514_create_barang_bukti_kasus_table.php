@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('keterangan', 255)->nullable();
             $table->date('tanggal_diambil')->nullable();
             $table->string('longitude', 100)->nullable();
-            $table->uuid('jenis_perkara_id', 100)->nullable(false);
+            $table->uuid('jenis_perkara_id', 100)->nullable();
             $table->timestamps();
             $table->softDeletes();
 
