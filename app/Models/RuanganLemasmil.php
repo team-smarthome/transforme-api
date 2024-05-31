@@ -63,4 +63,9 @@ class RuanganLemasmil extends Model
     {
         return $this->belongsTo(AksesRuangan::class, "ruangan_lemasmil_id", "id");
     }
+
+    public function gateway(): HasMany
+    {
+        return $this->hasMany(Gateway::class, "ruangan_lemasmil_id", "id");
+    }
 }

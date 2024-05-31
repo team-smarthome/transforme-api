@@ -146,4 +146,9 @@ class WbpProfile extends Model
     {
         return $this->belongsTo(AksesRuangan::class, 'wbp_profile_id', 'id');
     }
+
+    public function pengunjung():HasMany
+    {
+        return $this->hasMany(Pengunjung::class, 'wbp_profile_id', 'id');
+    }
 }
