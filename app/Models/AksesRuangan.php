@@ -28,6 +28,21 @@ class AksesRuangan extends Model
         'is_permitted',
     ];
 
+    public function wbpAkses(): BelongsTo
+    {
+        return $this->belongsTo(WbpProfile::class, 'wbp_profile_id', 'id');
+    }
+
+    public function ruanganOtmilAkses(): BelongsTo
+    {
+        return $this->belongsTo(RuanganOtmil::class, 'ruangan_otmil_id', 'id');
+    }
+
+    public function ruanganLemasmilAkses(): BelongsTo
+    {
+        return $this->belongsTo(RuanganLemasmil::class, 'ruangan_lemasmil_id', 'id');
+    }
+    
     public function wbpProfile():HasOne
     {
         return $this->hasOne(WbpProfile::class, 'id', 'wbp_profile_id');

@@ -63,4 +63,9 @@ class RuanganOtmil extends Model
         return $this->hasMany(Gateway::class, "ruangan_otmil_id", "id");
     }
 
+    public function aksesRuangan(): HasMany
+    {
+        return $this->hasMany(AksesRuangan::class, "ruangan_otmil_id", "id");
+    }
+
 }

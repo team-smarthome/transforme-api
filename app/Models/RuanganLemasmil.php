@@ -54,18 +54,8 @@ class RuanganLemasmil extends Model
         return $this->belongsTo(LantaiLemasmil::class, 'lantai_lemasmil_id', 'id');
     }
 
-    public function aset(): HasMany
+    public function aksesRuangan(): HasMany
     {
-        return $this->hasMany(Aset::class, 'ruangan_lemasmil_id', 'id');
-    }
-    
-    public function aksesRuangan(): BelongsTo
-    {
-        return $this->belongsTo(AksesRuangan::class, "ruangan_lemasmil_id", "id");
-    }
-
-    public function gateway(): HasMany
-    {
-        return $this->hasMany(Gateway::class, "ruangan_lemasmil_id", "id");
+        return $this->hasMany(AksesRuangan::class, "ruangan_lemasmil_id", "id");
     }
 }

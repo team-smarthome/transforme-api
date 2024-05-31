@@ -19,7 +19,7 @@ class RuanganController extends Controller
             })->orWhereHas('lokasiOtmil', function ($r) use ($keyword){
                 $r ->where('nama_lokasi_otmil', 'LIKE', '%' . $keyword . '%');
             })->get();
-            
+
             return ApiResponse::success($getData);
         } catch (\Exception $e) {
             return ApiResponse::error('An error occurred while fetching data.', $e->getMessage());
@@ -83,7 +83,7 @@ class RuanganController extends Controller
          $findLantai->lebar = $request->input('lebar');
          $findLantai->posisi_X = $request->input('posisi_X');
          $findLantai->posisi_Y = $request->input('posisi_Y');
- 
+
          $findLantai->save();
          return ApiResponse::updated();
     }
@@ -93,7 +93,7 @@ class RuanganController extends Controller
         $ruangan_otmil_id = $request->input('id');
         $ruangan_otmil = RuanganOtmil::findOrFail($ruangan_otmil_id);
         $ruangan_otmil->delete();
-    
-        return ApiResponse::deleted();   
+
+        return ApiResponse::deleted();
     }
 }

@@ -6,9 +6,9 @@ use Illuminate\Support\Facades\Route;
 
 
 
-    Route::get('akses-ruangan', [AksesRuanganController::class, 'index']);
-    Route::post('akses-ruangan', [AksesRuanganController::class, 'create']);
-    // Route::get('akses-ruangan', [AksesRuanganController::class, 'show']);
-    Route::put('akses-ruangan', [AksesRuanganController::class, 'update']);
-    Route::delete('akses-ruangan', [AksesRuanganController::class, 'destroy']);
+    Route::get('akses_ruangan', [AksesRuanganController::class, 'index']);
+    Route::post('akses_ruangan', [AksesRuanganController::class, 'create']);
+    // Route::get('akses_ruangan', [AksesRuanganController::class, 'show']);
+    Route::put('akses_ruangan', [AksesRuanganController::class, 'update']);
+    Route::delete('akses_ruangan', [AksesRuanganController::class, 'destroy']);
     
