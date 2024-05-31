@@ -18,6 +18,7 @@ class GatewayController extends Controller
         try {
             $query = Gateway::with(['ruanganOtmil', 'ruanganLemasmil']);
             $filterableColumns = [
+                'gateway_id' => 'id', 
                 'gmac' => 'gmac',
                 'nama_gateway' => 'nama_gateway',
                 'ruangan_otmil_id' => 'ruangan_otmil_id',
@@ -52,13 +53,32 @@ class GatewayController extends Controller
     public function store(GatewayRequest $request)
     {
         try {
-            $data = $request->validated();
-            $gateway = Gateway::create($data);
-            return ApiResponse::success($gateway, 'Gateway created successfully.');
+            // Periksa apakah gmac sudah ada
+            if (Gateway::where('gmac', $request->gmac)->exists()) {
+                return ApiResponse::error('Failed to create Gateway.', 'Gmac already exists.');
+            }
+    
+            // Buat objek Gateway baru
+            $gateway = new Gateway([
+                'gmac' => $request->gmac,
+                'nama_gateway' => $request->nama_gateway,
+                'ruangan_otmil_id' => $request->ruangan_otmil_id,
+                'ruangan_lemasmil_id' => $request->ruangan_lemasmil_id,
+                'status_gateway' => $request->status_gateway,
+                'v_gateway_topic' => $request->v_gateway_topic
+            ]);
+    
+            // Simpan gateway
+            if ($gateway->save()) {
+                $data = $gateway->toArray();
+                $formattedData = array_merge(['id' => $gateway->id], $data);
+                return ApiResponse::created($formattedData);
+            }
         } catch (Exception $e) {
             return ApiResponse::error('Failed to create Gateway.', $e->getMessage());
         }
     }
+    
 
     /**
      * Display the specified resource.
@@ -84,8 +104,17 @@ class GatewayController extends Controller
         try {
             $id = $request->input('gateway_id');
             $gateway = Gateway::findOrFail($id);
-            $gateway->update($data);
-            return ApiResponse::success($gateway, 'Gateway updated successfully.');
+            $gateway->gmac = $request->gmac;
+            $gateway->nama_gateway = $request->nama_gateway;
+            $gateway->ruangan_otmil_id = $request->ruangan_otmil_id;
+            $gateway->ruangan_lemasmil_id = $request->ruangan_lemasmil_id;
+            $gateway->status_gateway = $request->status_gateway;
+            $gateway->v_gateway_topic = $request->v_gateway_topic;
+
+            if ($gateway->save()) {
+                $data = $gateway->toArray();
+                return ApiResponse::updated($data);
+            }
         } catch (Exception $e) {
             return ApiResponse::error('Failed to update Gateway.', $e->getMessage());
         }
@@ -99,8 +128,11 @@ class GatewayController extends Controller
         try {
             $id = $request->input('gateway_id');
             $gateway = Gateway::findOrFail($id);
+            if(!$gateway) {
+                return ApiResponse::error('Gateway not found.', 'Gateway not found.', 404);
+            }
             $gateway->delete();
-            return ApiResponse::success(null, 'Gateway deleted successfully.');
+            return ApiResponse::deleted();
         } catch (Exception $e) {
             return ApiResponse::error('Failed to delete Gateway.', $e->getMessage());
         }
