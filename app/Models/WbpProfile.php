@@ -151,4 +151,9 @@ class WbpProfile extends Model
     {
         return $this->hasMany(Pengunjung::class, 'wbp_profile_id', 'id');
     }
+
+    public function dokumenBap():HasMany
+    {
+        return $this->hasMany(DokumenBap::class, 'wbp_profile_id', 'id');
+    }
 }
