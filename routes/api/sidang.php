@@ -11,6 +11,6 @@ Route::middleware([AuthSanctumMiddleware::class . ':operator,admin,superadmin'])
 
 Route::middleware([AuthSanctumMiddleware::class . ':admin,superadmin'])->group(function () {
   Route::post('sidang', [SidangController::class, 'store']);
-  Route::put('sidang', [SidangController::class, 'edit']);
+  Route::put('sidang', [SidangController::class, 'update']);
   Route::delete('sidang', [SidangController::class, 'destroy']);
 });
