@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class AksesRuangan extends Model
@@ -21,22 +22,22 @@ class AksesRuangan extends Model
         'nama_gateway',
         'ruangan_otmil_id',
         'ruangan_lemasmil_id',
-        'wbbp_profile_id',
+        'wbp_profile_id',
         'is_permitted',
     ];
 
-    public function wbpAkses():BelongsTo
+    public function wbpAkses(): BelongsTo
     {
         return $this->belongsTo(WbpProfile::class, 'wbp_profile_id', 'id');
     }
 
     public function ruanganOtmilAkses(): BelongsTo
     {
-        return $this->belongsTo(RuanganOtmil::class, 'ruangan_otmil', 'id');
+        return $this->belongsTo(RuanganOtmil::class, 'ruangan_otmil_id', 'id');
     }
 
     public function ruanganLemasmilAkses(): BelongsTo
     {
-        return $this->belongsTo(RuanganLemasmil::class, 'ruangan_otmil', 'id');
+        return $this->belongsTo(RuanganLemasmil::class, 'ruangan_lemasmil_id', 'id');
     }
 }

@@ -49,4 +49,9 @@ class RuanganLemasmil extends Model
     {
         return $this->belongsTo(LantaiLemasmil::class, 'lantai_lemasmil_id', 'id');
     }
+
+    public function aksesRuangan(): HasMany
+    {
+        return $this->hasMany(AksesRuangan::class, "ruangan_lemasmil_id", "id");
+    }
 }

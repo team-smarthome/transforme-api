@@ -143,8 +143,9 @@ class WbpProfile extends Model
     }
 
     // akses ruangan
-    public function aksesRuanganOtmil(): HasMany
+    public function aksesRuangan(): HasMany
     {
         return $this->hasMany(AksesRuangan::class, 'wbp_profile_id', 'id');
     }
+
 }

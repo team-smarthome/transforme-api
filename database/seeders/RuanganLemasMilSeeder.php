@@ -17,7 +17,7 @@ class RuanganLemasMilSeeder extends Seeder
     {
         $ruangan_lemasmil = [
             [
-                'id' => "db10dd62-c048-44aa-a85e-9c29551704d2",
+                'id' => "db10dd62-c048-44bb-a85e-9c2955170420",
                 'nama_ruangan_lemasmil' => 'ruangan_lemasmil_1',
                 'jenis_ruangan_lemasmil' => 'jenis_ruangan_lemasmil_1',
                 'lokasi_lemasmil_id' => '48633be0-b005-4029-8bbb-293db9564ba0',
