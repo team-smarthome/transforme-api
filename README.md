@@ -1,6 +1,6 @@
 # SIRAM DEV BE
 
-## Pastikan anda punya versi PHP 8.2 atau yang terbaru
+## Pastikan anda punya versi PHP  Minimal 8.2 atau yang terbaru
 
 ## Pastikan anda menjalankan server mysql di port 3306 serta user root dengan password root
 
