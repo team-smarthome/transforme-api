@@ -48,13 +48,13 @@ class AksesRuangan extends Model
         return $this->hasOne(WbpProfile::class, 'id', 'wbp_profile_id');
     }
 
-    public function ruanganOtmil(): hasMany
+    public function ruanganOtmil(): BelongsTo
     {
-        return $this->hasMany(RuanganOtmil::class, "id", "ruangan_otmil_id");
+        return $this->belongsTo(RuanganOtmil::class, "id", "ruangan_otmil_id");
     }
 
-    public function ruanganLemasmil(): hasMany 
+    public function ruanganLemasmil(): BelongsTo 
     {
-        return $this->hasMany(RuanganLemasmil::class, "id", "ruangan_lemasmil_id");
+        return $this->hasMbelongsToany(RuanganLemasmil::class, "id", "ruangan_lemasmil_id");
     }
 }
