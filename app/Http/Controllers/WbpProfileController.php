@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\WbpProfile;
 use App\Helpers\ApiResponse;
+use App\Http\Requests\KasusRequest;
 use App\Http\Requests\WbpProfileRequest;
 use App\Http\Resources\WbpProfileResource;
 use App\Models\Kasus;
@@ -50,19 +51,43 @@ class WbpProfileController extends Controller
                 'provinsi',
                 'kota',
                 'agama',
+                'pangkat',
+                'kesatuan',
                 'statusKawin',
                 'pendidikan',
                 'bidangKeahlian',
                 'statusWbpKasus',
                 'gelang',
                 'hunianWbpOtmil.lokasiOtmil',
-                'hunianWbpLemasmil',
+                'hunianWbpLemasmil.lokasiLemasmil',
                 'matra',
                 'kasus.jenisPerkara.kategoriPerkara',
                 'aksesRuangan.ruanganOtmilAkses',
                 'aksesRuangan.ruanganLemasmilAkses',
             ])->where(function ($query)
-            use ($nrp, $nama, $is_isolated, $alamat, $tanggal_penetapan_tersangka, $tanggal_penetapan_terdakwa, $tanggal_penetapan_terpidana, $tanggal_ditahan_otmil, $tanggal_ditahan_lemasmil, $tanggal_masa_penahanan_otmil) {
+            use (
+                $nrp,
+                $nama,
+                $is_isolated,
+                $alamat,
+                $nama_pangkat,
+                $nama_lokasi_kesatuan,
+                $nama_lokasi_lemasmil,
+                $nama_lokasi_otmil,
+                $vonis_bulan,
+                $vonis_tahun,
+                $nama_kategori_perkara,
+                $nama_hunian_wbp_otmil,
+                $nama_matra,
+                $nama_hunian_wbp_lemasmil,
+                $nama_kesatuan,
+                $tanggal_penetapan_tersangka,
+                $tanggal_penetapan_terdakwa,
+                $tanggal_penetapan_terpidana,
+                $tanggal_ditahan_otmil,
+                $tanggal_ditahan_lemasmil,
+                $tanggal_masa_penahanan_otmil
+            ) {
                 if (!empty($nrp)) {
                     $query->where('nrp', 'LIKE', '%' . $nrp . '%');
                 }
@@ -77,6 +102,64 @@ class WbpProfileController extends Controller
 
                 if (!empty($alamat)) {
                     $query->where('alamat', 'LIKE', '%' . $alamat . '%');
+                }
+
+                if (!empty($nama_pangkat)) {
+                    $query->orWhereHas('pangkat', function ($q) use ($nama_pangkat) {
+                        $q->where('nama_pangkat', 'LIKE', '%' . $nama_pangkat . '%');
+                    });
+                }
+
+                if (!empty($nama_kesatuan)) {
+                    $query->orWhereHas('kesatuan', function ($q) use ($nama_kesatuan) {
+                        $q->where('nama_kesatuan', 'LIKE', '%' . $nama_kesatuan . '%');
+                    });
+                }
+
+                if (!empty($nama_lokasi_kesatuan)) {
+                    $query->orWhereHas('kesatuan.lokasiKesatuan', function ($q) use ($nama_lokasi_kesatuan) {
+                        $q->where('nama_lokasi_kesatuan', 'LIKE', '%' . $nama_lokasi_kesatuan . '%');
+                    });
+                }
+                if (!empty($nama_lokasi_otmil)) {
+                    $query->orWhereHas('hunianWbpOtmil.lokasiOtmil', function ($q) use ($nama_lokasi_otmil) {
+                        $q->where('nama_lokasi_otmil', 'LIKE', '%' . $nama_lokasi_otmil . '%');
+                    });
+                }
+                if (!empty($nama_lokasi_lemasmil)) {
+                    $query->orWhereHas('hunianWbpLemasmil.lokasiLemasmil', function ($q) use ($nama_lokasi_lemasmil) {
+                        $q->where('nama_lokasi_lemasmil', 'LIKE', '%' . $nama_lokasi_lemasmil . '%');
+                    });
+                }
+                if (!empty($vonis_bulan)) {
+                    $query->orWhereHas('kasus.jenisPerkara', function ($q) use ($vonis_bulan) {
+                        $q->where('vonis_bulan_perkara', 'LIKE', '%' . $vonis_bulan . '%');
+                    });
+                }
+                if (!empty($vonis_tahun)) {
+                    $query->orWhereHas('kasus.jenisPerkara', function ($q) use ($vonis_tahun) {
+                        $q->where('vonis_tahun_perkara', 'LIKE', '%' . $vonis_tahun . '%');
+                    });
+                }
+                if (!empty($nama_kategori_perkara)) {
+                    $query->orWhereHas('kasus.jenisPerkara.kategoriPerkara', function ($q) use ($nama_kategori_perkara) {
+                        $q->where('nama_kategori_perkara', 'LIKE', '%' . $nama_kategori_perkara . '%');
+                    });
+                }
+                if (!empty($nama_hunian_wbp_otmil)) {
+                    $query->orWhereHas('hunianWbpOtmil', function ($q) use ($nama_hunian_wbp_otmil) {
+                        $q->where('nama_hunian_wbp_otmil', 'LIKE', '%' . $nama_hunian_wbp_otmil . '%');
+                    });
+                }
+                if (!empty($nama_hunian_wbp_lemasmil)) {
+                    $query->orWhereHas('hunianWbpLemasmil', function ($q) use ($nama_hunian_wbp_lemasmil) {
+                        $q->where('nama_hunian_wbp_lemasmil', 'LIKE', '%' . $nama_hunian_wbp_lemasmil . '%');
+                    });
+                }
+                if (!empty($nama_matra)) {
+                    $query->orWhereHas('matra', function ($q) use ($nama_matra) {
+                        $q->where('nama_matra', 'LIKE', '%' . $nama_matra . '%');
+                    });
                 }
 
                 if (!empty($tanggal_penetapan_tersangka)) {
@@ -129,26 +212,23 @@ class WbpProfileController extends Controller
         }
     }
 
-    public function store(WbpProfileRequest $request)
+    public function store(WbpProfileRequest $requestWbp)
     {
         DB::beginTransaction();
 
         try {
-            $data = $request->validated();
+            $data = $requestWbp->validated();
 
             // Set default value for is_sick if not provided
             if (!isset($data['is_sick'])) {
                 $data['is_sick'] = 0;
             }
-
-            // Set tanggal_lahir to null if empty or '0000-00-00'
             if (!empty($data['tanggal_lahir']) && $data['tanggal_lahir'] === '0000-00-00') {
                 $data['tanggal_lahir'] = null;
             }
 
-            // Handle foto_wajah
-            if ($request->has('foto_wajah')) {
-                $base64Image = $request->input('foto_wajah');
+            if ($requestWbp->has('foto_wajah')) {
+                $base64Image = $requestWbp->input('foto_wajah');
 
                 $image = str_replace('data:image/jpeg;base64,', '', $base64Image);
                 $image = str_replace(' ', '+', $image);
@@ -163,11 +243,8 @@ class WbpProfileController extends Controller
                 $data['foto_wajah'] = $imageName;
             }
 
-            // Handle kasus_id
+            // Handle kasus
             if (empty($data['kasus_id'])) {
-                // Check if nama_kasus is provided
-
-                // Create new kasus entry if kasus_id is empty
                 $data['kasus_id'] = '';
 
                 $kasusData = [
@@ -211,50 +288,18 @@ class WbpProfileController extends Controller
     }
 
 
+    public function destroy(Request $request)
+    {
+        $request->validate([
+            'wbp_profile_id' => 'required|string|max:36'
+        ]);
 
+        $wbpProfile_id = $request->input('wbp_profile_id');
+        $dataWbpProfile = WbpProfile::where('id', $wbpProfile_id)->firstOrFail();
+        $dataWbpProfile->delete();
 
-    // public function store(WbpProfileRequest $request)
-    // {
-    //     try {
-    //         $data = $request->validated();
-
-    //         if (!isset($data['is_sick'])) {
-    //             $data['is_sick'] = 0;
-    //         }
-
-    //         if (!empty($data['tanggal_lahir']) && $data['tanggal_lahir'] === '0000-00-00') {
-    //             $data['tanggal_lahir'] = null;
-    //         }
-
-    //         $wbpProfile = WbpProfile::create($data); // Simpan entitas
-
-    //         // Refresh entitas dari database untuk mendapatkan ID yang baru saja disimpan
-    //         $wbpProfile->refresh();
-
-    //         // Dapatkan ID dari entitas yang baru saja disimpan
-    //         $id = $wbpProfile->id;
-
-    //         if ($request->has('foto_wajah')) {
-    //             $base64Image = $request->input('foto_wajah');
-
-    //             // Buat nama file foto berdasarkan ID
-    //             $imageName = $id . '.jpeg';
-    //             $filePath = str_replace('\\', '/', $imageName);
-    //             Storage::disk('public')->put($filePath, $base64Image);
-
-    //             // Simpan file foto dengan nama yang telah Anda buat
-    //             // Storage::disk('public')->put('foto_wajah/' . $imageName, base64_decode($base64Image));
-
-    //             // Simpan nama file foto ke dalam entitas
-    //             $wbpProfile->update(['foto_wajah' => $imageName]);
-    //         }
-
-    //         return response()->json([
-    //             'status' => 'OK',
-    //             'message' => 'Successfully created data.',
-    //         ], 201);
-    //     } catch (\Exception $e) {
-    //         return ApiResponse::error('Failed to create data.', $e->getMessage());
-    //     }
-    // }
+        return ApiResponse::deleted([
+            'message' => 'Data deleted successfully'
+        ]);
+    }
 }
