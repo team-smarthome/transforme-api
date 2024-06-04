@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+
 
 class Kegiatan extends Model
 {
@@ -48,5 +50,10 @@ class Kegiatan extends Model
     public function wbpProfile(): BelongsToMany 
     {
         return $this->belongsToMany(WbpProfile::class, 'kegiatan_wbp', 'kegiatan_id', 'wbp_profile_id');
+    }
+
+    public function penilaianKegiatanWbp():HasMany
+    {
+        return $this->hasMany(PenilaianKegiatanWbp::class, 'kegiatan_id', 'id');
     }
 }
