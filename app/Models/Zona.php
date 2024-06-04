@@ -22,4 +22,9 @@ class Zona extends Model
     {
         return $this->hasMany(RuanganLemasmil::class, 'zona_id', 'id');
     }
+
+    public function ruanganOtmil()
+    {
+        return $this->hasMany(RuanganOtmil::class, 'zona_id', 'id');
+    }
 }

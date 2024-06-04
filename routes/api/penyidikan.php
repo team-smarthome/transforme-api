@@ -1,17 +1,17 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\PenyidikanController;
+use App\Http\Controllers\HakimController;
 use App\Http\Middleware\AuthSanctumMiddleware;
 
 Route::middleware([AuthSanctumMiddleware::class . ':operator,admin,superadmin'])->group(function () {
-    Route::get('penyidikan', [PenyidikanController::class, 'index']);
-    Route::post('penyidikan', [PenyidikanController::class, 'store']);
+    Route::get('hakim', [HakimController::class, 'index']);
+    Route::post('hakim', [HakimController::class, 'store']);
 });
 
 Route::middleware([AuthSanctumMiddleware::class . ':admin,superadmin'])->group(function () {
-    Route::post('penyidikan', [PenyidikanController::class, 'store']);
-    Route::put('penyidikan', [PenyidikanController::class, 'update']);
-    Route::delete('penyidikan', [PenyidikanController::class, 'destroy']);
+    Route::post('hakim', [HakimController::class, 'store']);
+    Route::put('hakim', [HakimController::class, 'update']);
+    Route::delete('hakim', [HakimController::class, 'destroy']);
 
 });

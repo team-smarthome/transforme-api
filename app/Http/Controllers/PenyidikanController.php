@@ -129,7 +129,7 @@ class PenyidikanController extends Controller
             $penyidikan->zona_waktu = $request->zona_waktu;
 
             if ($penyidikan->save()) {
-                return ApiResponse::success('Penyidikan updated', $penyidikan);
+                return ApiResponse::updated($penyidikan);
             } else {
                 return ApiResponse::error('Failed to update Penyidikan', 'Unknown error', 500);
             }

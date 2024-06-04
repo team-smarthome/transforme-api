@@ -156,4 +156,9 @@ class WbpProfile extends Model
     {
         return $this->hasMany(DokumenBap::class, 'wbp_profile_id', 'id');
     }
+
+    public function gatewayLog():HasMany
+    {
+        return $this->hasMany(GatewayLog::class, 'wbp_profile_id', 'id');
+    }
 }

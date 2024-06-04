@@ -63,9 +63,14 @@ class RuanganOtmil extends Model
         return $this->hasMany(Gateway::class, "ruangan_otmil_id", "id");
     }
 
-    public function aksesRuangan(): HasMany
+    public function zona(): BelongsTo
     {
-        return $this->hasMany(AksesRuangan::class, "ruangan_otmil_id", "id");
+        return $this->belongsTo(Zona::class, 'zona_id', 'id');
+    }
+
+    public function kegiatan(): HasMany
+    {
+        return $this->hasMany(Kegiatan::class, 'ruangan_otmil_id', 'id');
     }
 
     public function petugasShift() : HasMany
