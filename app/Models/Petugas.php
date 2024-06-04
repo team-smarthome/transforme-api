@@ -106,4 +106,8 @@ class Petugas extends Model
   {
     return $this->hasOne(PetugasShift::class, 'petugas_id', 'id');
   }
+  public function shift(): BelongsTo
+  {
+    return $this->belongsTo(Shift::class, 'petugas_id', 'id');
+  }
 }
