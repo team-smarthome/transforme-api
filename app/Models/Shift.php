@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Shift extends Model
 {
@@ -27,9 +27,8 @@ class Shift extends Model
   {
     return $this->hasMany(PetugasShift::class, 'shift_id', 'id');
   }
-
-  public function petugas(): HasMany
+  public function schedule(): HasOne
   {
-    return $this->hasManyThrough(Petugas::class, PetugasShift::class, 'shift_id', 'id', 'id', 'petugas_id');
+    return $this->hasOne(Schedule::class, 'shift_id', 'id');
   }
 }
