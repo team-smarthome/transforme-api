@@ -5,15 +5,27 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+
 
 class Schedule extends Model
 {
-    use HasFactory, SoftDeletes, HasUuids;
+  use SoftDeletes, HasUuids;
+  protected $table = 'schedule';
+  protected $keyType = 'uuid';
+  public $incrementing = false;
+  public $timestamps = true;
 
-    public function petugasShift() : HasMany
-    {
-        return $this->hasMany(PetugasShift::class, 'schedule_id', 'id');
-    }
+  protected $fillable = [
+    'tanggal',
+    'bulan',
+    'tahun',
+    'shift_id',
+  ];
+
+  public function petugas_shift(): HasMany
+  {
+    return $this->hasMany(PetugasShift::class, 'schedule_id', 'id');
+  }
 }

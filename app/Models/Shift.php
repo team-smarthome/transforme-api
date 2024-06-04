@@ -11,20 +11,20 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Shift extends Model
 {
-    use SoftDeletes, HasUuids;
-    protected $table = 'shift';
-    protected $keyType = 'uuid';
-    public $incrementing = false;
-    public $timestamps = true;
+  use SoftDeletes, HasUuids;
+  protected $table = 'shift';
+  protected $keyType = 'uuid';
+  public $incrementing = false;
+  public $timestamps = true;
 
-    protected $fillable = [
-        'nama_shift',
-        'waktu_mulai',
-        'waktu_selesai'
-    ];
+  protected $fillable = [
+    'nama_shift',
+    'waktu_mulai',
+    'waktu_selesai'
+  ];
 
-    public function petugasShift(): HasMany
-    {
-        return $this->hasMany(PetugasShift::class, 'shift_id', 'id');
-    }
+  public function petugas_shift(): HasMany
+  {
+    return $this->hasMany(PetugasShift::class, 'shift_id', 'id');
+  }
 }

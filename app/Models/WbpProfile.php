@@ -161,4 +161,9 @@ class WbpProfile extends Model
     {
         return $this->hasMany(GatewayLog::class, 'wbp_profile_id', 'id');
     }
+
+    public function penilaianKegiatanWbp():HasMany
+    {
+        return $this->hasMany(PenilaianKegiatanWbp::class, 'wbp_profile_id', 'id');
+    }
 }

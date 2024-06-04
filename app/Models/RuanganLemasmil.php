@@ -30,42 +30,46 @@ class RuanganLemasmil extends Model
     'lantai_lemasmil_id'
   ];
 
-    public function gelang(): HasMany
-    {
-        return $this->hasMany(Gelang::class, 'ruangan_lemasmil_id', 'id');
-    }
-    public function kamera(): HasMany
-    {
-        return $this->hasMany(Kamera::class, 'ruangan_lemasmil_id', 'id');
-    }
+  public function gelang(): HasMany
+  {
+    return $this->hasMany(Gelang::class, 'ruangan_lemasmil_id', 'id');
+  }
+  public function kamera(): HasMany
+  {
+    return $this->hasMany(Kamera::class, 'ruangan_lemasmil_id', 'id');
+  }
 
-    public function lokasiLemasmil(): BelongsTo
-    {
-        return $this->belongsTo(LokasiLemasmil::class, 'lokasi_lemasmil_id', 'id');
-    }
+  public function lokasiLemasmil(): BelongsTo
+  {
+    return $this->belongsTo(LokasiLemasmil::class, 'lokasi_lemasmil_id', 'id');
+  }
 
-    public function zona(): BelongsTo
-    {
-        return $this->belongsTo(Zona::class, 'zona_id', 'id');
-    }
+  public function zona(): BelongsTo
+  {
+    return $this->belongsTo(Zona::class, 'zona_id', 'id');
+  }
 
-    public function lantaiLemasmil(): BelongsTo
-    {
-        return $this->belongsTo(LantaiLemasmil::class, 'lantai_lemasmil_id', 'id');
-    }
+  public function lantaiLemasmil(): BelongsTo
+  {
+    return $this->belongsTo(LantaiLemasmil::class, 'lantai_lemasmil_id', 'id');
+  }
 
-    public function aksesRuangan(): HasMany
-    {
-        return $this->hasMany(AksesRuangan::class, "ruangan_lemasmil_id", "id");
-    }
+  public function aksesRuangan(): HasMany
+  {
+    return $this->hasMany(AksesRuangan::class, "ruangan_lemasmil_id", "id");
+  }
 
-    public function petugasShift(): HasMany
-    {
-        return $this->hasMany(PetugasShift::class, 'ruangan_otmil_id', 'id');
-    }
+  public function kegiatan(): HasMany
+  {
+    return $this->hasMany(Kegiatan::class, 'ruangan_otmil_id', 'id');
+  }
+  public function aset(): HasMany
+  {
+    return $this->hasMany(Aset::class, 'ruangan_lemasmil_id', 'id');
+  }
 
-    public function kegiatan(): HasMany
-    {
-        return $this->hasMany(Kegiatan::class, 'ruangan_otmil_id', 'id');
-    }
+  public function petugas_shift(): HasMany
+  {
+    return $this->hasMany(PetugasShift::class, 'ruangan_lemasmil_id', 'id');
+  }
 }
