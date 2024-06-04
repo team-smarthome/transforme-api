@@ -65,29 +65,8 @@ class WbpProfileController extends Controller
                 'aksesRuangan.ruanganOtmilAkses',
                 'aksesRuangan.ruanganLemasmilAkses',
             ])->where(function ($query)
-            use (
-                $nrp,
-                $nama,
-                $is_isolated,
-                $alamat,
-                $nama_pangkat,
-                $nama_lokasi_kesatuan,
-                $nama_lokasi_lemasmil,
-                $nama_lokasi_otmil,
-                $vonis_bulan,
-                $vonis_tahun,
-                $nama_kategori_perkara,
-                $nama_hunian_wbp_otmil,
-                $nama_matra,
-                $nama_hunian_wbp_lemasmil,
-                $nama_kesatuan,
-                $tanggal_penetapan_tersangka,
-                $tanggal_penetapan_terdakwa,
-                $tanggal_penetapan_terpidana,
-                $tanggal_ditahan_otmil,
-                $tanggal_ditahan_lemasmil,
-                $tanggal_masa_penahanan_otmil
-            ) {
+            use ($nrp, $nama, $is_isolated, $alamat, $nama_pangkat, $nama_lokasi_kesatuan, $nama_lokasi_lemasmil, $nama_lokasi_otmil, $vonis_bulan, $vonis_tahun, $nama_kategori_perkara, $nama_hunian_wbp_otmil, $nama_matra,
+            $nama_hunian_wbp_lemasmil, $nama_kesatuan, $tanggal_penetapan_tersangka, $tanggal_penetapan_terdakwa, $tanggal_penetapan_terpidana, $tanggal_ditahan_otmil, $tanggal_ditahan_lemasmil, $tanggal_masa_penahanan_otmil) {
                 if (!empty($nrp)) {
                     $query->where('nrp', 'LIKE', '%' . $nrp . '%');
                 }
@@ -212,7 +191,7 @@ class WbpProfileController extends Controller
         }
     }
 
-    public function store(WbpProfileRequest $requestWbp)
+    public function store(WbpProfileRequest $requestWbp, KasusRequest $requestKasus)
     {
         DB::beginTransaction();
 
@@ -243,30 +222,30 @@ class WbpProfileController extends Controller
                 $data['foto_wajah'] = $imageName;
             }
 
+            $dataKasus = $requestKasus->validate();
+
             // Handle kasus
-            if (empty($data['kasus_id'])) {
-                $data['kasus_id'] = '';
+            if (empty($dataKasus['kasus_id'])) {
+                $dataKasus['kasus_id'] = '';
 
                 $kasusData = [
-                    'nama_kasus' => $data['nama_kasus'] ?? null,
-                    'nomor_kasus' => $data['nomor_kasus'] ?? null,
-                    'wbp_profile_id' => $data['wbp_profile_id'] ?? null,
-                    'kategori_perkara_id' => $data['kategori_perkara_id'] ?? null,
-                    'jenis_perkara_id' => $data['jenis_perkara_id'] ?? null,
-                    'lokasi_kasus' => $data['lokasi_kasus'] ?? null,
-                    'waktu_kejadian' => $data['waktu_kejadian'] ?? null,
-                    'tanggal_pelimpahan_kasus' => $data['tanggal_pelimpahan_kasus'] ?? null,
-                    'waktu_pelaporan_kasus' => $data['waktu_pelaporan_kasus'] ?? null,
-                    'zona_waktu' => $data['zona_waktu'] ?? null,
-                    'tanggal_mulai_penyidikan' => $data['tanggal_mulai_penyidikan'] ?? null,
-                    'tanggal_mulai_sidang' => $data['tanggal_mulai_sidang'] ?? null,
+                    'nama_kasus' => $dataKasus['nama_kasus'] ?? null,
+                    'nomor_kasus' => $dataKasus['nomor_kasus'] ?? null,
+                    'wbp_profile_id' => $dataKasus['wbp_profile_id'] ?? null,
+                    'kategori_perkara_id' => $dataKasus['kategori_perkara_id'] ?? null,
+                    'jenis_perkara_id' => $dataKasus['jenis_perkara_id'] ?? null,
+                    'lokasi_kasus' => $dataKasus['lokasi_kasus'] ?? null,
+                    'waktu_kejadian' => $dataKasus['waktu_kejadian'] ?? null,
+                    'tanggal_pelimpahan_kasus' => $dataKasus['tanggal_pelimpahan_kasus'] ?? null,
+                    'waktu_pelaporan_kasus' => $dataKasus['waktu_pelaporan_kasus'] ?? null,
+                    'zona_waktu' => $dataKasus['zona_waktu'] ?? null,
+                    'tanggal_mulai_penyidikan' => $dataKasus['tanggal_mulai_penyidikan'] ?? null,
+                    'tanggal_mulai_sidang' => $dataKasus['tanggal_mulai_sidang'] ?? null,
                 ];
 
-                $kasus = Kasus::create($kasusData);
-                $data['kasus_id'] = $kasus->id;
+                $kasusData = Kasus::create($kasusData);
+                $data['kasus_id'] = $kasusData->id;
             } else {
-                // Set kasus_id to empty string if provided
-                // $data['kasus_id'] = '';
                 if (!Str::isUuid($data['kasus_id'])) {
                     throw new \Exception('kasus_id must be in UUID format.');
                 }

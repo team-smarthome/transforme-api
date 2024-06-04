@@ -39,6 +39,11 @@ class LokasiLemasmil extends Model
     return $this->hasMany(LantaiLemasmil::class, 'lokasi_lemasmil_id', 'id');
   }
 
+
+public function petugasShift(): HasMany
+{
+  return $this->hasMany(PetugasShift::class, 'lokasi_otmil_id', 'id');
+}
   public function ruanganLemasmil(): HasMany
   {
     return $this->hasMany(RuanganLemasmil::class, 'lokasi_lemasmil_id', 'id');
