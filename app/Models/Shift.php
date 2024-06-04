@@ -27,4 +27,9 @@ class Shift extends Model
   {
     return $this->hasMany(PetugasShift::class, 'shift_id', 'id');
   }
+
+  public function petugas(): HasMany
+  {
+    return $this->hasManyThrough(Petugas::class, PetugasShift::class, 'shift_id', 'id', 'id', 'petugas_id');
+  }
 }
