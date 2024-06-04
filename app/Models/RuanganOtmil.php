@@ -68,4 +68,9 @@ class RuanganOtmil extends Model
         return $this->hasMany(AksesRuangan::class, "ruangan_otmil_id", "id");
     }
 
+    public function petugasShift() : HasMany
+    {
+        return $this->hasMany(PetugasShift::class, 'ruangan_otmil_id', 'id');
+    }
+
 }
