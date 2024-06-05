@@ -29,25 +29,29 @@ class kesatuanController extends Controller
                         });
                     }
                 });
-                
-            $paginatedData = $query->paginate($perPage);
-            return ApiResponse::success([
-                'data' => KesatuanResource::collection($paginatedData),
-                'pagination' => [
-                    'total' => $paginatedData->total(),
-                    'per_page' => $paginatedData->perPage(),
-                    'current_page' => $paginatedData->currentPage(),
-                    'last_page' => $paginatedData->lastPage(),
-                    'from' => $paginatedData->firstItem(),
-                    'to' => $paginatedData->lastItem(),
-                ]
-            ]);
+                $paginatedData = $query->paginate($request->input('pageSize', ApiResponse::$defaultPagination));
+
+                $resourceCollection = KesatuanResource::collection($paginatedData);
+
+                return ApiResponse::pagination($resourceCollection);
+            // $paginatedData = $query->paginate($perPage);
+            // return ApiResponse::success([
+            //     'data' => KesatuanResource::collection($paginatedData),
+            //     'pagination' => [
+            //         'total' => $paginatedData->total(),
+            //         'per_page' => $paginatedData->perPage(),
+            //         'current_page' => $paginatedData->currentPage(),
+            //         'last_page' => $paginatedData->lastPage(),
+            //         'from' => $paginatedData->firstItem(),
+            //         'to' => $paginatedData->lastItem(),
+            //     ]
+            // ]);
         } catch (\Exception $e) {
             return ApiResponse::error('An error occurred while fetching data.', $e->getMessage());
         }
     }
 
-
+    
     public function store(Request $request)
     {
         $request->validate([

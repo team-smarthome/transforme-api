@@ -10,33 +10,33 @@ use App\Helpers\ApiResponse;
 
 class StatusKawinController extends Controller
 {
-  public function index()
-  {
-    {
-      try {
-        if (request('search')) {
-          $query = StatusKawin::where('nama_status_kawin', 'like', '%' . request('search') . '%')->latest();
-        } else {
-          $query = StatusKawin::latest();
+    public function index()
+    { {
+            $namaStatuskawin = request()->input('nama_status_kawin');
+            try {
+                $query = StatusKawin::query();
+
+                if ($namaStatuskawin){
+                    $query->where('nama_status_kawin', 'like', '%' . $namaStatuskawin . '%');
+                }
+
+                return ApiResponse::paginate($query);
+            } catch (\Exception $e) {
+                return ApiResponse::error('Failed to get Data.', $e->getMessage());
+            }
         }
-
-        return ApiResponse::paginate($query);
-      } catch (\Exception $e) {
-        return ApiResponse::error('Failed to get Data.', $e->getMessage());
-      }
     }
-  }
 
-  public function store(Request $request)
-  {
-    $request->validate([
-      'nama_status_kawin' => 'required|string|max:100'
-    ]);
+    public function store(Request $request)
+    {
+        $request->validate([
+            'nama_status_kawin' => 'required|string|max:100'
+        ]);
 
-    $statusKawin = StatusKawin::create($request->all());
+        $statusKawin = StatusKawin::create($request->all());
 
-    return ApiResponse::success([
-      'data' => $statusKawin
-    ]);
-  }
+        return ApiResponse::success([
+            'data' => $statusKawin
+        ]);
+    }
 }

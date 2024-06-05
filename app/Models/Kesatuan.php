@@ -11,16 +11,16 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Kesatuan extends Model
 {
-  use HasFactory, SoftDeletes, HasUuids;
+    use HasFactory, SoftDeletes, HasUuids;
 
     protected $table = 'kesatuan';
     protected $keyType = 'uuid';
     public $incrementing = false;
-    public $timestamps = true;
+    public $timestamps = false;
 
     protected $fillable = [
-      'nama_kesatuan',
-      'lokasi_kesatuan_id'
+        'nama_kesatuan',
+        'lokasi_kesatuan_id'
     ];
 
     public function lokasiKesatuan(): BelongsTo
@@ -28,7 +28,7 @@ class Kesatuan extends Model
         return $this->belongsTo(LokasiKesatuan::class, 'lokasi_kesatuan_id', 'id'); // banyak kesatuan dimiliki oleh satu lokasi kesatuan
     }
 
-    public function kesatuanWbp():HasMany
+    public function kesatuanWbp(): HasMany
     {
         return $this->hasMany(WbpProfile::class, 'kesatuan_id', 'id');
     }

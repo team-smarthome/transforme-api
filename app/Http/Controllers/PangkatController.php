@@ -12,34 +12,37 @@ use App\Helpers\ApiResponse;
 
 class PangkatController extends Controller
 {
-  public function index()
-  {
+    public function index()
     {
-      try {
-        if (request('search')) {
-          $query = Pangkat::where('nama_pangkat', 'like', '%' . request('search') . '%')->latest();
-        } else {
-          $query = Pangkat::latest();
+        $namaPangkat = request()->input('nama_pangkat');
+
+        try {
+            $query = Pangkat::query();
+
+            if ($namaPangkat) {
+                $query->where('nama_pangkat', 'like', '%' . $namaPangkat . '%');
+            }
+
+            $query->latest();
+
+            return ApiResponse::paginate($query);
+        } catch (\Exception $e) {
+            return ApiResponse::error('Failed to get Data.', $e->getMessage());
         }
-
-        return ApiResponse::paginate($query);
-      } catch (\Exception $e) {
-        return ApiResponse::error('Failed to get Data.', $e->getMessage());
-      }
     }
-  }
 
 
-  public function store(Request $request)
-  {
-    $request->validate([
-      'nama_pangkat' => 'required|string|max:100'
-    ]);
 
-    $pangkat = Pangkat::create($request->all());
+    public function store(Request $request)
+    {
+        $request->validate([
+            'nama_pangkat' => 'required|string|max:100'
+        ]);
 
-    return ApiResponse::success([
-      'data' => $pangkat
-    ]);
-  }
+        $pangkat = Pangkat::create($request->all());
+
+        return ApiResponse::success([
+            'data' => $pangkat
+        ]);
+    }
 }
