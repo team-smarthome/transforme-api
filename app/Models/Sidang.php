@@ -48,14 +48,14 @@ class Sidang extends Model
   }
   public function hakim(): BelongsToMany
   {
-    return $this->belongsToMany(hakim::class, 'pivot_sidang_hakim', 'sidang_id', 'hakim_id')->withPivot('role_ketua');
+    return $this->belongsToMany(Hakim::class, 'pivot_sidang_hakim', 'sidang_id', 'hakim_id')->withPivot('role_ketua');
   }
   public function ahli(): BelongsToMany
   {
-    return $this->belongsToMany(ahli::class, 'pivot_sidang_ahli', 'sidang_id', 'ahli_id');
+    return $this->belongsToMany(Ahli::class, 'pivot_sidang_ahli', 'sidang_id', 'ahli_id');
   }
   public function saksi(): BelongsToMany
   {
-    return $this->belongsToMany(saksi::class, 'pivot_sidang_saksi', 'sidang_id', 'saksi_id');
+    return $this->belongsToMany(Saksi::class, 'pivot_sidang_saksi', 'sidang_id', 'saksi_id');
   }
 }
