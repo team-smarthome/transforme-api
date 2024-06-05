@@ -10,17 +10,25 @@ use App\Helpers\ApiResponse;
 
 class StatusKawinController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     { {
-            $namaStatuskawin = request()->input('nama_status_kawin');
             try {
                 $query = StatusKawin::query();
+                $filterableColumns = [
+                    'nama_status_kawin' => 'nama_status_kawin'
+                ];
 
-                if ($namaStatuskawin){
-                    $query->where('nama_status_kawin', 'like', '%' . $namaStatuskawin . '%');
+                $filter = $request->input('filter', []);
+                foreach ($filterableColumns as $key => $column) {
+                    if (isset($filter[$key])) {
+                        $query->where($column, 'like', '%' . $filter[$key] . '%');
+                    }
                 }
 
-                return ApiResponse::paginate($query);
+                $query->latest();
+                $paginateData = $query->paginate($request->input('pageSize', ApiResponse::$defaultPagination));
+
+                return ApiResponse::pagination($paginateData, 'Successfully get Data');
             } catch (\Exception $e) {
                 return ApiResponse::error('Failed to get Data.', $e->getMessage());
             }

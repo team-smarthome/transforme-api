@@ -12,26 +12,31 @@ use App\Helpers\ApiResponse;
 
 class PangkatController extends Controller
 {
-    public function index()
-    {
-        $namaPangkat = request()->input('nama_pangkat');
 
+    public function index(Request $request)
+    {
         try {
             $query = Pangkat::query();
+            $filterableColumns = [
+                'nama_pangkat' => 'nama_pangkat'
+            ];
 
-            if ($namaPangkat) {
-                $query->where('nama_pangkat', 'like', '%' . $namaPangkat . '%');
+            $filter = $request->input('filter', []);
+
+            foreach ($filterableColumns as $key => $column) {
+                if (isset($filter[$key])) {
+                    $query->where($column, 'like', '%' . $filter[$key] . '%');
+                }
             }
 
             $query->latest();
+            $paginateData = $query->paginate($request->input('pageSize', ApiResponse::$defaultPagination));
 
-            return ApiResponse::paginate($query);
+            return ApiResponse::pagination($paginateData, 'Successfully get Data');
         } catch (\Exception $e) {
             return ApiResponse::error('Failed to get Data.', $e->getMessage());
         }
     }
-
-
 
     public function store(Request $request)
     {

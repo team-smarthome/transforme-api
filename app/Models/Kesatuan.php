@@ -18,6 +18,14 @@ class Kesatuan extends Model
     public $incrementing = false;
     public $timestamps = false;
 
+    public function toArray()
+    {
+        $array = parent::toArray();
+        $array['kesatuan_id'] = $array['id'];
+        unset($array['id']);
+        return $array;
+    }
+
     protected $fillable = [
         'nama_kesatuan',
         'lokasi_kesatuan_id'

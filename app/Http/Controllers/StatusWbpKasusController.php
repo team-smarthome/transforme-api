@@ -8,16 +8,25 @@ use Illuminate\Http\Request;
 
 class StatusWbpKasusController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         try {
-            if (request('search')) {
-                $query = StatusWbpKasus::where('nama_status_wbp_kasus', 'like', '%' . request('search') . '%')->latest();
-            } else {
-                $query = StatusWbpKasus::latest();
+            $query = StatusWbpKasus::query();
+            $filterableColumns = [
+                'nama_status_wbp_kasus' => 'nama_status_wbp_kasus'
+            ];
+
+            $filter = $request->input('filter', []);
+            foreach ($filterableColumns as $key => $column) {
+                if (isset($filter[$key])) {
+                    $query->where($column, 'like', '%' . $filter[$key] . '%');
+                }
             }
 
-            return ApiResponse::paginate($query);
+            $query->latest();
+            $paginateData = $query->paginate($request->input('pageSize', ApiResponse::$defaultPagination));
+
+            return ApiResponse::pagination($paginateData, 'Successfully get Data');
         } catch (\Throwable $e) {
             return ApiResponse::error('Failed to get Data.', $e->getMessage());
         }

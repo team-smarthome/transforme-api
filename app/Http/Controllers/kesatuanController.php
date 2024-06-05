@@ -12,46 +12,46 @@ class kesatuanController extends Controller
 {
     public function index(Request $request)
     {
-        $namaKesatuan = $request->input('nama_kesatuan');
-        $namaLokasiKesatuan = $request->input('nama_lokasi_kesatuan');
-        $perPage = $request->input('per_page', 10);
-
         try {
-            $query = Kesatuan::with('lokasiKesatuan')
-                ->where(function ($query) use ($namaKesatuan, $namaLokasiKesatuan) {
-                    if (!empty($namaKesatuan)) {
-                        $query->where('nama_kesatuan', 'LIKE', '%' . $namaKesatuan . '%');
-                    }
+            $query = Kesatuan::with('lokasiKesatuan');
+            $filterableColumns = [
+                'nama_kesatuan' => 'nama_kesatuan',
+                'nama_lokasi_kesatuan' => 'lokasiKesatuan.nama_lokasi_kesatuan'
+            ];
 
-                    if (!empty($namaLokasiKesatuan)) {
-                        $query->orWhereHas('lokasiKesatuan', function ($q) use ($namaLokasiKesatuan) {
-                            $q->where('nama_lokasi_kesatuan', 'LIKE', '%' . $namaLokasiKesatuan . '%');
+            $filters = $request->input('filter', []);
+
+            foreach ($filterableColumns as $requestKey => $column) {
+                if (isset($filters[$requestKey])) {
+                    if ($requestKey === 'nama_lokasi_kesatuan') {
+                        // Handle the relationship filter
+                        $query->whereHas('lokasiKesatuan', function ($q) use ($filters, $requestKey) {
+                            $q->where('nama_lokasi_kesatuan', 'LIKE', '%' . $filters[$requestKey] . '%');
                         });
+                    } else {
+                        $query->where($column, 'LIKE', '%' . $filters[$requestKey] . '%');
                     }
-                });
-                $paginatedData = $query->paginate($request->input('pageSize', ApiResponse::$defaultPagination));
+                }
+            }
 
-                $resourceCollection = KesatuanResource::collection($paginatedData);
+            $query->latest();
+            $paginatedData = $query->paginate($request->input('pageSize', 10));
+            $resourceCollection = KesatuanResource::collection($paginatedData);
 
-                return ApiResponse::pagination($resourceCollection);
-            // $paginatedData = $query->paginate($perPage);
-            // return ApiResponse::success([
-            //     'data' => KesatuanResource::collection($paginatedData),
-            //     'pagination' => [
-            //         'total' => $paginatedData->total(),
-            //         'per_page' => $paginatedData->perPage(),
-            //         'current_page' => $paginatedData->currentPage(),
-            //         'last_page' => $paginatedData->lastPage(),
-            //         'from' => $paginatedData->firstItem(),
-            //         'to' => $paginatedData->lastItem(),
-            //     ]
-            // ]);
+            // Wrap the paginated data in a LengthAwarePaginator
+            $paginatedData->setCollection($resourceCollection->collection);
+
+            // Pass the LengthAwarePaginator instance to ApiResponse::pagination
+            return ApiResponse::pagination($paginatedData, 'Successfully get data');
         } catch (\Exception $e) {
             return ApiResponse::error('An error occurred while fetching data.', $e->getMessage());
         }
     }
 
-    
+
+
+
+
     public function store(Request $request)
     {
         $request->validate([
