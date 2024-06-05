@@ -15,12 +15,11 @@ class KesatuanResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id' => $this->id,
+            'kesatuan_id' => $this->id,
             'nama_kesatuan' => $this->nama_kesatuan,
             'lokasi_kesatuan_id' => $this->lokasi_kesatuan_id,
             'nama_lokasi_kesatuan' => $this->lokasiKesatuan->nama_lokasi_kesatuan,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at
+            'is_deleted' => $this->deleted_at
         ];
     }
 }

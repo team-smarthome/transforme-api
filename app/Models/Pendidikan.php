@@ -16,6 +16,7 @@ class Pendidikan extends Model
     protected $keyType = 'uuid';
     public $incrementing = false;
     public $timestamps = true;
+    protected $hidden = ['created_at', 'updated_at'];
 
     protected $fillable = ['nama_pendidikan', 'tahun_lulus'];
 
