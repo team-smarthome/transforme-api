@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Helpers\ApiResponse;
 use App\Http\Requests\penugasanRequest;
+use App\Http\Resources\PenugasanResource;
 use App\Models\Penugasan;
 use Exception;
 use Illuminate\Database\QueryException;
@@ -17,16 +18,21 @@ class PenugasanController extends Controller
   public function index(Request $request)
   {
     try {
-      if ($request->has('penugasan_id')) {
-        $penugasan = Penugasan::findOrFail($request->penugasan_id);
-        return response()->json($penugasan, 200);
+      $query = Penugasan::query();
+      $filterableColumns = [
+        'penugasan_id' => 'id',
+        'nama_penugasan' => 'nama_penugasan',
+      ];
+      $filters = $request->input('filter', []);
+      foreach ($filterableColumns as $requestKey => $column) {
+        if (isset($filters[$requestKey])) {
+          $query->where($column, 'like', '%' . $filters[$requestKey] . '%');
+        }
       }
-      if ($request->has('nama_penugasan')) {
-        $query = Penugasan::where('nama_penugasan', 'like', '%' . $request->nama_penugasan . '%')->latest();
-      } else {
-        $query = Penugasan::latest();
-      }
-      return ApiResponse::paginate($query);
+      $query->latest();
+      $paginatedData = $query->paginate($request->input('pageSize', ApiResponse::$defaultPagination));
+      $resourceCollection = PenugasanResource::collection($paginatedData);
+      return ApiResponse::pagination($resourceCollection, 'Successfully get Data');
     } catch (\Exception $e) {
       return ApiResponse::error('Failed to get Data.', $e->getMessage());
     }

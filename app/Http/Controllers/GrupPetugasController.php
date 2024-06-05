@@ -8,7 +8,8 @@ use App\Models\GrupPetugas;
 use Illuminate\Database\QueryException;
 use Exception;
 use App\Http\Requests\GrupPetugasRequest;
-
+use App\Http\Resources\GrupPetugasResource;
+use App\Models\Hakim;
 
 class GrupPetugasController extends Controller
 {
@@ -19,18 +20,25 @@ class GrupPetugasController extends Controller
   public function index(Request $request)
   {
     try {
-      if ($request->has('grup_petugas_id')) {
-        $grup_petugas = GrupPetugas::findOrFail($request->grup_petugas_id);
-        return response()->json($grup_petugas, 200);
+      $query = GrupPetugas::query();
+      $filterableColumns = [
+        "grup_petugas_id" => "id",
+        "nama_grup_petugas" => "nama_grup_petugas",
+        "ketua_grup" => "ketua_grup",
+      ];
+
+      $filters = $request->input('filter', []);
+
+      foreach ($filterableColumns as $requestKey => $column) {
+        if (isset($filters[$requestKey])) {
+          $query->where($column, 'like', '%' . $filters[$requestKey] . '%');
+        }
       }
 
-      if ($request->has('nama_grup_petugas')) {
-        $query = GrupPetugas::where('nama_grup_petugas', 'like', '%' . $request->nama_grup_petugas . '%')->latest();
-      } else {
-        $query = GrupPetugas::latest();
-      }
-
-      return ApiResponse::paginate($query);
+      $query->latest();
+      $paginatedData = $query->paginate($request->input('pageSize', ApiResponse::$defaultPagination));
+      $resourceCollection = GrupPetugasResource::collection($paginatedData);
+      return ApiResponse::pagination($resourceCollection, 'Successfully get Data');
     } catch (\Exception $e) {
       return ApiResponse::error('Failed to get Data.', $e->getMessage());
     }
