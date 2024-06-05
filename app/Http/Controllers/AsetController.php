@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Aset;
 use App\Http\Requests\AsetRequest;
+use App\Http\Resources\AsetResource;
 use App\Helpers\ApiResponse;
 use Exception;
 
@@ -13,7 +14,7 @@ class AsetController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         try {
             $query = Aset::with(['tipeAset', 'ruanganOtmil', 'ruanganLemasmil']);
@@ -32,14 +33,21 @@ class AsetController extends Controller
                 'merek' => 'merek',
                 'garansi' => 'garansi'
             ];
+            $filters = request('filter', []);
+
             foreach ($filterableColumns as $requestKey => $column) {
-                if ($value = request($requestKey)) {
-                    $query->where($column, 'like', '%' . $value . '%');
+                if (isset($filters[$requestKey])) {
+                    $query->where($column, 'like', '%' . $filters[$requestKey] . '%');
                 }
-            }
+             }
 
             $query->latest();
-            return ApiResponse::paginate($query);
+            $paginatedData = $query->paginate($request->input('pageSize', ApiResponse::$defaultPagination));
+
+            $resourceCollection = AsetResource::collection($paginatedData);
+
+            return ApiResponse::pagination($resourceCollection);
+            // return ApiResponse::paginate($query);
         } catch (\Exception $e) {
             return ApiResponse::error('Failed to get Data.', $e->getMessage());
         }
