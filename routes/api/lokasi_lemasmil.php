@@ -12,5 +12,4 @@ Route::middleware([AuthSanctumMiddleware::class . ':admin,superadmin'])->group(f
     Route::post('lokasi_lemasmil', [LokasiLemasmilController::class, 'store']);
     Route::put('lokasi_lemasmil', [LokasiLemasmilController::class, 'update']);
     Route::delete('lokasi_lemasmil', [LokasiLemasmilController::class, 'destroy']);
-
 });
