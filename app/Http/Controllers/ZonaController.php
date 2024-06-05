@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Helpers\ApiResponse;
 use App\Http\Requests\ZonaRequest;
+use App\Http\Resources\ZonaResource;
 use App\Models\Zona;
 use Exception;
 use Illuminate\Database\Events\QueryExecuted;
@@ -18,18 +19,39 @@ class ZonaController extends Controller
     public function index(Request $request)
     {
         try {
-            if ($request->has('zona_id')) {
-                $zona = Zona::findOrFail($request->zona_id);
-                return response()->json($zona, 200);
+            // if ($request->has('zona_id')) {
+            //     $zona = Zona::findOrFail($request->zona_id);
+            //     return response()->json($zona, 200);
+            // }
+
+            // if ($request->has('nama_zona')) {
+            //     $query = Zona::where('nama_zona','LIKE','%'. $request->nama_zona . '%')->latest();
+            // } else{
+            //     $query = Zona::latest();
+            // }
+
+            // return ApiResponse::paginate($query);
+            $query = Zona::query();
+            $filterableColumns = [
+                'zona_id' => 'id',
+                'nama_zona' => 'nama_zona',
+                'is_deleted' => 'deleted_at'
+            ];
+
+            $filters = $request->input('filter', []);
+
+            foreach ($filterableColumns as $requestKey => $column) {
+                if (isset($filters[$requestKey])) {
+                    $query->where($column, 'like', '%' . $filters[$requestKey] .'%');
+                }
             }
 
-            if ($request->has('nama_zona')) {
-                $query = Zona::where('nama_zona','LIKE','%'. $request->nama_zona . '%')->latest();
-            } else{
-                $query = Zona::latest();
-            }
+            $query->latest();
+            $paginateDate = $query->paginate($request->input('pageSize', ApiResponse::$defaultPagination));
 
-            return ApiResponse::paginate($query);
+            $resourceCollection = ZonaResource::collection($paginateDate);
+
+            return ApiResponse::pagination($resourceCollection, 'Successfully get Data');
         } catch (\Exception $e) {
             return ApiResponse::error('Failed to get Data.', $e->getMessage());
         }

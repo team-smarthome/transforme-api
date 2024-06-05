@@ -9,16 +9,26 @@ use PhpParser\Node\Stmt\TryCatch;
 
 class MatraController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         try {
-            if (request('nama_matra')) {
-                $keyword = Matra::where('nama_matra', 'LIKE', '%' . request('nama_matra') . '%')->latest();
-            } else {
-                $keyword = Matra::latest();
+            $query = Matra::query();
+            $filterableColumns = [
+                'nama_matra' => 'nama_matra'
+            ];
+
+            $filter = $request->input('filter', []);
+
+            foreach ($filterableColumns as $key => $column) {
+                if (isset($filter[$key])) {
+                    $query->where($column, 'like', '%' . $filter[$key] . '%');
+                }
             }
 
-            return ApiResponse::paginate($keyword);
+            $query->latest();
+            $paginateData = $query->paginate($request->input('pageSize', ApiResponse::$defaultPagination));
+
+            return ApiResponse::pagination($paginateData, 'Successfully get Data');
         } catch (\Exception $e) {
             return ApiResponse::error('Failed to get Data.', $e->getMessage());
         }

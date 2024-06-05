@@ -8,23 +8,46 @@ use App\Models\LokasiOtmil;
 use Illuminate\Database\QueryException;
 use Exception;
 use App\Http\Requests\LokasiOtmilRequest;
+use App\Http\Resources\LokasiOtmilResource;
 
 class LokasiOtmilController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         {
             try {
-                if (request('search')) {
-                    $query = LokasiOtmil::where('nama_lokasi_otmil', 'like', '%' . request('search') . '%')->latest();
-                } else {
-                    $query = LokasiOtmil::latest();
-                }
+                // if (request('search')) {
+                //     $query = LokasiOtmil::where('nama_lokasi_otmil', 'like', '%' . request('search') . '%')->latest();
+                // } else {
+                //     $query = LokasiOtmil::latest();
+                // }
     
-                return ApiResponse::paginate($query);
+                // return ApiResponse::paginate($query);
+                $query = LokasiOtmil::query();
+                $filterableColumns = [
+                    'lokasi_otmil_id' => 'id',
+                    'nama_lokasi_otmil'=> 'nama_lokasi_otmil',
+                    'latitude'=> 'latitude',
+                    'longitude'=> 'longitude'
+                ];
+
+                $filters = $request->input('filter', []);
+
+                foreach ($filterableColumns as $requestKey => $column) {
+                    if (isset($filters[$requestKey])) {
+                        $query->where($column, 'like', '%' . $filters[$requestKey] . '%');
+                    }
+                }
+
+                $query->latest();
+                $paginateData = $query->paginate($request->input('pageSize', ApiResponse::$defaultPagination));
+
+                $resourceCollection = LokasiOtmilResource::collection($paginateData);
+                
+                return ApiResponse::pagination($resourceCollection, 'Successfully get Data');
     
             } catch (\Exception $e) {
                 return ApiResponse::error('Failed to get Data.', $e->getMessage());

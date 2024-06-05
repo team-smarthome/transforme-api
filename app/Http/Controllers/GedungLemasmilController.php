@@ -11,15 +11,25 @@ class GedungLemasmilController extends Controller
 {
     public function index(Request $request)
     {
-        $keyword = $request->input('search');
+        try {
+            $query = GedungLemasmil::query();
+            $filterableColumns = ['nama_gedung_lemasmil'];
+            $filters = $request->input('filter', []);
 
-        $findData = GedungLemasmil::with('lokasiLemasmil')
-            ->where('nama_gedung_lemasmil', 'LIKE', '%' . $keyword . '%')
-            ->get();
+            foreach ($filterableColumns as $column) {
+                if (isset($filters[$column])) {
+                    $query->where($column, 'like', '%' . $filters[$column] . '%');
+                }
+            }
 
-        return ApiResponse::success([
-            'data' => GedungLemasmilResource::collection($findData)
-        ]);
+            $query->latest();
+            $paginatedData = $query->paginate($request->input('pageSize', ApiResponse::$defaultPagination));
+
+            $resourceCollection = GedungLemasmilResource::collection($paginatedData);
+            return ApiResponse::pagination($resourceCollection, 'Successfully get Data');
+        } catch (\Exception $e) {
+            return ApiResponse::error('An error occurred while fetching data.', $e->getMessage());
+        }
     }
 
     public function store(Request $request)

@@ -3,22 +3,35 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\ApiResponse;
+use App\Http\Resources\PendidikanResource;
 use App\Models\Pendidikan;
 use Illuminate\Http\Request;
 
 class PendidikanController extends Controller
 {
-  public function index()
+  public function index(Request $request)
   {
     {
       try {
-        if (request('search')) {
-          $query = Pendidikan::where('nama_pendidikan', 'like', '%' . request('search') . '%')->latest();
-        } else {
-          $query = Pendidikan::latest();
+
+        $query = Pendidikan::query();
+        $filterableColumns = [
+          'nama_pendidikan' => 'nama_pendidikan'
+        ];
+
+        $filters = $request->input('filter', []);
+        foreach ($filterableColumns as $requestKey => $column) {
+          if (isset($filters[$requestKey])) {
+            $query->where($column, 'like', '%' . $filters[$requestKey] . '%');
+          }
         }
 
-        return ApiResponse::paginate($query);
+        $query->latest();
+        $paginatedData = $query->paginate($request->input('pageSize', ApiResponse::$defaultPagination));
+
+        $resourceCollection = PendidikanResource::collection($paginatedData);
+
+        return ApiResponse::pagination($resourceCollection, 'Successfully get Data');
       } catch (\Exception $e) {
         return ApiResponse::error('Failed to get Data.', $e->getMessage());
       }

@@ -12,22 +12,26 @@ class GedungOtmilController extends Controller
     public function index(Request $request)
     {
         try {
-            $keyword = $request->input('search');
+            $query = GedungOtmil::query();
+            $filterableColumns = ['nama_gedung_otmil'];
+            $filters = $request->input('filter', []);
 
-            $findData = GedungOtmil::with('lokasiOtmil')
-                ->where('nama_gedung_otmil', 'LIKE', '%' . $keyword . '%')
-                ->orWhereHas('lokasiOtmil', function ($q) use ($keyword) {
-                    $q->where('nama_lokasi_otmil', 'LIKE', '%' . $keyword . '%');
-                })
-                ->get();
+            foreach ($filterableColumns as $column) {
+                if (isset($filters[$column])) {
+                    $query->where($column, 'like', '%' . $filters[$column] . '%');
+                }
+            }
 
-            return ApiResponse::success([
-                'data' => GedungOtmilResource::collection($findData)
-            ]);
+            $query->latest();
+            $paginatedData = $query->paginate($request->input('pageSize', ApiResponse::$defaultPagination));
+
+            $resourceCollection = GedungOtmilResource::collection($paginatedData);
+            return ApiResponse::pagination($resourceCollection, 'Successfully get Data');
         } catch (\Exception $e) {
             return ApiResponse::error('An error occurred while fetching data.', $e->getMessage());
         }
     }
+
 
 
     public function store(Request $request)

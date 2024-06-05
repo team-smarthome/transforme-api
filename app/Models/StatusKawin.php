@@ -16,6 +16,14 @@ class StatusKawin extends Model
     protected $keyType = 'uuid';
     public $incrementing = false;
     public $timestamps = true;
+    protected $hidden = ['created_at', 'updated_at'];
+    public function toArray()
+    {
+        $array = parent::toArray();
+        $array['status_kawin_id'] = $array['id'];
+        unset($array['id']);
+        return $array;
+    }
 
     protected $fillable = ['nama_status_kawin'];
 
