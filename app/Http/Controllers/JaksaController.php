@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Helpers\ApiResponse;
 use App\Http\Requests\JaksaRequest;
+use App\Http\Resources\JaksaResource;
 use App\Models\Jaksa;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Validator;
@@ -18,18 +19,46 @@ class JaksaController extends Controller
     public function index(Request $request)
     {
         try {
-            if ($request->has('jaksa_id')) {
-                $jaksa = Jaksa::findOrFail($request->jaksa_id);
-                return response()->json($jaksa, 200);
+            // if ($request->has('jaksa_id')) {
+            //     $jaksa = Jaksa::findOrFail($request->jaksa_id);
+            //     return response()->json($jaksa, 200);
+            // }
+
+            // if ($request->has('nama_jaksa')) {
+            //     $query = Jaksa::where('nama_jaksa','like','%'. $request->nama_jaksa .'%')->latest();
+            // } else {
+            //     $query = Jaksa::latest();
+            // }
+
+            // return ApiResponse::paginate($query);
+            $query = Jaksa::query();
+            $filterableColumns = [
+                'jaksa_id' => 'id',
+                'nrp_jaksa' => 'nrp_jaksa',
+                'nama_jaksa' => 'nama_jaksa',
+                'alamat' => 'alamat',
+                'nomor_telepon' => 'nomor_telepon',
+                'email' => 'email',
+                'jabatan' => 'jabatan',
+                'spesialisasi_hukum' => 'spesialisasi_hukum',
+                'divisi' => 'divisi',
+                'tanggal_pensiun' => 'tanggal_pensiun'
+            ];
+
+            $filters = $request->input('filter', []);
+
+            foreach ($filterableColumns as $requestKey => $column) {
+                if (isset($filters[$requestKey])) {
+                    $query->where($column, 'like', '%' . $filters[$requestKey] .'%');
+                }
             }
 
-            if ($request->has('nama_jaksa')) {
-                $query = Jaksa::where('nama_jaksa','like','%'. $request->nama_jaksa .'%')->latest();
-            } else {
-                $query = Jaksa::latest();
-            }
+            $query->latest();
+            $paginateData = $query->paginate($request->input('pageSize', ApiResponse::$defaultPagination));
 
-            return ApiResponse::paginate($query);
+            $resourceCollection = JaksaResource::collection($paginateData);
+
+            return ApiResponse::pagination($resourceCollection, 'Successfully get Data');
         } catch (\Exception $e) {
             return ApiResponse::error('Failed to get Data.', $e->getMessage());
         }
