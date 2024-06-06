@@ -3,10 +3,10 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
-use Illuminate\Database\Eloquent\Concerns\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany; // Perbaikan di sini
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class GedungOtmil extends Model
@@ -18,7 +18,7 @@ class GedungOtmil extends Model
     public $incrementing = false;
     public $timestamps = true;
 
-    public $fillable = [
+    protected $fillable = [ // Perbaikan di sini
         'nama_gedung_otmil',
         'lokasi_otmil_id',
         'panjang',
@@ -34,6 +34,6 @@ class GedungOtmil extends Model
 
     public function lantaiOtmil(): HasMany
     {
-        return $this->hasMany(LantaiOtmil::class, 'gedung_otmil_id', 'id');
+        return $this->hasMany(LantaiOtmil::class, "gedung_otmil_id", "id");
     }
 }

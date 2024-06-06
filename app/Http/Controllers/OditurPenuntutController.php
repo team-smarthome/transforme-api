@@ -8,35 +8,58 @@ use App\Models\OditurPenuntut;
 use Illuminate\Database\QueryException;
 use Exception;
 use App\Http\Requests\OditurPenuntutRequest;
+use App\Http\Resources\OditurPenuntutResource;
 
 class OditurPenuntutController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
             try {
-                if(request('oditur_penuntut_id')) {
-                    $query = OditurPenuntut::where('id', request('oditur_penuntut_id'));
-                    if (request('nip') && $query->exists()) {
-                        $query = OditurPenuntut::where('nip', 'like', '%' . request('nip') . '%');
-                        if (request('nama_oditur') && $query->exists()) {
-                            $query->where('nama_oditur', 'like', '%' . request('nama_oditur') . '%');
-                        }  
-                    }  
-                } elseif (request('nip')) {
-                    $query = OditurPenuntut::where('nip', 'like', '%' . request('nip') . '%');
-                    if (request('nama_oditur') && $query->exists()) {
-                        $query->where('nama_oditur', 'like', '%' . request('nama_oditur') . '%');
-                    }  
-                }  elseif(request('nama_oditur')) {
-                    $query = OditurPenuntut::where('nama_oditur', 'like', '%' . request('nama_oditur') . '%')->latest();
-                } else {
-                    $query = OditurPenuntut::latest();
-                }
+                // if(request('oditur_penuntut_id')) {
+                //     $query = OditurPenuntut::where('id', request('oditur_penuntut_id'));
+                //     if (request('nip') && $query->exists()) {
+                //         $query = OditurPenuntut::where('nip', 'like', '%' . request('nip') . '%');
+                //         if (request('nama_oditur') && $query->exists()) {
+                //             $query->where('nama_oditur', 'like', '%' . request('nama_oditur') . '%');
+                //         }  
+                //     }  
+                // } elseif (request('nip')) {
+                //     $query = OditurPenuntut::where('nip', 'like', '%' . request('nip') . '%');
+                //     if (request('nama_oditur') && $query->exists()) {
+                //         $query->where('nama_oditur', 'like', '%' . request('nama_oditur') . '%');
+                //     }  
+                // }  elseif(request('nama_oditur')) {
+                //     $query = OditurPenuntut::where('nama_oditur', 'like', '%' . request('nama_oditur') . '%')->latest();
+                // } else {
+                //     $query = OditurPenuntut::latest();
+                // }
     
-                return ApiResponse::paginate($query);
+                // return ApiResponse::paginate($query);
+                $query = OditurPenuntut::query();
+                $filterableColumns = [
+                    'oditur_penuntut_id' => 'id',
+                    'nip' => 'nip',
+                    'nama_oditur' => 'nama_oditur',
+                    'alamat' => 'alamat'
+                ];
+
+                $filters = $request->input('filter', []);
+
+                foreach ($filterableColumns as $requestKey => $column) {
+                    if (isset($filters[$requestKey])) {
+                        $query->where($column, 'like', '%' . $filters[$requestKey] .'%');
+                    }
+                }
+
+                $query->latest();
+                $paginateData = $query->paginate($request->input('pageSize', ApiResponse::$defaultPagination));
+
+                $resourceCollection = OditurPenuntutResource::collection($paginateData);
+
+                return ApiResponse::pagination($resourceCollection, 'Successfully get Data');
     
             } catch (\Exception $e) {
                 return ApiResponse::error('Failed to get Data.', $e->getMessage());

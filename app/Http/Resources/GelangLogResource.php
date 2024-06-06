@@ -15,8 +15,8 @@ class GelangLogResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id' =>$this->id,
-            'gelang_id' => $this->gelang_id,
+            'gelang_log_id' =>$this->id,
+            'gelang_id' => $this->gelang_id,    
             'nama_gelang' => $this->gelang->nama_gelang,
             'v_gmac' => $this->v_gmac,
             'v_dmac'=> $this->v_dmac,
@@ -31,7 +31,7 @@ class GelangLogResource extends JsonResource
             'n_cutoff_flag'=> $this->n_cutoff_flag,
             'n_type'=> $this->n_type,
             'v_x0' => $this->v_x0,
-            'v_y0' => $this->vy0,
+            'v_y0' => $this->v_y0,
             'v_z0'=> $this->v_z0,
             'd_time' => $this->d_time,
             'n_isavailable' => $this->n_isavailable,
