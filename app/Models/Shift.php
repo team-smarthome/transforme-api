@@ -23,9 +23,9 @@ class Shift extends Model
     'waktu_selesai'
   ];
 
-  public function petugas_shift(): HasMany
+  public function petugas_shift(): HasOne
   {
-    return $this->hasMany(PetugasShift::class, 'shift_id', 'id');
+    return $this->hasOne(PetugasShift::class, 'shift_id', 'id');
   }
   public function schedule(): HasOne
   {
