@@ -15,30 +15,27 @@ class HunianWbpLemasmilController extends Controller
      */
     public function index(Request $request)
     {
-        $perPage = $request->input('per_page', 10);
+        $query = HunianWbpLemasmil::with(['lokasiLemasmil']);
+        $filterableColumns = [
+            'hunian_wbp_lemasmil_id' => 'id',
+            'nama_hunian_wbp_lemasmil' => 'nama_hunian_wbp_lemasmil',
+            'lokasi_lemasmil_id' => 'lokasi_lemasmil_id',
+            'nama_lokasi_lemasmil' => 'lokasiLemasmil.nama_lokasi_lemasmil'
+        ];
+        $filters = $request->input('filter', []);
 
-        if ($request->has('hunian_wbp_lemasmil_id')) {
-            $hunian_wbp_lemasmil = HunianWbpLemasmil::findOrFail($request->hunian_wbp_lemasmil_id);
-            return response()->json($hunian_wbp_lemasmil, 200);
+        foreach ($filterableColumns as $requestKey => $column) {
+            if (isset($filters[$requestKey])) {
+                $query->where($column, 'like', '%' . $filters[$requestKey] . '%');
+            }
         }
 
-        if ($request->has('nama_hunian_wbp_lemasmil')) {
-            $findData = HunianWbpLemasmil::with('lokasiLemasmil')->where('nama_hunian_wbp_lemasmil', 'like', '%' . $request->nama_hunian_wbp_lemasmil . '%')->get();
-        }
+        $paginatedData = $query->paginate($request->input('pageSize', ApiResponse::$defaultPagination));
 
-        $paginatedData = $findData->paginate($perPage);
+        $query->latest();
+        $resourceCollection = HunianWbpLemasmilResource::collection($paginatedData);
 
-        return ApiResponse::success([
-            'data' => HunianWbpLemasmilResource::collection($paginatedData),
-            'pagination' => [
-                'total' => $paginatedData->total(),
-                'per_page' => $paginatedData->perPage(),
-                'current_page' => $paginatedData->currentPage(),
-                'last_page' => $paginatedData->lastPage(),
-                'from' => $paginatedData->firstItem(),
-                'to' => $paginatedData->lastItem(),
-            ]
-        ]);
+        return ApiResponse::pagination($resourceCollection);
     }
 
     /**

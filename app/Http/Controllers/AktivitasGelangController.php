@@ -14,11 +14,43 @@ class AktivitasGelangController extends Controller
      */
     public function index(Request $request)
     {
-        $keyword = $request->input("search");
+        try {
+            $query = AktivitasGelang::with(['wbpProfile']);
+            $filterableColumns = [
+                'gmac' => 'gmac',
+                'dmac' => 'dmac',
+                'baterai' => 'baterai',
+                'step' => 'step',
+                'heartrate' => 'heartrate',
+                'temp' => 'temp',
+                'spo' => 'spo',
+                'systolic' => 'systolic',
+                'diastolic' => 'diastolic',
+                'cutoff_flag' => 'cutoff_flag',
+                'type' => 'type',
+                'x0' => 'x0',
+                'y0' => 'y0',
+                'z0' => 'z0',
+                'wbp_profile_id' => 'wbp_profile_id',
+                'rssi' => 'rssi',
+            ];
 
-        $findData = AktivitasGelang::with("wbpProfile")->where("gmac","like","%".$keyword. '%')->get();
+            $filters = $request->input('filter', []);
 
-        return ApiResponse::success(['data' => AktivitasGelangResource::collection($findData)]);
+            foreach ($filterableColumns as $requestKey => $column) {
+                if (isset($filters[$requestKey])) {
+                    $query->where($column, 'like', '%' . $filters[$requestKey] . '%');
+                }
+            }
+
+            $query->latest();
+            $paginatedData = $query->paginate($request->input('pageSize', ApiResponse::$defaultPagination));
+            $resourceCollection = AktivitasGelangResource::collection($paginatedData);
+            return ApiResponse::pagination($resourceCollection);
+
+        } catch (\Exception $e) {
+            return ApiResponse::error($e);
+        }
     }
 
     /**

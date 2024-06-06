@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\GatewayLog;
 use App\Http\Requests\GatewayLogRequest;
 use App\Helpers\ApiResponse;
+use App\Http\Resources\GatewayLogResource;
 use Exception;
 
 class GatewayLogController extends Controller
@@ -13,49 +14,51 @@ class GatewayLogController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         try {
-            $query = GatewayLog::with([
-                'gateway' => function ($join_query) {
-                    $join_query->select('id', 'nama_gateway', 'status_gateway', 'gmac', 'ruangan_lemasmil_id', 'ruangan_otmil_id')
-                        ->with([
-                            'ruanganLemasmil' => function($join_query) {
-                                $join_query->select('id', 'nama_ruangan_lemasmil', 'jenis_ruangan_lemasmil', 'zona_id', 'lokasi_lemasmil_id')
-                                    ->with('zona:id,nama_zona')
-                                    ->with('lokasiLemasMil:id,nama_lokasi_lemasmil');
-                            },
-                            'ruanganOtmil' => function ($join_query) {
-                                $join_query->select('id', 'nama_ruangan_otmil', 'jenis_ruangan_otmil', 'zona_id', 'lokasi_otmil_id')
-                                    ->with('zona:id,nama_zona')
-                                    ->with('lokasiOtmil:id,nama_lokasi_otmil');
-                            }
-                        ]);
-                },
-                'wbpProfile:id,nama'
-            ]);
-            // ->select('id', 'image', 'gateway_id', 'wbp_profile_id')
-            // ->get();
-    
-            $filterableColumns = [
-                'gateway_id' => 'gateway_id',
-                'wbp_profile_id' => 'wbp_profile_id'
-            ];
-    
-            foreach ($filterableColumns as $requestKey => $column) {
-                if ($value = request($requestKey)) {
-                    $query->where($column, 'like', '%' . $value . '%');
-                }
+            $query = GatewayLog::with('wbpProfile', 'gateway.ruanganOtmil.lokasiOtmil', 'gateway.ruanganLemasmil.lokasiLemasmil');
+
+            $filters = $request->input('filter', []);
+
+            if (isset($filters['nama_gateway'])) {
+                $query->whereHas('gateway', function ($q) use ($filters) {
+                    $q->where('nama_gateway', 'LIKE', '%' . $filters['nama_gateway'] . '%');
+                });
             }
-    
-            // return ApiResponse::success($query);
+            if (isset($filters['nama_wbp'])) {
+                $query->whereHas('wbpProfile', function ($q) use ($filters) {
+                    $q->where('nama', 'LIKE', '%' . $filters['nama_wbp'] . '%');
+                });
+            }
+
+            //
+            if (isset($filters['lokasi_otmil_id'])) {
+                $query->whereHas('gateway.ruanganOtmil', function ($q) use ($filters) {
+                    $q->where('lokasi_otmil_id', 'LIKE', '%' . $filters['lokasi_otmil_id'] . '%');
+                });
+            }
+            if (isset($filters['lokasi_lemasmil_id'])) {
+                $query->whereHas('gateway.ruanganLemasmil', function ($q) use ($filters) {
+                    $q->where('lokasi_lemasmil_id', 'LIKE', '%' . $filters['lokasi_lemasmil_id'] . '%');
+                });
+            }
+            if (isset($filters['nama_lokasi_otmil'])) {
+                $query->whereHas('gateway.ruanganOtmil.lokasiOtmil', function ($q) use ($filters) {
+                    $q->where('nama_lokasi_otmil', 'LIKE', '%' . $filters['nama_lokasi_otmil'] . '%');
+                });
+            }
 
             $query->latest();
-            return ApiResponse::paginate($query);
-        } catch (Exception $e) {
-            return ApiResponse::error($e);
+            $paginatedData = $query->paginate($request->input('pageSize', ApiResponse::$defaultPagination));
+            $resourceCollection = GatewayLogResource::collection($paginatedData);
+
+            return ApiResponse::pagination($resourceCollection, 'Successfully get Data');
+        } catch (\Exception $e) {
+            return ApiResponse::error('Failed to get Data.', $e->getMessage());
         }
     }
+
 
     /**
      * Show the form for creating a new resource.
@@ -83,7 +86,6 @@ class GatewayLogController extends Controller
 
             $gatewayLog->save();
             return ApiResponse::created($gatewayLog);
-
         } catch (Exception $e) {
             return ApiResponse::error($e);
         }
@@ -130,7 +132,6 @@ class GatewayLogController extends Controller
             } else {
                 return ApiResponse::error('Failed to delete Gateway Log.', 'Failed to delete Gateway Log.');
             }
-
         } catch (Exception $e) {
             return ApiResponse::error($e);
         }

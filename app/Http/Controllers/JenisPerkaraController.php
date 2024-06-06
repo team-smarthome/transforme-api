@@ -14,30 +14,52 @@ class JenisPerkaraController extends Controller
      */
     public function index(Request $request)
     {
-        $perPage = $request->input('per_page', 10);
+        try {
+            $query = JenisPerkara::with('kategoriPerkara');
+            $filterData = [
+                'kategori_perkara_id' => 'kategori_perkara_id',
+                'nama_kategori_perkara' => 'kategoriPerkara.nama_kategori_perkara',
+                'nama_jenis_perkara' => 'nama_jenis_perkara',
+                'pasal' => 'pasal',
+                'vonis_tahun_perkara' => 'vonis_tahun_perkara',
+                'vonis_bulan_perkara' => 'vonis_bulan_perkara',
+                'vonis_hari_perkara' => 'vonis_hari_perkara',
+                'jenis_pidana_id' => 'kategoriPerkara.jenis_pidana_id'
+            ];
 
-        if($request->has('jenis_perkara_id')){
-            $jenis_perkara = JenisPerkara::findOrFail($request->jenis_perkara_id);
-            return response()->json($jenis_perkara, 200);
+            $filters = $request->input('filter', []);
+
+            foreach ($filterData as $key => $column) {
+                if (isset($filters[$key])) {
+                    if ($key === 'nama_kategori_perkara') {
+                        $query->whereHas('kategoriPerkara', function ($q) use ($filters, $key) {
+                            $q->where('nama_kategori_perkara', 'LIKE', '%' . $filters[$key] . '%');
+                        });
+                    }
+                    if ($key === 'jenis_pidana_id') {
+                        $query->whereHas('kategoriPerkara', function ($q) use ($filters, $key) {
+                            $q->where('jenis_pidana_id', 'LIKE', '%' . $filters[$key] . '%');
+                        });
+                    } else {
+                        $query->where($column, 'LIKE', '%' . $filters[$key] . '%');
+                    }
+                }
+            }
+
+            $query->latest();
+            $paginatedData = $query->paginate($request->input('pageSize', ApiResponse::$defaultPagination));
+            $resourceCollection = JenisPerkaraResource::collection($paginatedData);
+
+            return ApiResponse::pagination($resourceCollection, 'Successfully get Data');
+        } catch (\Exception $e) {
+            return ApiResponse::error('Failed get data.', $e->getMessage());
         }
 
-        if($request->has('nama_jenis_perkara')){
-            $findData = JenisPerkara::with("kategoriPerkara")->where("nama_jenis_perkara","LIKE","%".$request->nama_jenis_perkara."%");
-        }
-
-        $paginatedData = $findData->paginate($perPage);
-
-        return ApiResponse::success([
-            'data' => JenisPerkaraResource::collection($paginatedData),
-            'pagination' => [
-                'total' => $paginatedData->total(),
-                'per_page' => $paginatedData->perPage(),
-                'current_page' => $paginatedData->currentPage(),
-                'last_page' => $paginatedData->lastPage(),
-                'from' => $paginatedData->firstItem(),
-                'to' => $paginatedData->lastItem(),
+        return ApiResponse::success(
+            [
+                'data' => JenisPerkaraResource::collection($query)
             ]
-        ]);
+        );
     }
 
     /**
@@ -64,7 +86,7 @@ class JenisPerkaraController extends Controller
 
         $jenisPerkara = JenisPerkara::create($request->all());
 
-        return ApiResponse::success(['data'=> new JenisPerkaraResource($jenisPerkara)]);
+        return ApiResponse::success(['data' => new JenisPerkaraResource($jenisPerkara)]);
     }
 
     /**

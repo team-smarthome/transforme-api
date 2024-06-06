@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class WbpProfile extends Model
 {
-    use SoftDeletes, HasUuids;
+    use SoftDeletes;
 
     protected $keyType = 'uuid';
     protected $table = 'wbp_profile';
@@ -20,6 +20,7 @@ class WbpProfile extends Model
     public $timestamps = true;
 
     protected $fillable = [
+        'id',
         'nama',
         'pangkat_id',
         'kesatuan_id',
@@ -60,7 +61,7 @@ class WbpProfile extends Model
         'tanggal_masa_penahanan_otmil'
     ];
 
-    public function aktivitasGelangs()
+    public function aktivitasGelangs(): HasMany
     {
         return $this->hasMany(AktivitasGelang::class);
     }
