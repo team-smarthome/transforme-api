@@ -14,16 +14,27 @@ class KategoriPerkaraController extends Controller
      */
     public function index(Request $request)
     {
-        if ($request->has('kategori_perkara_id')) {
-            $kategori_perkara = KategoriPerkara::findOrFail($request->kategori_perkara_id);
-            return response()->json($kategori_perkara, 200);
-        }
+        try {
+            $query = KategoriPerkara::query();
+            $filterData = [
+                'nama_kategori_perkara' => 'nama_kategori_perkara'
+            ];
 
-        if($request->has('nama_kategori_perkara')){
-            $findData = KategoriPerkara::with('jenisPidana')->where('nama_kategori_perkara','like','%'. $request->nama_kategori_perkara .'%')->get();
+            $filter = $request->input('filter', []);
+
+            foreach ($filterData as $key => $column) {
+                if (isset($filter[$key])) {
+                    $query->where($column, 'like', '%' . $filter[$key] . '%');
+                }
+            }
+
+            $query->latest();
+            $paginateData = $query->paginate($request->input('pageSize', ApiResponse::$defaultPagination));
+
+            return ApiResponse::pagination($paginateData, 'Successfully get Data');
+        } catch (\Exception $e) {
+            return ApiResponse::error('Failed to get data', $e->getMessage());
         }
-        
-        return KategoriPerkaraResource::collection($findData);
     }
 
     /**
@@ -46,7 +57,7 @@ class KategoriPerkaraController extends Controller
 
         $kategoriPerkara = KategoriPerkara::create($request->all());
 
-        return ApiResponse::success(['data' => new KategoriPerkaraResource( $kategoriPerkara ) ]);
+        return ApiResponse::success(['data' => new KategoriPerkaraResource($kategoriPerkara)]);
     }
 
     /**
@@ -68,16 +79,48 @@ class KategoriPerkaraController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request)
     {
-        //
+        try {
+            $id = $request->input('kategori_perkara_id');
+            $dataKategori = KategoriPerkara::find($id);
+            if (!$dataKategori) {
+                return ApiResponse::notFound('Hakim not found');
+            }
+
+            $dataKategori->nama_kategori_perkara = $request->nama_kategori_perkara;
+            $dataKategori->jenis_pidana_id = $request->jenis_pidana_id;
+
+            if ($dataKategori->save()) {
+                $data = $dataKategori->toArray();
+                return ApiResponse::updated($data);
+            } else {
+                return ApiResponse::error('Failed to update kategori perkara.');
+            }
+        } catch (\Exception $e) {
+            return ApiResponse::error('Failed to update kategori perkara.', $e->getMessage());
+        }
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Request $request)
     {
-        //
+        try {
+            $id = $request->input('kategori_perkara_id');
+            $hakim = KategoriPerkara::find($id);
+            if (!$hakim) {
+                return ApiResponse::notFound('kategori perkara not found.');
+            }
+
+            if ($hakim->delete()) {
+                return ApiResponse::deleted();
+            } else {
+                return ApiResponse::error('Failed to delete kategori perkara.');
+            }
+        } catch (\Exception $e) {
+            return ApiResponse::error('Failed to delete kategori perkara.', $e->getMessage());
+        }
     }
 }
