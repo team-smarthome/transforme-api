@@ -31,7 +31,7 @@ class ScheduleController extends Controller
       ];
 
       $filters = $request->input('filter', []);
-
+      
       // Apply filters
       foreach ($filterableColumns as $requestKey => $column) {
         if (isset($filters[$requestKey])) {
