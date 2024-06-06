@@ -15,16 +15,16 @@ class GedungLemasmilResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id' => $this->id,
+            'gedung_lemasmil_id' => $this->id,
             'nama_gedung_lemasmil' => $this->nama_gedung_lemasmil,
-            'lokasi_lemasmil_id' => $this->lokasi_lemasmil_id,
-            'nama_lokasi_lemasmil' => $this->lokasilemasmil->nama_lokasi_lemasmil,
-            'panjang' => $this->panjang,
-            'lebar' => $this->lebar,
-            'posisi_X' => $this->posisi_X,
-            'posisi_Y' => $this->posisi_Y,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at
+            'panjang' => number_format($this->panjang, 2, '.', ''),
+            'lebar' => number_format($this->lebar, 2, '.', ''),
+            'posisi_X' => number_format($this->posisi_X, 2, '.', ''),
+            'posisi_Y' => number_format($this->posisi_Y, 2, '.', ''),
+            'lokasi_lemasmil' => [
+                'lokasi_lemasmil_id' => $this->lokasi_lemasmil_id,
+                'nama_lokasi_lemasmil' => $this->lokasiLemasmil->nama_lokasi_lemasmil
+            ]
         ];
     }
 }

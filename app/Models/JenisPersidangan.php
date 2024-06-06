@@ -15,5 +15,14 @@ class JenisPersidangan extends Model
     protected $keyType = "uuid";
     public $incrementing = false;
     public $timestamps = true;
+    protected $hidden = ['created_at', 'updated_at'];
     protected $fillable = ['nama_jenis_persidangan'];
+
+    public function toArray()
+    {
+        $array = parent::toArray();
+        $array['jenis_persidangan_id'] = $array['id'];
+        unset($array['id']);
+        return $array;
+    }
 }

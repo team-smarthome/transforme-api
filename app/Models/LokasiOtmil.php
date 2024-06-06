@@ -15,13 +15,22 @@ class LokasiOtmil extends Model
   protected $keyType = 'uuid';
   public $incrementing = false;
   public $timestamps =  true;
+  public function toArray()
+  {
+    $array = parent::toArray();
+    $array['lokasi_otmil_id'] = $array['id'];
+    unset($array['id']);
+    return $array;
+  }
+
+  protected $hidden = ['created_at', 'updated_at', 'panjang', 'lebar', 'deleted_at'];
 
   protected $fillable = [
     'nama_lokasi_otmil',
     'latitude',
     'longitude',
-    'panjang',
-    'lebar'
+      'panjang',
+      'lebar'
   ];
 
   public function user(): HasMany

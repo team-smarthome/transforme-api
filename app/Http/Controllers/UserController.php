@@ -13,12 +13,14 @@ use App\Models\LokasiLemasmil;
 use App\Models\Petugas;
 use App\Models\UserLog;
 use App\Models\UserRole;
+use App\Http\Resources\LoginResource;
 use Exception;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Carbon\Carbon;
 
 class UserController extends Controller
 {
@@ -88,8 +90,16 @@ class UserController extends Controller
         'data' => 'Invalid credentials'
       ], JsonResponse::HTTP_UNAUTHORIZED));
     }
+    //  $token = $user->createToken('auth_token')->plainTextToken;
+    $token = $user->createToken(
+      'auth_token',
+      ['*'],                        
+      Carbon::now()->addDays(1)
+    )->plainTextToken;
+    $expiryToken = Carbon::now()->addDays(1);
+    // $expiryToken =  expires_at itu di sanchtum laravel ditambah 1 hari
+    // $expiryToken = $user->tokens()->first()->expires_at->addDay()
 
-    $token = $user->createToken('auth_token')->plainTextToken;
 
     // Menyimpan data login ke dalam tabel user_log
     $userLog = new UserLog(); // Buat instance dari model UserLog
@@ -99,10 +109,12 @@ class UserController extends Controller
     $userLog->save();
     return response()->json([
       'status' => 'success',
-      'message' => 'login successfully',
-      'data' => [
-        'user' => $user,
-        'token' => $token
+      'message' => 'User authenticated successfully',
+      'user' => new LoginResource($user),
+      'auth' => [
+        'token' => $token,
+        'token_expiry' => $expiryToken,
+        'token_type' => 'Bearer',
       ]
     ], JsonResponse::HTTP_OK);
 

@@ -17,17 +17,24 @@ class JenisPidanaController extends Controller
     public function index(Request $request)
     {
         try {
-            if ($request->has('jenis_pidana_id')) {
-                $jenis_pidana = JenisPidana::findOrFail($request->jenis_pidana_id);
-                return response()->json($jenis_pidana, 200);
+            $query = JenisPidana::query();
+            $filterableColumns = [
+                'jenis_pidana_id' => 'id',
+                'nama_jenis_pidana' => 'nama_jenis_pidana'
+            ];
+
+            $filter = $request->input('filter', []);
+
+            foreach ($filterableColumns as $key => $column) {
+                if (isset($filter[$key])) {
+                    $query->where($column, 'like', '%' . $filter[$key] . '%');
+                }
             }
 
-            if ($request->has('nama_jenis_pidana')) {
-                $query = JenisPidana::where('nama_jenis_pidana','LIKE','%'. $request->nama_jenis_pidana .'%')->latest();
-            } else {
-                $query = JenisPidana::latest();
-            }
-            return ApiResponse::paginate($query);
+            $query->latest();
+            $paginateData = $query->paginate($request->input('pageSize', ApiResponse::$defaultPagination));
+
+            return ApiResponse::pagination($paginateData, 'Successfully get Data');
         } catch (\Exception $e) {
             return ApiResponse::error('Failed to get Data.', $e->getMessage());
         }
@@ -105,7 +112,8 @@ class JenisPidanaController extends Controller
         return ApiResponse::deleted();
     }
 
-    public function restore($id){
+    public function restore($id)
+    {
         $jenisPidana = JenisPidana::withTrashed()->findOrFail($id);
         $jenisPidana->restore();
 

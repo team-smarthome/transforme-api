@@ -16,6 +16,14 @@ class Matra extends Model
     public $incrementing = false;
     protected $keyType = 'uuid';
     public $timestamps = true;
+    protected $hidden = ['created_at', 'updated_at'];
+    public function toArray()
+    {
+        $array = parent::toArray();
+        $array['matra_id'] = $array['id'];
+        unset($array['id']);
+        return $array;
+    }
     protected $fillable = ['nama_matra'];
 
     public function matraWbp(): HasMany

@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class KameraRequest extends FormRequest
 {
@@ -31,5 +33,13 @@ class KameraRequest extends FormRequest
       "model" => "nullable|string|max:100",
       "status_kamera" => "nullable|string|max:100"
     ];
+  }
+  public function failedValidation(Validator $validator)
+  {
+    throw new HttpResponseException(response([
+      "status" => "NO",
+      "message" => "Validation Error",
+      "errors" => $validator->getMessageBag()
+    ], 422));
   }
 }

@@ -8,6 +8,7 @@ use App\Models\Ahli;
 use Illuminate\Database\QueryException;
 use Exception;
 use App\Http\Requests\AhliRequest;
+use App\Http\Resources\AhliResource;
 
 class AhliController extends Controller
 {
@@ -17,18 +18,40 @@ class AhliController extends Controller
     public function index(Request $request)
     {
         try {
-            if ($request->has('ahli_id')) {
-                $ahli = Ahli::findOrFail($request->ahli_id);
-                return response()->json($ahli, 200);
+            // if ($request->has('ahli_id')) {
+            //     $ahli = Ahli::findOrFail($request->ahli_id);
+            //     return response()->json($ahli, 200);
+            // }
+
+            // if ($request->has('nama_ahli')) {
+            //     $query = Ahli::where('nama_ahli','like','%'. $request->nama_ahli . '%')->latest();
+            // } else {
+            //     $query = Ahli::latest();
+            // }
+
+            // return ApiResponse::paginate($query);
+            $query = Ahli::query();
+            $filterableColumns = [
+                'ahli_id' => 'id',
+                'nama_ahli' => 'nama_ahli',
+                'bidang_ahli' => 'bidang_ahli',
+                'bukti_keahlian' => 'bukti_keahlian'
+            ];
+
+            $filters = $request->input('filter', []);
+
+            foreach ($filterableColumns as $requestKey => $column) {
+                if (isset($filters[$requestKey])) {
+                    $query->where($column, 'like', '%' . $filters[$requestKey] .'%');
+                }
             }
 
-            if ($request->has('nama_ahli')) {
-                $query = Ahli::where('nama_ahli','like','%'. $request->nama_ahli . '%')->latest();
-            } else {
-                $query = Ahli::latest();
-            }
+            $query->latest();
+            $paginateData = $query->paginate($request->input('pageSize', ApiResponse::$defaultPagination));
 
-            return ApiResponse::paginate($query);
+            $resourceCollection = AhliResource::collection($paginateData);
+
+            return ApiResponse::pagination($resourceCollection, 'Successfully get Data');
         } catch (\Exception $e) {
             return ApiResponse::error('Failed to get Data.', $e->getMessage());
         }

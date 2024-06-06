@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Hakim;
 use App\Http\Requests\HakimRequest;
+use App\Http\Resources\HakimResource;
 use App\Helpers\ApiResponse;
 use Exception;
 
@@ -13,7 +14,7 @@ class HakimController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         try {
             $query = Hakim::query();
@@ -24,14 +25,31 @@ class HakimController extends Controller
                 'alamat' => 'alamat',
                 'departemen' => 'departemen',
             ];
+
+            $filters = $request->input('filter', []);
+
             foreach ($filterableColumns as $requestKey => $column) {
-                if ($value = request($requestKey)) {
-                    $query->where($column, 'like', '%' . $value . '%');
+                if (isset($filters[$requestKey])) {
+                    $query->where($column, 'like', '%' . $filters[$requestKey] . '%');
                 }
             }
 
+            // foreach ($filterableColumns as $requestKey => $column) {
+            //     if ($value = request($requestKey)) {
+            //         $query->where($column, 'like', '%' . $value . '%');
+            //     }
+            // }
+
             $query->latest();
-            return ApiResponse::paginate($query);
+            $paginatedData = $query->paginate($request->input('pageSize', ApiResponse::$defaultPagination));
+                        
+            $resourceCollection = HakimResource::collection($paginatedData);
+
+            return ApiResponse::pagination($resourceCollection);
+            // $resource = HakimResource::collection($data);
+            // return ApiResponse::pagination($data, $resource);
+            // return ApiResponse::paginate($query);
+            // return $query->paginate();
 
         } catch (\Exception $e) {
             return ApiResponse::error('Failed to get Data.', $e->getMessage());

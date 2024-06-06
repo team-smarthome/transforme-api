@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\LantaiLemasmil;
 use App\Http\Requests\LantaiLemasmilRequest;
+use App\Http\Resources\LantaiLemasmilResource;
 use App\Helpers\ApiResponse;
 use Exception;
 
@@ -13,44 +14,72 @@ class LantaiLemasmilController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         try {
-            if (request('lantai_lemasmil_id')) {
-                $query = LantaiLemasmil::with(["lokasiLemasmil", "gedungLemasmil"]) 
-                ->where('id', request('lantai_lemasmil_id'));
-                if(request('nama_lantai') && $query->exists()) {
-                    $query->where('nama_lantai', 'like', '%' . request('nama_lantai') . '%');
-                    if(request('lokasi_lemasmil_id') && $query->exists()) {
-                        $query->where('lokasi_lemasmil_id', 'like', '%' . request('lokasi_lemasmil_id') . '%');
-                        if(request('gedung_lemasmil_id') && $query->exists()) {
-                            $query->where('gedung_lemasmil_id', 'like', '%' . request('gedung_lemasmil_id') . '%');
-                        }
-                    }
+            $query = LantaiLemasmil::with(['lokasiLemasmil', 'gedungLemasmil']);
+
+            $filterableColumns = [
+                'lantai_lemasmil_id' => 'id',
+                'nama_lantai' => 'nama_lantai',
+                'panjang' => 'panjang',
+                'lebar' => 'lebar',
+                'posisi_X' => 'posisi_X',
+                'posisi_Y' => 'posisi_Y',
+                'lokasi_lemasmil_id' => 'lokasi_lemasmil_id',
+                'gedung_lemasmil_id' => 'gedung_lemasmil_id',
+            ];
+
+            $filters = $request->input('filter', []);
+
+            foreach ($filterableColumns as $requestKey => $column) {
+                if (isset($filters[$requestKey])) {
+                    $query->where($column, 'like', '%' . $filters[$requestKey] . '%');
                 }
-            } elseif(request('nama_lantai')) {
-                $query = LantaiLemasmil::with(["lokasiLemasmil", "gedungLemasmil"]) 
-                ->where('nama_lantai', 'like', '%' . request('nama_lantai') . '%')->latest();
-                if(request('lokasi_lemasmil_id') && $query->exists()) {
-                    $query->where('lokasi_lemasmil_id', 'like', '%' . request('lokasi_lemasmil_id') . '%');
-                    if(request('gedung_lemasmil_id') && $query->exists()) {
-                        $query->where('gedung_lemasmil_id', 'like', '%' . request('gedung_lemasmil_id') . '%');
-                    }
-                }
-            } elseif(request('lokasi_lemasmil_id')) {
-                $query = LantaiLemasmil::with(["lokasiLemasmil", "gedungLemasmil"]) 
-                ->where('lokasi_lemasmil_id', 'like', '%' . request('lokasi_lemasmil_id') . '%')->latest();
-                if(request('gedung_lemasmil_id') && $query->exists()) {
-                    $query->where('gedung_lemasmil_id', 'like', '%' . request('gedung_lemasmil_id') . '%');
-                }
-            } elseif(request('gedung_lemasmil_id')) {
-                $query = LantaiLemasmil::with(["lokasiLemasmil", "gedungLemasmil"]) 
-                ->where('gedung_lemasmil_id', 'like', '%' . request('gedung_lemasmil_id') . '%')->latest();
-            } else {
-                $query = LantaiLemasmil::with(["lokasiLemasmil", "gedungLemasmil"])->latest();
             }
 
-            return ApiResponse::paginate($query);
+            $query->latest();
+
+            $paginatedData = $query->paginate($request->input('pageSize', ApiResponse::$defaultPagination));
+            $resourceCollection = LantaiLemasmilResource::collection($paginatedData);
+
+            return ApiResponse::pagination($resourceCollection);
+
+            // if (request('lantai_lemasmil_id')) {
+            //     $query = LantaiLemasmil::with(["lokasiLemasmil", "gedungLemasmil"]) 
+            //     ->where('id', request('lantai_lemasmil_id'));
+            //     if(request('nama_lantai') && $query->exists()) {
+            //         $query->where('nama_lantai', 'like', '%' . request('nama_lantai') . '%');
+            //         if(request('lokasi_lemasmil_id') && $query->exists()) {
+            //             $query->where('lokasi_lemasmil_id', 'like', '%' . request('lokasi_lemasmil_id') . '%');
+            //             if(request('gedung_lemasmil_id') && $query->exists()) {
+            //                 $query->where('gedung_lemasmil_id', 'like', '%' . request('gedung_lemasmil_id') . '%');
+            //             }
+            //         }
+            //     }
+            // } elseif(request('nama_lantai')) {
+            //     $query = LantaiLemasmil::with(["lokasiLemasmil", "gedungLemasmil"]) 
+            //     ->where('nama_lantai', 'like', '%' . request('nama_lantai') . '%')->latest();
+            //     if(request('lokasi_lemasmil_id') && $query->exists()) {
+            //         $query->where('lokasi_lemasmil_id', 'like', '%' . request('lokasi_lemasmil_id') . '%');
+            //         if(request('gedung_lemasmil_id') && $query->exists()) {
+            //             $query->where('gedung_lemasmil_id', 'like', '%' . request('gedung_lemasmil_id') . '%');
+            //         }
+            //     }
+            // } elseif(request('lokasi_lemasmil_id')) {
+            //     $query = LantaiLemasmil::with(["lokasiLemasmil", "gedungLemasmil"]) 
+            //     ->where('lokasi_lemasmil_id', 'like', '%' . request('lokasi_lemasmil_id') . '%')->latest();
+            //     if(request('gedung_lemasmil_id') && $query->exists()) {
+            //         $query->where('gedung_lemasmil_id', 'like', '%' . request('gedung_lemasmil_id') . '%');
+            //     }
+            // } elseif(request('gedung_lemasmil_id')) {
+            //     $query = LantaiLemasmil::with(["lokasiLemasmil", "gedungLemasmil"]) 
+            //     ->where('gedung_lemasmil_id', 'like', '%' . request('gedung_lemasmil_id') . '%')->latest();
+            // } else {
+            //     $query = LantaiLemasmil::with(["lokasiLemasmil", "gedungLemasmil"])->latest();
+            // }
+
+            // return ApiResponse::paginate($query);
         } catch (\Exception $e) {
             return ApiResponse::error('Failed to get Data.', $e->getMessage());
         }

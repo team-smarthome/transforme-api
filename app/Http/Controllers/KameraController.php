@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Helpers\ApiResponse;
 use App\Http\Requests\KameraRequest;
+use App\Http\Resources\KameraResource;
 use App\Models\Kamera;
 use Exception;
 use Illuminate\Database\QueryException;
@@ -14,18 +15,29 @@ class KameraController extends Controller
   public function index(Request $request)
   {
     try {
-      if ($request->has('kamera_id')) {
-        $kamera = Kamera::findOrFail($request->kamera_id);
-        return response()->json($kamera, 200);
+      $query = Kamera::query();
+      $filterableColumns = [
+        'kamera_id' => 'id',
+        'nama_kamera' => 'nama_kamera',
+        'url_rtsp' => 'url_rtsp',
+        'ip_address' => 'ip_address',
+        'ruangan_otmil_id' => 'ruangan_otmil_id',
+        'ruangan_lemasmil_id' => 'ruangan_lemasmil_id',
+        'merk' => 'merk',
+        'model' => 'model',
+        'status_kamera' => 'status_kamera',
+      ];
+      $filters = $request->input('filter', []);
+      foreach ($filterableColumns as $requestKey => $column) {
+        if (isset($filters[$requestKey])) {
+          $query->where($column, 'like', '%' . $filters[$requestKey] . '%');
+        }
       }
+      $query->latest();
+      $paginatedData = $query->paginate($request->input('pageSize', ApiResponse::$defaultPagination));
 
-      if ($request->has('nama_kamera')) {
-        $query = Kamera::where('nama_kamera', 'like', '%' . $request->nama_kamera . '%')->latest();
-      } else {
-        $query = Kamera::latest();
-      }
-
-      return ApiResponse::paginate($query);
+      $resourceCollection = KameraResource::collection($paginatedData);
+      return ApiResponse::pagination($resourceCollection, 'Successfully get Data');
     } catch (\Exception $e) {
       return ApiResponse::error('Failed to get Data.', $e->getMessage());
     }
@@ -65,10 +77,16 @@ class KameraController extends Controller
 
   public function destroy(Request $request)
   {
-    $id = $request->input('id');
-    $kamera = Kamera::findOrFail($id);
-    $kamera->delete();
+    try {
+      $id = $request->input('id');
+      $kamera = Kamera::findOrFail($id);
+      $kamera->delete();
 
-    return ApiResponse::deleted();
+      return ApiResponse::deleted();
+    } catch (QueryException $e) {
+      return ApiResponse::error('Database error', $e->getMessage(), 500);
+    } catch (Exception $e) {
+      return ApiResponse::error('An unexpected error occurred', $e->getMessage(), 500);
+    }
   }
 }
