@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class HunianWbpOtmilResource extends JsonResource
+class BidangKeahlianResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -15,12 +15,11 @@ class HunianWbpOtmilResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'hunian_wbp_otmil_id' => $this->id,
-            'nama_hunian_wbp_otmil' => $this->nama_hunian_wbp_otmil,
-            'lokasi_otmil_id' => $this->lokasi_otmil_id,
-            'nama_lokasi_otmil' => $this->lokasiOtmil->nama_lokasi_otmil,
+            'bidang_keahlian_id' => $this->id,
+            'nama_bidang_keahlian' => $this->nama_bidang_keahlian,
             'created_at' => $this->created_at,
-            'updated_at'=> $this->updated_at
+            'updated_at' => $this->updated_at,
+            'deleted_at' => $this->deleted_at
         ];
     }
 }

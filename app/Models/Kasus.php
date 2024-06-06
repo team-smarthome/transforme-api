@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Kasus extends Model
 {
@@ -65,6 +66,22 @@ class Kasus extends Model
     public function kasusWbp(): HasMany
     {
         return $this->hasMany(WbpProfile::class, 'kasus_id', 'id');
+    }
+
+
+    public function wbpProfilePivot(): BelongsToMany
+    {
+        return $this->belongsToMany(WbpProfile::class, 'pivot_kasus_wbp', 'kasus_id', 'wbp_profile_id')->withPivot('keterangan');
+    }
+
+    public function saksiPivot(): BelongsToMany
+    {
+      return $this->belongsToMany(Saksi::class, 'pivot_kasus_saksi', 'kasus_id', 'saksi_id')->withPivot('keterangan');
+    }
+
+    public function oditurPenyidik(): BelongsToMany
+    {
+      return $this->belongsToMany(OditurPenyidik::class, 'pivot_kasus_oditur', 'kasus_id', 'oditur_penyidikan_id')->withPivot('role_ketua');
     }
 
 }

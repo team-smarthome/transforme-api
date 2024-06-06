@@ -51,6 +51,6 @@ class AuthSanctumMiddleware
             }
         } 
 
-        return response()->json(['status' => "NO", 'message' => 'Token Expired or Token Not Found'], 401);
+        return response()->json(['status' => "error", 'message' => 'Bearer token required'], 401);
     }
 }

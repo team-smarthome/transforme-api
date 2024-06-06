@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Gateway;
 use App\Http\Requests\GatewayRequest;
+use App\Http\Resources\GatewayResource;
 use App\Helpers\ApiResponse;
 use Exception;
 
@@ -13,10 +14,10 @@ class GatewayController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         try {
-            $query = Gateway::with(['ruanganOtmil', 'ruanganLemasmil']);
+            $query = Gateway::with(['ruanganOtmil.zona', 'ruanganLemasmil.zona', 'ruanganOtmil.lokasiOtmil', 'ruanganLemasmil.lokasiLemasmil']);
             $filterableColumns = [
                 'gateway_id' => 'id', 
                 'gmac' => 'gmac',
@@ -26,14 +27,19 @@ class GatewayController extends Controller
                 'status_gateway' => 'status_gateway',
                 'v_gateway_topic' => 'v_gateway_topic'
             ];
+
+            $filters = $request->input('filter', []);
+
             foreach ($filterableColumns as $requestKey => $column) {
-                if ($value = request($requestKey)) {
-                    $query->where($column, 'like', '%' . $value . '%');
+                if (isset($filters[$requestKey])) {
+                    $query->where($column, 'like', '%' . $filters[$requestKey] . '%');
                 }
             }
-
             $query->latest();
-            return ApiResponse::paginate($query);
+            
+            $paginatedData = $query->paginate($request->input('pageSize', ApiResponse::$defaultPagination));
+            $resourceCollection = GatewayResource::collection($paginatedData);
+            return ApiResponse::pagination($resourceCollection);
         } catch (\Exception $e) {
             return ApiResponse::error('Failed to get Data.', $e->getMessage());
         }

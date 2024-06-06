@@ -15,30 +15,27 @@ class HunianWbpOtmilController extends Controller
      */
     public function index(Request $request)
     {
-        $perPage = $request->input('per_page', 10);
+        $query = HunianWbpOtmil::query();
+        $filterableColumns = [
+            'hunian_wbp_otmil_id' => 'id',
+            'nama_hunian_wbp_otmil' => 'nama_hunian_wbp_otmil',
+            'lokasi_otmil_id' => 'lokasi_otmil_id',
+            'nama_lokasi_otmil' => 'lokasiOtmil.nama_lokasi_otmil'
+        ];
 
-        if ($request->has('hunian_wbp_otmil_id')) {
-            $hunian_wbp_otmil = HunianWbpOtmil::findOrFail($request->hunian_wbp_otmil_id);
-            return response()->json($hunian_wbp_otmil, 200);
+        $filters = $request->input('filter', []);
+
+        foreach ($filterableColumns as $requestKey => $column) {
+            if (isset($filters[$requestKey])) {
+                $query->where($column, 'like', '%' . $filters[$requestKey] . '%');
+            }
         }
 
-        if($request->has('nama_hunian_wbp_otmil')) {
-            $findData = HunianWbpOtmil::with('lokasiOtmil')->where('nama_hunian_wbp_otmil','like','%'.$request->nama_hunian_wbp_otmil.'%');
-        }
+        $query->latest();
+        $paginatedData = $query->paginate($request->input('pageSize', ApiResponse::$defaultPagination));
+        $resourceCollection = HunianWbpOtmilResource::collection($paginatedData);
 
-        $paginatedData = $findData->paginate($perPage);
-
-        return ApiResponse::success([
-            'data' => HunianWbpOtmilResource::collection($paginatedData),
-            'pagination' => [
-                'total' => $paginatedData->total(),
-                'per_page' => $paginatedData->perPage(),
-                'current_page' => $paginatedData->currentPage(),
-                'last_page' => $paginatedData->lastPage(),
-                'from' => $paginatedData->firstItem(),
-                'to' => $paginatedData->lastItem(),
-            ]
-        ]);
+        return ApiResponse::pagination($resourceCollection);
     }
 
     /**
