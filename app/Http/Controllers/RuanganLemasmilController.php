@@ -64,6 +64,7 @@ class RuanganLemasmilController extends Controller
         try {
             $ruanganLemasmil = new RuanganLemasmil([
                 'nama_ruangan_lemasmil' => $request->nama_ruangan_lemasmil,
+                'jenis_ruangan_lemasmil' => $request->jenis_ruangan_lemasmil,
                 'lokasi_lemasmil_id' => $request->lokasi_lemasmil_id,
                 'zona_id' => $request->zona_id,
                 'lantai_lemasmil_id' => $request->lantai_lemasmil_id,
@@ -116,6 +117,7 @@ class RuanganLemasmilController extends Controller
             }
 
             $ruanganLemasmil->nama_ruangan_lemasmil = $request->nama_ruangan_lemasmil;
+            $ruanganLemasmil->jenis_ruangan_lemasmil = $request->jenis_ruangan_lemasmil;
             $ruanganLemasmil->lokasi_lemasmil_id = $request->lokasi_lemasmil_id;
             $ruanganLemasmil->zona_id = $request->zona_id;
             $ruanganLemasmil->lantai_lemasmil_id = $request->lantai_lemasmil_id;
