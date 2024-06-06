@@ -60,7 +60,7 @@ class WbpProfile extends Model
         'tanggal_masa_penahanan_otmil'
     ];
 
-    public function aktivitasGelangs()
+    public function aktivitasGelangs(): HasMany
     {
         return $this->hasMany(AktivitasGelang::class);
     }

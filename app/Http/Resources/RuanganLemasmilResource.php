@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class RuanganOtmilResource extends JsonResource
+class RuanganLemasmilResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -15,22 +15,22 @@ class RuanganOtmilResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'ruangan_otmil_id' => $this->id,
-            'nama_ruangan_otmil' => $this->nama_ruangan_otmil,
-            'jenis_ruangan_otmil' => $this->jenis_ruangan_otmil,
-            'lokasi_otmil_id' => $this->lokasi_otmil_id,
-            'nama_lokasi_otmil' => $this->lokasiOtmil->nama_lokasi_otmil,
+            'ruangan_lemasmil_id' => $this->id,
+            'nama_ruangan_lemasmil' => $this->nama_ruangan_lemasmil,
+            'jenis_ruangan_lemasmil' => $this->jenis_ruangan_lemasmil,
+            'lokasi_lemasmil_id' => $this->lokasi_lemasmil_id,
+            'nama_lokasi_lemasmil' => $this->lokasilemasmil->nama_lokasi_lemasmil,
             'panjang' => $this->panjang,
             'lebar' => $this->lebar,
             'posisi_X' => $this->posisi_X,
             'posisi_Y' => $this->posisi_Y,
             'zona_id' => $this->zona_id,
             'nama_zona' => $this->zona->nama_zona,
-            'lantai_otmil_id' => $this->lantai_otmil_id,
-            'nama_lantai' => $this->lantaiOtmil->nama_lantai,
+            'lantai_lemasmil_id' => $this->lantai_lemasmil_id,
+            'nama_lantai' => $this->lantailemasmil->nama_lantai,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
-            'deleted_at' => $this->deleted_at
+            'deleted_at' => $this->deleted_at        
         ];
     }
 }

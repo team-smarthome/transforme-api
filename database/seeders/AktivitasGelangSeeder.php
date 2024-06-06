@@ -16,7 +16,7 @@ class AktivitasGelangSeeder extends Seeder
     {
         $aktivitasGelang = [ 
             [
-                "id"=> Str::uuid(),
+                "id"=> "641afdd8-3e00-4b86-86fe-7eccac847c08",
                 "gmac"=> "Random",
                 "dmac"=> "Random",
                 "baterai"=> "Random",
@@ -32,7 +32,7 @@ class AktivitasGelangSeeder extends Seeder
                 "y0"=> "Random",
                 "z0"=> "Random",
                 "timestamp"=> now(),
-                "wbp_profile_id"=> "",
+                "wbp_profile_id"=> "12cfa0a1-5ab3-4daa-9292-29397946312w",
                 "rssi"=> "Random",
                 "created_at"=> now(),
                 "updated_at"=> now()
