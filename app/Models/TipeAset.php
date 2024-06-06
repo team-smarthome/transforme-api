@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class TipeAset extends Model
 {
@@ -16,4 +17,9 @@ class TipeAset extends Model
     public $timestamps = true;
 
     protected $fillable = ['nama_tipe'];
+
+    public function aset()
+    {
+        return $this->hasMany(Aset::class, 'tipe_aset_id', 'id');
+    }
 }

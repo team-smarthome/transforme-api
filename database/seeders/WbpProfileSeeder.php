@@ -16,7 +16,7 @@ class WbpProfileSeeder extends Seeder
     {
         $wbp_profile = [
             [
-                'id' => "12cfa0a1-5ab3-4daa-9292-29397946312w",
+                'id' => "12cfa0a1-5ab3-4daa-9292-29397946312o",
                 'nama' => "Udin",
                 'pangkat_id' => "4ec3de3b-169f-4313-9b3d-0cef9ae3cbda",
                 'kesatuan_id' => '18ff69b7-3d9f-4a60-a602-5baf4f3cc081',
@@ -33,12 +33,12 @@ class WbpProfileSeeder extends Seeder
                 'foto_wajah' => 'http',
                 'nomor_tahanan' => '123456',
                 'residivis' => 1,
-                'status_wbp_kasus_id' => '9c240524-bea5-43c4-8f41-7ed1f8bbab4c',
+                'status_wbp_kasus_id' => '5fe19cdd-c9ba-4c83-a575-aa548193ff97',
                 'foto_wajah_fr' => 'Udin',
                 'is_isolated' => 1,
                 'is_sick' => 1,
                 'wbp_sickness' => 'Flu',
-                'gelang_id' => '9c264aaf-b4a3-40c2-8ae4-41296aa9bce0',
+                'gelang_id' => '6ced89b4-f889-489d-a777-a1487c392901',
                 'hunian_wbp_otmil_id' => '60a3465d-5038-4268-b8da-c001fae0e63f',
                 'hunian_wbp_lemasmil_id' => '0993f968-a25f-4908-8bc4-68980bb49f22',
                 'status_keluarga' => 'Ipar',

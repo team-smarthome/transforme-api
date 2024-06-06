@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class DokumenBap extends Model
 {
@@ -28,6 +29,16 @@ class DokumenBap extends Model
     public function penyidikan(): HasMany
     {
         return $this->hasMany(Penyidikan::class, 'penyidikan_id', 'id'); // banyak dokumen bap dimiliki oleh satu penyidikan
+    }
+
+    public function wbpProfile(): BelongsTo
+    {
+        return $this->belongsTo(WbpProfile::class, 'wbp_profile_id', 'id'); // banyak dokumen bap dimiliki oleh satu wbp
+    }
+
+    public function saksi(): BelongsTo
+    {
+        return $this->belongsTo(Saksi::class, 'saksi_id', 'id'); // banyak dokumen bap dimiliki oleh satu saksi
     }
 
 }

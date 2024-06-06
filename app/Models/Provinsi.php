@@ -32,5 +32,10 @@ class Provinsi extends Model
     {
         return $this->hasMany(WbpProfile::class, 'provinsi_id', 'id');
     }
+
+    public function pengunjung()
+    {
+        return $this->hasMany(Pengunjung::class, 'provinsi_id', 'id');
+    }
     
 }

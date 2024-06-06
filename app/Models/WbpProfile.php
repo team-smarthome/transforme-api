@@ -141,4 +141,29 @@ class WbpProfile extends Model
     {
         return $this->belongsTo(Kasus::class, 'kasus_id', 'id');
     }
+
+    public function aksesRuangan(): HasMany
+    {
+        return $this->hasMany(AksesRuangan::class, 'wbp_profile_id', 'id');
+    }
+    
+    public function pengunjung():HasMany
+    {
+        return $this->hasMany(Pengunjung::class, 'wbp_profile_id', 'id');
+    }
+
+    public function dokumenBap():HasMany
+    {
+        return $this->hasMany(DokumenBap::class, 'wbp_profile_id', 'id');
+    }
+
+    public function gatewayLog():HasMany
+    {
+        return $this->hasMany(GatewayLog::class, 'wbp_profile_id', 'id');
+    }
+
+    public function penilaianKegiatanWbp():HasMany
+    {
+        return $this->hasMany(PenilaianKegiatanWbp::class, 'wbp_profile_id', 'id');
+    }
 }

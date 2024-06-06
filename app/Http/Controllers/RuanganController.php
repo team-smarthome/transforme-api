@@ -19,7 +19,7 @@ class RuanganController extends Controller
             })->orWhereHas('lokasiOtmil', function ($r) use ($keyword){
                 $r ->where('nama_lokasi_otmil', 'LIKE', '%' . $keyword . '%');
             })->get();
-            
+
             return ApiResponse::success($getData);
         } catch (\Exception $e) {
             return ApiResponse::error('An error occurred while fetching data.', $e->getMessage());
@@ -72,7 +72,7 @@ class RuanganController extends Controller
             'posisi_X' => 'nullable',
             'posisi_Y' => 'nullable'
          ]);
-         $ruangan_otmil_id = $request->input('ruangan_otmil_id');
+         $ruangan_otmil_id = $request->input('id');
          $findLantai = RuanganOtmil::where('id', $ruangan_otmil_id)->firstOrFail();
          $findLantai->nama_ruangan_otmil = $request->input('nama_ruangan_otmil');
          $findLantai->lokasi_otmil_id = $request->input('lokasi_otmil_id');
@@ -83,17 +83,17 @@ class RuanganController extends Controller
          $findLantai->lebar = $request->input('lebar');
          $findLantai->posisi_X = $request->input('posisi_X');
          $findLantai->posisi_Y = $request->input('posisi_Y');
- 
+
          $findLantai->save();
          return ApiResponse::updated();
     }
 
     public function destroy(Request $request)
     {
-        $ruangan_otmil_id = $request->input('ruangan_otmil_id');
+        $ruangan_otmil_id = $request->input('id');
         $ruangan_otmil = RuanganOtmil::findOrFail($ruangan_otmil_id);
         $ruangan_otmil->delete();
-    
-        return ApiResponse::deleted();   
+
+        return ApiResponse::deleted();
     }
 }

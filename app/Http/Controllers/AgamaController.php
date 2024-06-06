@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Helpers\ApiResponse;
 use App\Models\Agama;
+use App\Http\Resources\AgamaResource;
 use Illuminate\Database\QueryException;
 use Exception;
 use App\Http\Requests\AgamaRequest;
@@ -15,21 +16,34 @@ class AgamaController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     { 
-        {
-            try {
-                if (request('search')) {
-                    $query = Agama::where('nama_agama', 'like', '%' . request('search') . '%')->latest();
-                } else {
-                    $query = Agama::latest();
+        try {
+            $query = Agama::query();
+            $filterableColumns = [
+                'agama_id' => 'id',
+                'nama_agama' => 'nama_agama',
+            ];
+
+            $filters = $request->input('filter', []);
+
+            foreach ($filterableColumns as $requestKey => $column) {
+                if (isset($filters[$requestKey])) {
+                    $query->where($column, 'like', '%' . $filters[$requestKey] . '%');
                 }
-    
-                return ApiResponse::paginate($query);
-    
-            } catch (\Exception $e) {
-                return ApiResponse::error('Failed to get Data.', $e->getMessage());
             }
+
+            $query->latest();
+            $paginatedData = $query->paginate($request->input('pageSize', ApiResponse::$defaultPagination));
+                        
+            $resourceCollection = AgamaResource::collection($paginatedData);
+
+            return ApiResponse::pagination($resourceCollection);
+
+        } catch (Exception $e) {
+            return ApiResponse::error('Failed to get Data.', $e->getMessage());
+        } catch (Exception $e) {
+            return ApiResponse::error('An unexpected error occurred', $e->getMessage(), 500);
         }
     }
 

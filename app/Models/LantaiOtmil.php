@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class LantaiOtmil extends Model
@@ -39,7 +40,7 @@ class LantaiOtmil extends Model
 
     public function ruanganOtmil(): HasMany 
     {
-        return $this->hasMany(RuanganOtmil::class, "lantai_otmil_id", "id");
+        return $this->hasMany(RuanganOtmil::class, 'lantai_otmil_id', 'id');
     }
 
 }

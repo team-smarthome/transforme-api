@@ -16,12 +16,18 @@ class LokasiKesatuan extends Model
     protected $keyType = 'uuid';
     public $incrementing = false;
     public $timestamps = true;
-
+    protected $hidden = ['created_at', 'updated_at'];
     protected $fillable = ['nama_lokasi_kesatuan'];
+    public function toArray()
+    {
+        $array = parent::toArray();
+        $array['lokasi_kesatuan_id'] = $array['id'];
+        unset($array['id']);
+        return $array;
+    }
 
     public function kesatuan(): HasMany
     {
         return $this->hasMany(Kesatuan::class, 'lokasi_kesatuan_id', 'id'); // satu lokasi kesatuan memiliki banyak kesatuan
     }
-
 }

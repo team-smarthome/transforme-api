@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Penyidikan;
 use App\Http\Requests\PenyidikanRequest;
+use App\Http\Resources\PenyidikanResource;
 use App\Helpers\ApiResponse;
 use Exception;
 
@@ -13,7 +14,7 @@ class PenyidikanController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
     try {
         $query = Penyidikan::with(['kasus', 'wbpProfile', 'saksi', 'oditurPenyidik']);
@@ -27,14 +28,21 @@ class PenyidikanController extends Controller
             'oditur_penyidikan_id' => 'oditur_penyidikan_id',
             'zona_waktu' => 'zona_waktu'
         ];
+        $filters = $request->input('filter', []);
+
         foreach ($filterableColumns as $requestKey => $column) {
-            if ($value = request($requestKey)) {
-                $query->where($column, 'like', '%' . $value . '%');
+            if (isset($filters[$requestKey])) {
+                $query->where($column, 'like', '%' . $filters[$requestKey] . '%');
             }
         }
 
+        $paginatedData = $query->paginate($request->input('pageSize', ApiResponse::$defaultPagination));
+
         $query->latest();
-        return ApiResponse::paginate($query);
+        $resourceCollection = PenyidikanResource::collection($paginatedData);
+
+        return ApiResponse::pagination($resourceCollection);
+        // return ApiResponse::paginate($query);
 
     } catch (\Exception $e) {
         return ApiResponse::error('Failed to get Data.', $e->getMessage());
@@ -129,7 +137,7 @@ class PenyidikanController extends Controller
             $penyidikan->zona_waktu = $request->zona_waktu;
 
             if ($penyidikan->save()) {
-                return ApiResponse::success('Penyidikan updated', $penyidikan);
+                return ApiResponse::updated($penyidikan);
             } else {
                 return ApiResponse::error('Failed to update Penyidikan', 'Unknown error', 500);
             }

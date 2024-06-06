@@ -17,7 +17,8 @@ class HistoriPenyidikanSeeder extends Seeder
             [
                 'id' => '8df5513r-814f-406e-a992-812f042d3j86',
                 'hasil_penyidikan' => 'Terdakwa bersalah',
-                'penyidikan_id' => 'c48bf881-b8b7-4ae4-a8da-ae7dab96d832'
+                'penyidikan_id' => 'd38bf884-b8b7-4ae4-a8da-ae7dab96d833',
+                'created_at' => now(),
             ]
             ];
             DB::table('histori_penyidikan')->insert($penyidikan);

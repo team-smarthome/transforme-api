@@ -15,7 +15,7 @@ class OditurPenyidikSeeder extends Seeder
     public function run(): void
     {
         $oditur_penyidik = [
-            ['id' => Str::uuid(), 'nip' => '123456', 'nama_oditur' => "Jaka", "alamat" => "jakarta", 'created_at' => now(), 'updated_at' => now()],
+            ['id' => '42258987-87f5-4d33-8920-5fe4d2694d77', 'nip' => '123456', 'nama_oditur' => "Jaka", "alamat" => "jakarta", 'created_at' => now(), 'updated_at' => now()],
         ];
         DB::table('oditur_penyidik')->insert($oditur_penyidik);
     }

@@ -3,17 +3,18 @@
 namespace App\Helpers;
 
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Http\Resources\Json\ResourceCollection;
 
 class ApiResponse
 {
-    protected static $defaultPagination = 10;
+    public static $defaultPagination = 10;
 
     public static function success($data = [], $message = 'Successfully get Data')
     {
         return response()->json([
             'status' => 'OK',
             'message' => $message,
-            'data' => $data
+            'records' => $data
         ], 200);
     }
 
@@ -26,27 +27,34 @@ class ApiResponse
         ], $statusCode);
     }
 
-    public static function pagination(LengthAwarePaginator $collection, $message = 'Successfully get Data')
+    public static function pagination($collection, $message = 'Successfully get Data')
     {
+        // Check if the collection is empty
         if ($collection->isEmpty()) {
             return self::success([], 'Data not found.');
         }
 
-        $responseData = [
-            'records' => $collection->items(),
-            'current_page' => $collection->currentPage(),
-            'per_page' => $collection->perPage(),
+        // Prepare pagination data
+        $paginationData = [
+            'currentPage' => $collection->currentPage(),
+            'pageSize' => $collection->perPage(),
             'from' => $collection->firstItem(),
             'to' => $collection->lastItem(),
-            'total' => $collection->total(),
+            'totalRecords' => $collection->total(),
+            'totalPages' => $collection->lastPage(),
         ];
 
-        return self::success($responseData, $message);
+        return response()->json([
+            'status' => 'OK',
+            'message' => $message,
+            'records' => $collection->items(),
+            'pagination' => $paginationData,
+        ], 200);
     }
 
     public static function paginate($query, $max_data = null, $message = 'Successfully get Data')
     {
-        $max_data = request()->input('per_page', $max_data ?? self::$defaultPagination);
+        $max_data = request()->input('pageSize', $max_data ?? self::$defaultPagination);
         $collection = $query->paginate($max_data);
         return self::pagination($collection, $message);
     }
@@ -75,5 +83,13 @@ class ApiResponse
             'status' => 'OK',
             'message' => $message
         ], 200);
+    }
+
+    public static function notFound($message = 'Data not found')
+    {
+        return response()->json([
+            'status' => 'NO',
+            'message' => $message
+        ], 404);
     }
 }

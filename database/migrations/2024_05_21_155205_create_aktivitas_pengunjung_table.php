@@ -17,11 +17,11 @@ return new class extends Migration
             $table->dateTime('waktu_mulai_kunjungan')->nullable();
             $table->dateTime('waktu_selesai_kunjungan')->nullable();
             $table->string('tujuan_kunjungan', 100)->nullable();
-            $table->uuid('ruangan_otmil_id')->nullable(false);
-            $table->uuid('ruangan_lemasmil_id')->nullable(false);
-            $table->uuid('petugas_id')->nullable(false);
-            $table->uuid('pengunjung_id')->nullable(false);
-            $table->uuid('wbp_profile_id')->nullable(false);
+            $table->uuid('ruangan_otmil_id')->nullable();
+            $table->uuid('ruangan_lemasmil_id')->nullable();
+            $table->uuid('petugas_id')->nullable();
+            $table->uuid('pengunjung_id')->nullable();
+            $table->uuid('wbp_profile_id')->nullable();
             $table->string('zona_waktu', 10)->nullable();
             $table->timestamps();
             $table->softDeletes();

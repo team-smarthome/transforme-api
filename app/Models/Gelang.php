@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Gelang extends Model
@@ -37,11 +38,15 @@ class Gelang extends Model
         return $this->belongsTo(RuanganLemasmil::class, 'ruangan_lemasmil_id', 'id');
     }
 
-    // relation gelang masih salam
     public function gelangWbp()
     {
         return $this->hasOne(WbpProfile::class); // satu gelang punya satu wbp
         // return $this->belongsTo(WbpProfile::class);
         // return $this->belongsTo(WbpProfile::class, 'gelang_id', 'id');
+    }
+
+    public function gelangLog(): HasMany
+    {
+        return $this->hasMany(GelangLog::class, 'gelang_id', 'id');
     }
 }

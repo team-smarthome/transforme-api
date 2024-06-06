@@ -15,14 +15,14 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->string('nama_perkara_persidangan_terdakwa', 100)->nullable();
             $table->string('nomor_perkara_persidangan_terdakwa', 100)->nullable();
-            $table->uuid('wbp_profile_id')->nullable(false);
+            $table->uuid('wbp_profile_id')->nullable();
             $table->uuid('wbp_perkara_id')->nullable();
             $table->string('status_perkara_persidangan_terdakwa', 100)->nullable();
             $table->date('tanggal_penetapan_terdakwa')->nullable();
             $table->date('tanggal_registrasi_terdakwa')->nullable();
-            $table->uuid('oditur_penuntut_id')->nullable(false);
+            $table->uuid('oditur_penuntut_id')->nullable();
             $table->integer('lama_proses_persidangan_terdakwa')->nullable();
-            $table->uuid('dokumen_bap_id')->nullable(false);
+            $table->uuid('dokumen_bap_id')->nullable();
             $table->timestamps();
             $table->softDeletes();
 

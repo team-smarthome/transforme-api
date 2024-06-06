@@ -15,8 +15,8 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->string('gmac', 100)->nullable();
             $table->string('nama_gateway', 100)->nullable();
-            $table->uuid('ruangan_otmil_id')->nullable(false);
-            $table->uuid('ruangan_lemasmil_id')->nullable(false);
+            $table->uuid('ruangan_otmil_id')->nullable();
+            $table->uuid('ruangan_lemasmil_id')->nullable();
             $table->string('status_gateway', 100)->nullable();
             $table->string('v_gateway_topic', 100)->nullable();
             $table->timestamps();

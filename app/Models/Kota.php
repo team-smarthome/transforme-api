@@ -32,4 +32,10 @@ class Kota extends Model
     {
         return $this->hasMany(WbpProfile::class, 'kota_id', 'id');
     }
+
+    public function pengunjung()
+    {
+        return $this->hasMany(Pengunjung::class, 'kota_id', 'id');
+    }
+    
 }

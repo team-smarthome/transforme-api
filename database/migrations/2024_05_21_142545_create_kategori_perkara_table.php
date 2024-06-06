@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('kategori_perkara', function (Blueprint $table) {
             $table->uuid("id")->primary();
             $table->string("nama_kategori_perkara",100)->nullable(false);
-            $table->uuid("jenis_pidana_id")->nullable(false);
+            $table->uuid("jenis_pidana_id")->nullable();
             $table->softDeletes();
             $table->timestamps();
 
