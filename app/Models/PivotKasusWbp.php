@@ -2,10 +2,16 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class PivotKasusWbp extends Model
 {
-    use HasFactory;
+    use HasFactory, HasUuids;
+    protected $table = 'pivot_kasus_wbp';
+    protected $guarded = [];
+    public $incrementing = false;
+    public $timestamps = true;
+
 }
