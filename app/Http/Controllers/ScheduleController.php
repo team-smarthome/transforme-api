@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Helpers\ApiResponse;
 use App\Http\Requests\ScheduleRequest;
+use App\Http\Resources\ScheduleResource;
 use App\Models\Schedule;
 use Exception;
 use Illuminate\Database\QueryException;
@@ -14,52 +15,72 @@ class ScheduleController extends Controller
   /**
    * Display a listing of the resource.
    */
+
   public function index(Request $request)
   {
-    $pageSize = $request->input('pageSize', 10);
-    $filterTanggal = $request->input('tanggal', '');
-    $filterBulan = $request->input('bulan', '');
-    $filterTahun = $request->input('tahun', '');
-    $filterNamaShift = $request->input('nama_shift', '');
-    $sortField = $request->input('sortBy', 'tanggal');
-    $sortOrder = $request->input('sortOrder', 'ASC');
+    try {
+      $query = Schedule::with('shift');
 
-    $query = Schedule::with('shift');
+      // Define filterable columns
+      $filterableColumns = [
+        'schedule_id' => 'id',
+        'tanggal' => 'tanggal',
+        'bulan' => 'bulan',
+        'tahun' => 'tahun',
+        'nama_shift' => 'shift.nama_shift'
+      ];
 
-    if (!empty($filterTanggal)) {
-      $dateFilter = explode('-', $filterTanggal);
+      $filters = $request->input('filter', []);
 
-      if (count($dateFilter) == 2) {
-        $startDate = (int)$dateFilter[0];
-        $endDate = (int)$dateFilter[1];
-
-        if ($startDate > $endDate) {
-          [$startDate, $endDate] = [$endDate, $startDate];
+      // Apply filters
+      foreach ($filterableColumns as $requestKey => $column) {
+        if (isset($filters[$requestKey])) {
+          if ($requestKey == 'nama_shift') {
+            $query->whereHas('shift', function ($q) use ($filters, $requestKey) {
+              $q->where('nama_shift', 'like', '%' . $filters[$requestKey] . '%');
+            });
+          } else {
+            $query->where($column, 'like', '%' . $filters[$requestKey] . '%');
+          }
         }
-
-        $query->whereBetween('tanggal', [$startDate, $endDate]);
-      } elseif (count($dateFilter) == 1) {
-        $specificDate = (int)$dateFilter[0];
-        $query->where('tanggal', $specificDate);
       }
-    }
 
-    if (!empty($filterBulan)) {
-      $query->where('bulan', 'LIKE', "%$filterBulan%");
-    }
-    if (!empty($filterTahun)) {
-      $query->where('tahun', 'LIKE', "%$filterTahun%");
-    }
-    if (!empty($filterNamaShift)) {
-      $query->whereHas('shift', function ($q) use ($filterNamaShift) {
-        $q->where('nama_shift', 'LIKE', "%$filterNamaShift%");
-      });
-    }
+      // Apply date range filter
+      if (!empty($filters['tanggal'])) {
+        $dateFilter = explode('-', $filters['tanggal']);
+        if (count($dateFilter) == 2) {
+          $startDate = (int)$dateFilter[0];
+          $endDate = (int)$dateFilter[1];
 
-    $query->orderBy($sortField, $sortOrder);
+          if ($startDate > $endDate) {
+            [$startDate, $endDate] = [$endDate, $startDate];
+          }
 
-    return ApiResponse::paginate($query);
+          $query->whereBetween('tanggal', [$startDate, $endDate]);
+        } elseif (count($dateFilter) == 1) {
+          $specificDate = (int)$dateFilter[0];
+          $query->where('tanggal', $specificDate);
+        }
+      }
+
+      // Apply sorting
+      $sortField = $request->input('sortBy', 'tanggal');
+      $sortOrder = $request->input('sortOrder', 'ASC');
+      $query->orderBy($sortField, $sortOrder);
+
+      // Paginate results
+      $pageSize = $request->input('pageSize', ApiResponse::$defaultPagination);
+      $paginatedData = $query->paginate($pageSize);
+
+      // Transform data using resource collection
+      $resourceCollection = ScheduleResource::collection($paginatedData);
+
+      return ApiResponse::pagination($resourceCollection, 'Successfully retrieved data.');
+    } catch (\Exception $e) {
+      return ApiResponse::error('Failed to retrieve data.', $e->getMessage());
+    }
   }
+
 
   /**
    * Show the form for creating a new resource.

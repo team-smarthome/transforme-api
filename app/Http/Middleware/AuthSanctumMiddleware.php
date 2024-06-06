@@ -49,8 +49,8 @@ class AuthSanctumMiddleware
                 }
             }
             }
-        }
+        } 
 
-        return response()->json(['status' => "NO", 'message' => 'Unauthorized'], 401);
+        return response()->json(['status' => "NO", 'message' => 'Token Expired or Token Not Found'], 401);
     }
 }

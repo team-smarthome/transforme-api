@@ -17,6 +17,16 @@ class Ahli extends Pivot
   public $incrementing = false;
   public $timestamps = true;
 
+  protected $hidden = ['created_at', 'updated_at', 'deleted_at'];
+
+  public function toArray()
+  {
+    $array = parent::toArray();
+    $array['ahli_id'] = $array['id'];
+    unset($array['id']);
+    return $array;
+  }
+
   public function sidang(): BelongsTo
   {
     return $this->belongsTo(Sidang::class, 'sidang_id', 'id');

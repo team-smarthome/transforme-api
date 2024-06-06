@@ -45,7 +45,7 @@ class HakimController extends Controller
                         
             $resourceCollection = HakimResource::collection($paginatedData);
 
-            return ApiResponse::pagination($resourceCollection, 'Successfully get Data');
+            return ApiResponse::pagination($resourceCollection);
             // $resource = HakimResource::collection($data);
             // return ApiResponse::pagination($data, $resource);
             // return ApiResponse::paginate($query);
