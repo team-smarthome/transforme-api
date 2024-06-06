@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Helpers\ApiResponse;
 use App\Models\TipeAset;
+use App\Http\Resources\TipeAsetResource;
 use Illuminate\Database\QueryException;
 use Exception;
 use App\Http\Requests\TipeAsetRequest;
@@ -15,21 +16,32 @@ class TipeAsetController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        {
-            try {
-                if (request('search')) {
-                    $query = TipeAset::where('nama_tipe', 'like', '%' . request('search') . '%')->latest();
-                } else {
-                    $query = TipeAset::latest();
+        try {
+            $query = TipeAset::query();
+            $filterableColumns = [
+                'tipe_aset_id' => 'id',
+                'nama_tipe_aset' => 'nama_tipe_aset',
+            ];
+
+            $filters = request('filter', []);
+
+            foreach ($filterableColumns as $requestKey => $column) {
+                if (isset($filters[$requestKey])) {
+                    $query->where($column, 'like', '%' . $filters[$requestKey] . '%');
                 }
-    
-                return ApiResponse::paginate($query);
-    
-            } catch (\Exception $e) {
-                return ApiResponse::error('Failed to get Data.', $e->getMessage());
             }
+
+            $query->latest();
+            $paginatedData = $query->paginate($request->input('pageSize', ApiResponse::$defaultPagination));
+
+            $resourceCollection = TipeAsetResource::collection($paginatedData);
+
+            return ApiResponse::pagination($resourceCollection);
+
+        } catch (Exception $e) {
+            return ApiResponse::error('An unexpected error occurred', $e->getMessage(), 500);
         }
     }
 

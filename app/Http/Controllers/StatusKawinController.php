@@ -10,33 +10,41 @@ use App\Helpers\ApiResponse;
 
 class StatusKawinController extends Controller
 {
-  public function index()
-  {
-    {
-      try {
-        if (request('search')) {
-          $query = StatusKawin::where('nama_status_kawin', 'like', '%' . request('search') . '%')->latest();
-        } else {
-          $query = StatusKawin::latest();
+    public function index(Request $request)
+    { {
+            try {
+                $query = StatusKawin::query();
+                $filterableColumns = [
+                    'nama_status_kawin' => 'nama_status_kawin'
+                ];
+
+                $filter = $request->input('filter', []);
+                foreach ($filterableColumns as $key => $column) {
+                    if (isset($filter[$key])) {
+                        $query->where($column, 'like', '%' . $filter[$key] . '%');
+                    }
+                }
+
+                $query->latest();
+                $paginateData = $query->paginate($request->input('pageSize', ApiResponse::$defaultPagination));
+
+                return ApiResponse::pagination($paginateData, 'Successfully get Data');
+            } catch (\Exception $e) {
+                return ApiResponse::error('Failed to get Data.', $e->getMessage());
+            }
         }
-
-        return ApiResponse::paginate($query);
-      } catch (\Exception $e) {
-        return ApiResponse::error('Failed to get Data.', $e->getMessage());
-      }
     }
-  }
 
-  public function store(Request $request)
-  {
-    $request->validate([
-      'nama_status_kawin' => 'required|string|max:100'
-    ]);
+    public function store(Request $request)
+    {
+        $request->validate([
+            'nama_status_kawin' => 'required|string|max:100'
+        ]);
 
-    $statusKawin = StatusKawin::create($request->all());
+        $statusKawin = StatusKawin::create($request->all());
 
-    return ApiResponse::success([
-      'data' => $statusKawin
-    ]);
-  }
+        return ApiResponse::success([
+            'data' => $statusKawin
+        ]);
+    }
 }

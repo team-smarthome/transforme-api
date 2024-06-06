@@ -10,6 +10,8 @@ use App\Models\PetugasShift;
 use Exception;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use PDO;
 
 class petugasShiftController extends Controller
 {
@@ -195,6 +197,146 @@ class petugasShiftController extends Controller
       return ApiResponse::error('Database error', $e->getMessage(), 500);
     } catch (Exception $e) {
       return ApiResponse::error('An unexpected error occurred', $e->getMessage(), 500);
+    }
+  }
+
+  public function rekapCuti()
+  {
+    try {
+      $result = PetugasShift::leftJoin('schedule', 'petugas_shift.schedule_id', '=', 'schedule.id')
+        ->leftJoin('petugas', 'petugas_shift.petugas_id', '=', 'petugas.id')
+        ->select(
+          'schedule.bulan',
+          'schedule.tahun',
+          DB::raw('SUM(CASE WHEN petugas_shift.status_izin = "cuti" THEN 1 ELSE 0 END) AS cuti'),
+          DB::raw('GROUP_CONCAT(DISTINCT CASE WHEN petugas_shift.status_kehadiran = 0 AND petugas_shift.status_izin LIKE "Cuti" THEN petugas.id ELSE NULL END) AS list_petugas_cuti')
+        )
+        ->groupBy('schedule.bulan', 'schedule.tahun')
+        ->get();
+
+      // Transformasi hasil query untuk mengonversi bulan menjadi string dan format yang diinginkan
+      $formattedResult = $result->map(function ($item) {
+        return [
+          'bulan' => (string)$item->bulan,
+          'tahun' => $item->tahun,
+          'cuti' => $item->cuti,
+          'list_petugas_cuti' => $item->list_petugas_cuti,
+        ];
+      });
+
+      return ApiResponse::success($formattedResult);
+    } catch (\Exception $e) {
+      return ApiResponse::error('Failed to get Data.', $e->getMessage());
+    }
+  }
+
+  public function rekapAbsensi()
+  {
+    try {
+      $result = PetugasShift::leftJoin('schedule', 'petugas_shift.schedule_id', '=', 'schedule.id')
+        ->leftJoin('petugas', 'petugas_shift.petugas_id', '=', 'petugas.id') // Diganti ke 'petugas.id'
+        ->select(
+          'schedule.tanggal',
+          'schedule.bulan',
+          'schedule.tahun',
+          DB::raw('COUNT(DISTINCT petugas_shift.petugas_id) AS total_petugas'),
+          DB::raw('SUM(CASE WHEN petugas_shift.status_kehadiran = 1 THEN 1 ELSE 0 END) AS hadir'),
+          DB::raw('SUM(CASE WHEN petugas_shift.status_izin LIKE "Izin" THEN 1 ELSE 0 END) AS izin'),
+          DB::raw('SUM(CASE WHEN petugas_shift.status_izin LIKE "Sakit" THEN 1 ELSE 0 END) AS sakit'),
+          DB::raw('SUM(CASE WHEN petugas_shift.status_izin LIKE "Absen" THEN 1 ELSE 0 END) AS absen'),
+          DB::raw('SUM(CASE WHEN petugas_shift.status_izin LIKE "Cuti" THEN 1 ELSE 0 END) AS cuti'),
+          DB::raw('GROUP_CONCAT(CASE WHEN petugas_shift.status_kehadiran = 1 THEN petugas.nama ELSE NULL END) AS list_petugas_hadir'),
+          DB::raw('GROUP_CONCAT(CASE WHEN petugas_shift.status_kehadiran = 0 AND petugas_shift.status_izin LIKE "Izin" THEN petugas.nama ELSE NULL END) AS list_petugas_izin'),
+          DB::raw('GROUP_CONCAT(CASE WHEN petugas_shift.status_kehadiran = 0 AND petugas_shift.status_izin LIKE "Sakit" THEN petugas.nama ELSE NULL END) AS list_petugas_sakit'),
+          DB::raw('GROUP_CONCAT(CASE WHEN petugas_shift.status_kehadiran = 0 AND petugas_shift.status_izin = NULL THEN petugas.nama ELSE NULL END) AS list_petugas_alpha'),
+          DB::raw('GROUP_CONCAT(CASE WHEN petugas_shift.status_kehadiran = 0 AND petugas_shift.status_izin LIKE "Cuti" THEN petugas.nama ELSE NULL END) AS list_petugas_cuti')
+        )
+        ->groupBy(
+          'schedule.tanggal',
+          'schedule.bulan',
+          'schedule.tahun'
+        )->get();
+
+
+      $formattedResult = $result->map(function ($item) {
+        $presentPetugas = [];
+        $izinPetugas = [];
+        $sakitPetugas = [];
+        $alphaPetugas = [];
+        $alphaCuti = [];
+
+        if (!empty($item->list_petugas_hadir)) {
+          $listPetugasHadir = explode(',', $item->list_petugas_hadir);
+          $uniquePetugasHadir = array_unique($listPetugasHadir);
+
+          foreach ($uniquePetugasHadir as $namaPetugas) {
+            $presentPetugas[] = [
+              "nama_petugas" => $namaPetugas,
+            ];
+          }
+        }
+        if (!empty($item->list_petugas_izin)) {
+          $listPetugasIzin = explode(',', $item->list_petugas_izin);
+          $uniquePetugasIzn = array_unique($listPetugasIzin);
+
+          foreach ($uniquePetugasIzn as $namaPetugas) {
+            $izinPetugas[] = [
+              "nama_petugas" => $namaPetugas,
+            ];
+          }
+        }
+        if (!empty($item->list_petugas_sakit)) {
+          $listPetugasSakit = explode(',', $item->list_petugas_sakit);
+          $uniquePetugasSakit = array_unique($listPetugasSakit);
+
+          foreach ($uniquePetugasSakit as $namaPetugas) {
+            $sakitPetugas[] = [
+              "nama_petugas" => $namaPetugas,
+            ];
+          }
+        }
+        if (!empty($item->list_petugas_alpha)) {
+          $listPetugasAlpha = explode(',', $item->list_petugas_alpha);
+          $uniquePetugasAlpha = array_unique($listPetugasAlpha);
+
+          foreach ($uniquePetugasAlpha as $namaPetugas) {
+            $alphaPetugas[] = [
+              "nama_petugas" => $namaPetugas,
+            ];
+          }
+        }
+        if (!empty($item->list_petugas_cuti)) {
+          $listPetugasCuti = explode(',', $item->list_petugas_cuti);
+          $uniquePetugasCuti = array_unique($listPetugasCuti);
+
+          foreach ($uniquePetugasCuti as $namaPetugas) {
+            $alphaCuti[] = [
+              "nama_petugas" => $namaPetugas,
+            ];
+          }
+        }
+
+        return [
+          'tanggal' => (string)$item->tanggal,
+          'bulan' => (string)$item->bulan,
+          'tahun' => (string)$item->tahun,
+          'total_petugas' => (string)$item->total_petugas,
+          'hadir' => $item->hadir,
+          'izin' => $item->izin,
+          'sakit' => $item->sakit,
+          'absen' => $item->absen,
+          'cuti' => $item->cuti,
+          'list_petugas_hadir' => $presentPetugas,
+          'list_petugas_izin' => $izinPetugas,
+          'list_petugas_sakit' => $sakitPetugas,
+          'list_petugas_alpha' => $alphaPetugas,
+          'list_petugas_cuti' => $alphaCuti,
+        ];
+      });
+
+      return ApiResponse::success($formattedResult);
+    } catch (\Exception $e) {
+      return ApiResponse::error('Failed to get Data.', $e->getMessage());
     }
   }
 }
