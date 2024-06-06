@@ -21,6 +21,14 @@ class KategoriPerkara extends Model
     protected $keyType = 'uuid';
     public $incrementing = false;
     public $timestamps = true;
+    protected $hidden = ['created_at', 'updated_at', 'deleted_at'];
+    public function toArray()
+    {
+        $array = parent::toArray();
+        $array['kategori_perkara_id'] = $array['id'];
+        unset($array['id']);
+        return $array;
+    }
 
     public function jenisPidana(): BelongsTo
     {

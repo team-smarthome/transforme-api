@@ -8,27 +8,46 @@ use App\Models\PengadilanMiliter;
 use Illuminate\Database\QueryException;
 use Exception;
 use App\Http\Requests\PengadilanMiliterRequest;
+use App\Http\Resources\PengadilanMiliterResource;
 
 class PengadilanMiliterController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         try {
-            if (request('pengadilan_militer_id')) {
-                $query = PengadilanMiliter::where('id', request('pengadilan_militer_id'));
-                if (request('nama_pengadilan_militer') && $query->exists()) {
-                    $query->where('nama_pengadilan_militer', 'like', '%' . request('nama_pengadilan_militer') . '%');
-                }
-            } elseif (request('nama_pengadilan_militer')) {
-                $query = PengadilanMiliter::where('nama_pengadilan_militer', 'like', '%' . request('nama_pengadilan_militer') . '%')->latest();
-            } else {
-                $query = PengadilanMiliter::latest();
-            }
+            $query = PengadilanMiliter::query();
+            $filterData = [
+                'nama_pengadilan_militer' => 'nama_pengadilan_militer',
+                'nama_provinsi' => 'provinsi.nama_provinsi',
+                'nama_kota' => 'kota.nama_kota',
+            ];
 
-            return ApiResponse::paginate($query);
+            $filters = $request->input('filter', []);
+
+            foreach ($filterData as $key => $column) {
+                if (isset($filters[$key])) {
+                    if ($key === 'nama_provinsi') {
+                        $query->whereHas('provinsi', function ($q) use ($filters, $key) {
+                            $q->where('nama_provinsi', 'LIKE', '%' . $filters[$key] . '%');
+                        });
+                    }
+                    if ($key === 'nama_kota') {
+                        $query->whereHas('kota', function ($q) use ($filters, $key) {
+                            $q->where('nama_kota', 'LIKE', '%' . $filters[$key] . '%');
+                        });
+                    } else {
+                        $query->where($column, 'LIKE', '%' . $filters[$key] . '%');
+                    }
+                }
+            }
+            $query->latest();
+            $paginatedData = $query->paginate($request->input('pageSize', ApiResponse::$defaultPagination));
+
+            $resourceCollection = PengadilanMiliterResource::collection($paginatedData);
+            return ApiResponse::pagination($resourceCollection);
         } catch (\Exception $e) {
             return ApiResponse::error('Failed to get Data.', $e->getMessage());
         }
@@ -83,13 +102,12 @@ class PengadilanMiliterController extends Controller
             $id = $request->input('pengadilan_militer_id');
             $pengadilanMiliter = PengadilanMiliter::findOrFail($id);
             $pengadilanMiliter->update($request->all());
-            
         } catch (QueryException $e) {
             return ApiResponse::error('Database error', $e->getMessage(), 500);
         } catch (Exception $e) {
             return ApiResponse::error('An unexpected error occurred', $e->getMessage(), 500);
         }
-        
+
         return ApiResponse::updated($pengadilanMiliter);
     }
 
@@ -102,7 +120,6 @@ class PengadilanMiliterController extends Controller
             $id = $request->input('pengadilan_militer_id');
             $pengadilanMiliter = PengadilanMiliter::findOrFail($id);
             $pengadilanMiliter->delete();
-
         } catch (QueryException $e) {
             return ApiResponse::error('Database error', $e->getMessage(), 500);
         } catch (Exception $e) {
