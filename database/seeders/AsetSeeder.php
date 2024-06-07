@@ -16,11 +16,11 @@ class AsetSeeder extends Seeder
     {
         $aset = [
             [
-                'id' => '796ed53d-dc0f-4498-8aaa-35a66d01a652',
+                'id' => '796ed53d-dc0f-4498-8aaa-35a66d011652',
                 'nama_aset' => 'Mobil',
                 'tipe_aset_id' => '7911d5aa-1f81-4329-982c-0c290077846d',
                 'ruangan_otmil_id' => 'f6e62e45-498d-45a8-affd-e5e363c99442',
-                'ruangan_lemasmil_id' => 'db10dd62-c048-44aa-a85e-9c29551704d2',
+                'ruangan_lemasmil_id' => 'db10dd62-c048-44bb-a85e-9c2955170420',
                 'kondisi' => 'Baik',
                 'keterangan' => 'Mobil Dinas',
                 'tanggal_masuk' => now(),

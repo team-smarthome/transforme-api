@@ -17,7 +17,7 @@ class PerkaraPersidanganTersangkaSeeder extends Seeder
                 'id' => '26ae551d-d1c5-493f-94bc-99934f416a58',
                 'nama_perkara_persidangan_tersangka' => 'Perkara Persidangan Tersangka 1',
                 'nomor_perkara_persidangan_tersangka' => '1234',
-                'wbp_profile_id' => '12cfa0a1-5ab3-4daa-9292-29397946312w',
+                'wbp_profile_id' => '12cfa0a1-5ab3-4daa-9292-29397946312o',
                 'status_perkara_persidangan_tersangka' => 'Aktif',
                 'tanggal_penetapan_tersangka' => '2021-01-01',
                 'tanggal_registrasi_tersangka' => '2021-01-01',

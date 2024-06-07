@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             UserRoleSeeder::class,
+            HakimSeeder::class,
             PangkatSeeder::class,
             LokasiKesatuanSeeder::class,
             KesatuanSeeder::class,
@@ -66,7 +67,6 @@ class DatabaseSeeder extends Seeder
             PivotKasusOditurSeeder::class,
             HistoriPenyidikanSeeder::class,
             TipeAsetSeeder::class,
-            AsetSeeder::class,
             BarangBuktiKasusSeeder::class,
             GatewaySeeder::class,
             PintuAksesSeeder::class,
@@ -77,6 +77,22 @@ class DatabaseSeeder extends Seeder
             ScheduleSeeder::class,
             PetugasShiftSeeder::class,
             VersionSeeder::class,    
+            AktivitasGelangSeeder::class,
+            HistoriVonisSeeder::class,
+            JaksaSeeder::class,
+            OditurSeeder::class,
+            PengunjungSeeder::class,
+            KegiatanSeeder::class,
+            PenilaianKegiatanWbpSeeder::class,
+            PivotKasusSaksiSeeder::class,
+            PivotKasusWbpSeeder::class,
+            AktivitasPengunjungSeeder::class,
+            BapSeeder::class,
+            GatewayLogSeeder::class,
+            GelangLogSeeder::class,
+            KameraLogSeeder::class,
+            KegiatanWbpSeeder::class,
+            PivotSidangHakimSeeder::class,
         ]);
     }
 }

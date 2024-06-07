@@ -16,8 +16,8 @@ class PenilaianKegiatanWbpSeeder extends Seeder
         $penilainKegiatanWbp = [
             [
                 'id' => "84f97d51-0859-483c-bdb5-82996c73d6c3",
-                'wbp_profile_id' => '12cfa0a1-5ab3-4daa-9292-29397946312w',
-                'kegiatan_id' => '9c3275c0-de26-43d6-9e33-1be90400eba1',
+                'wbp_profile_id' => '12cfa0a1-5ab3-4daa-9292-29397946312o',
+                'kegiatan_id' => '9c3275c0-de26-43d6-9e33-1be904x0eba1',
                 'absensi' => 'Hadir',
                 'durasi' => '2',
                 'nilai' => '90',
