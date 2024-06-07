@@ -13,22 +13,61 @@ class GelangLogController extends Controller
 {
     public function index(Request $request)
     {
-        $perPage = $request->input('per_page', 10);
+        // $perPage = $request->input('per_page', 10);
         try {
-            $query = GelangLog::with('gelangLog');
+            // $query = GelangLog::with('gelangLog');
 
-            $paginateData = $query->paginate($perPage);
-            return ApiResponse::success([
-                'data' => GelangResource::collection($paginateData),
-                'pagination' => [
-                    'total' => $paginateData->total(),
-                    'per_page' => $paginateData->perPage(),
-                    'current_page' => $paginateData->currentPage(),
-                    'last_page' => $paginateData->lastPage(),
-                    'from' => $paginateData->firstItem(),
-                    'to' => $paginateData->lastItem(),
-                ]
-            ]);
+            // $paginateData = $query->paginate($perPage);
+            // return ApiResponse::success([
+            //     'data' => GelangResource::collection($paginateData),
+            //     'pagination' => [
+            //         'total' => $paginateData->total(),
+            //         'per_page' => $paginateData->perPage(),
+            //         'current_page' => $paginateData->currentPage(),
+            //         'last_page' => $paginateData->lastPage(),
+            //         'from' => $paginateData->firstItem(),
+            //         'to' => $paginateData->lastItem(),
+            //     ]
+            // ]);
+            $query = GelangLog::query();
+            $filterableColumns = [
+                'gelang_log_id' => 'id',
+                'gelang_id' => 'gelang_id',
+                'nama_gelang' => 'nama_gelang', 
+                'v_gmac' => 'v_gmac',
+                'v_dmac' => 'v_dmac',
+                'v_vbatt' => 'v_vbatt',
+                'v_step' => 'v_step',
+                'v_heartrate' => 'v_heartrate',
+                'v_temp' => 'v_temp',
+                'v_spo' => 'v_spo',
+                'v_systolic' => 'v_systolic',
+                'v_diastolic' => 'v_diastolic',
+                'v_rssi' => 'v_rssi',
+                'n_cutoff_flag' => 'n_cutoff_flag',
+                'n_type' => 'n_type',
+                'v_x0' => 'v_x0',
+                'v_y0' => 'v_y0',
+                'v_z0' => 'v_z0',
+                'd_time' => 'd_time',
+                'n_isavailable' => 'n_isavailable',
+                'v_gateway_topic' => 'v_gateway_topic'
+            ];
+
+            $filters = $request->input('filter', []);
+
+            foreach ($filterableColumns as $requestKey => $column) {
+                if (isset($filters[$requestKey])) {
+                    $query->where($column, 'like', '%' . $filters[$requestKey] .'%');
+                }
+            }
+
+            $query->latest();
+            $paginatedData = $query->paginate($request->input('pageSize', ApiResponse::$defaultPagination));
+
+            $resourceCollection = GelangLogResource::collection($paginatedData);
+
+            return ApiResponse::pagination($resourceCollection, 'Successfully get Data');
         } catch (\Exception $e) {
             return ApiResponse::error('Failed to get data.', $e->getMessage());
         }

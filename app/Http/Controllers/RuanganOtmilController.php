@@ -5,22 +5,38 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Helpers\ApiResponse;
 use App\Models\RuanganOtmil;
-class RuanganController extends Controller
+use App\Http\Resources\RuanganOtmilResource;
+
+class RuanganOtmilController extends Controller
 {
     public function index(Request $request)
     {
         try {
-            $keyword = $request->input('search');
+            $query = RuanganOtmil::with(['lokasiOtmil', 'lantaiOtmil', 'zona']);
+            $filterableColumns = [
+                'ruangan_otmil_id' => 'id',
+                'nama_ruangan_otmil' => 'nama_ruangan_otmil',
+                'jenis_ruangan_otmil' => 'jenis_ruangan_otmil',
+                'lokasi_otmil_id' => 'lokasi_otmil_id',
+                'nama_lokasi_otmil' => 'lokasiOtmil.nama_lokasi_otmil',
+                'lantai_otmil_id' => 'lantai_otmil_id',
+                'nama_lantai' => 'lantaiOtmil.nama_lantai',
+                'zona_id' => 'zona_id',
+                'nama_zona' => 'zona.nama_zona'
+            ];
+            $filters = $request->input('filter', []);
 
-            $getData = RuanganOtmil::with(['lokasiOtmil', 'lantaiOtmil'])
-            ->where('nama_ruangan_otmil', 'LIKE', '%' . $keyword . '%')
-            ->orWhereHas('lantaiOtmil', function ($q) use ($keyword){
-                $q ->where('nama_lantai', 'LIKE', '%' . $keyword . '%');
-            })->orWhereHas('lokasiOtmil', function ($r) use ($keyword){
-                $r ->where('nama_lokasi_otmil', 'LIKE', '%' . $keyword . '%');
-            })->get();
+            foreach ($filterableColumns as $requestKey => $column) {
+                if (isset($filters[$requestKey])) {
+                    $query->where($column, 'like', '%' . $filters[$requestKey] . '%');
+                }
+            }
 
-            return ApiResponse::success($getData);
+            $query->latest();
+            $paginatedData = $query->paginate($request->input('pageSize', ApiResponse::$defaultPagination));
+            $resourceCollection = RuanganOtmilResource::collection($paginatedData);
+
+            return ApiResponse::pagination($resourceCollection);
         } catch (\Exception $e) {
             return ApiResponse::error('An error occurred while fetching data.', $e->getMessage());
         }
