@@ -324,10 +324,8 @@ class WbpProfileController extends Controller
                 //     'keterangan' => "Tersangka", 
                 // ]);
 
-                $oditur_penyidik_ids = $request['oditur_penyidikan_id'];
+                $oditur_penyidik_ids = $request['oditur_penyidik_id'];
                 $role_ketua_oditur_ids = $request['role_ketua_oditur_ids'];
-                // return $request['oditur_penyidikan_id'];
-                // exit();
                 foreach ($oditur_penyidik_ids as $oditur_penyidik_id) 
                 {
                     $role = ($oditur_penyidik_id == $role_ketua_oditur_ids) ? 1 : 0;
