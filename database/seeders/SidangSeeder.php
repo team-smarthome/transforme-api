@@ -30,7 +30,7 @@ class SidangSeeder extends Seeder
                 'juru_sita' => 'Joko',
                 'juru_pengacara_sidang' => 'Joko',
                 'pengawas_peradilan_militer' => 'Joko',
-                'wbp_profile_id' => '12cfa0a1-5ab3-4daa-9292-29397946312w',
+                'wbp_profile_id' => '12cfa0a1-5ab3-4daa-9292-29397946312o',
                 'zona_waktu' => 'WIB',
                 'created_at' => now()
             ]

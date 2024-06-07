@@ -20,7 +20,7 @@ class PintuAksesSeeder extends Seeder
                 'nama_pintu_akses' => 'Pintu Akses 1',
                 'mac_address' => '00:00:00:00:00:00',
                 'ruangan_otmil_id' => 'f6e62e45-498d-45a8-affd-e5e363c99442',
-                'ruangan_lemasmil_id' => 'db10dd62-c048-44aa-a85e-9c29551704d2',
+                'ruangan_lemasmil_id' => 'db10dd62-c048-44bb-a85e-9c2955170420',
                 'status' => 'Aktif',
                 'merk' => 'Merk 1',
                 'model' => 'Model 1',

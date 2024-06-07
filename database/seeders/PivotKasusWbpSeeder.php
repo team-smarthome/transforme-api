@@ -18,7 +18,7 @@ class PivotKasusWbpSeeder extends Seeder
             [
                 'id' => 'c1458262-6739-49d6-87f8-49cb3f6fda4a',
                 'kasus_id' => "59353d58-ae92-4b94-b13a-ce7f64257135",
-                'wbp_profile_id' => "12cfa0a1-5ab3-4daa-9292-29397946312w",
+                'wbp_profile_id' => "12cfa0a1-5ab3-4daa-9292-29397946312o",
                 'keterangan' => 'Keterangan',
                 'created_at' => now(),
                 'updated_at' => now(),

@@ -32,7 +32,7 @@ class AktivitasGelangSeeder extends Seeder
                 "y0"=> "Random",
                 "z0"=> "Random",
                 "timestamp"=> now(),
-                "wbp_profile_id"=> "12cfa0a1-5ab3-4daa-9292-29397946312w",
+                "wbp_profile_id"=> "12cfa0a1-5ab3-4daa-9292-29397946312o",
                 "rssi"=> "Random",
                 "created_at"=> now(),
                 "updated_at"=> now()
