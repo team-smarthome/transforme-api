@@ -305,7 +305,7 @@ class WbpProfileController extends Controller
                     'tanggal_mulai_penyidikan' => $request['tanggal_mulai_penyidikan'],
                     'tanggal_mulai_sidang' => $request['tanggal_mulai_sidang'],
                 ]);
-
+                
                 foreach ($request['wbp_profile_ids'] as $index => $wbp_profile_id) {
                 $request_keterangan = $request['keterangans'];
                 $keterangan = $request_keterangan[$index];
@@ -324,8 +324,10 @@ class WbpProfileController extends Controller
                 //     'keterangan' => "Tersangka", 
                 // ]);
 
-                $oditur_penyidik_ids = $request['oditur_penyidik_id'];
+                $oditur_penyidik_ids = $request['oditur_penyidikan_id'];
                 $role_ketua_oditur_ids = $request['role_ketua_oditur_ids'];
+                // return $request['oditur_penyidikan_id'];
+                // exit();
                 foreach ($oditur_penyidik_ids as $oditur_penyidik_id) 
                 {
                     $role = ($oditur_penyidik_id == $role_ketua_oditur_ids) ? 1 : 0;
