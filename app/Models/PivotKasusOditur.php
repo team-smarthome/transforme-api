@@ -17,7 +17,7 @@ class PivotKasusOditur extends Pivot
     public $incrementing = false;
     public $timestamps = true;
 
-    protected $fillable = ['kasus_id', 'oditur_penyidik_id', 'keterangan'];
+    protected $fillable = ['kasus_id', 'oditur_penyidikan_id', 'keterangan'];
 
     public function kasus(): BelongsTo
     {
@@ -26,6 +26,6 @@ class PivotKasusOditur extends Pivot
 
     public function oditurPenyidik(): BelongsTo
     {
-        return $this->belongsTo(OditurPenyidik::class, 'oditur_penyidik_id', 'id');
+        return $this->belongsTo(OditurPenyidik::class, 'oditur_penyidikan_id', 'id');
     }
 }

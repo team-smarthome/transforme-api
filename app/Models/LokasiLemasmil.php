@@ -24,6 +24,16 @@ class LokasiLemasmil extends Model
     'lebar'
   ];
 
+  protected $hidden = ['panjang', 'lebar', 'created_at', 'updated_at', 'deleted_at'];
+
+  public function toArray()
+  {
+    $array = parent::toArray();
+    $array['lokasi_lemasmil_id'] = $array['id'];
+    unset($array['id']);
+    return $array;
+  }
+
   public function user(): HasMany
   {
     return $this->hasMany(User::class, 'lokasi_lemasmil_id', 'id');

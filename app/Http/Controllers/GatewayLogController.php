@@ -48,6 +48,56 @@ class GatewayLogController extends Controller
                     $q->where('nama_lokasi_otmil', 'LIKE', '%' . $filters['nama_lokasi_otmil'] . '%');
                 });
             }
+            if (isset($filters['nama_lokasi_lemasmil'])) {
+                $query->whereHas('gateway.ruanganLemasmil.lokasiLemasmil', function ($q) use ($filters) {
+                    $q->where('nama_lokasi_lemasmil', 'LIKE', '%' . $filters['nama_lokasi_lemasmil'] . '%');
+                });
+            }
+            if (isset($filters['ruangan_otmil_id'])) {
+                $query->whereHas('gateway.ruanganOtmil', function ($q) use ($filters) {
+                    $q->where('ruangan_otmil_id', 'LIKE', '%' . $filters['ruangan_otmil_id'] . '%');
+                });
+            }
+            if (isset($filters['ruangan_lemasmil_id'])) {
+                $query->whereHas('gateway.ruanganLemasmil', function ($q) use ($filters) {
+                    $q->where('ruangan_lemasmil_id', 'LIKE', '%' . $filters['ruangan_lemasmil_id'] . '%');
+                });
+            }
+            if (isset($filters['nama_ruangan_otmil'])) {
+                $query->whereHas('gateway.ruanganOtmil', function ($q) use ($filters) {
+                    $q->where('nama_ruangan_otmil', 'LIKE', '%' . $filters['nama_ruangan_otmil'] . '%');
+                });
+            }
+            if (isset($filters['nama_ruangan_lemasmil'])) {
+                $query->whereHas('gateway.ruanganLemasmil', function ($q) use ($filters) {
+                    $q->where('nama_ruangan_lemasmil', 'LIKE', '%' . $filters['nama_ruangan_lemasmil'] . '%');
+                });
+            }
+            if (isset($filters['jenis_ruangan_otmil'])) {
+                $query->whereHas('gateway.ruanganOtmil', function ($q) use ($filters) {
+                    $q->where('jenis_ruangan_otmil', 'LIKE', '%' . $filters['jenis_ruangan_otmil'] . '%');
+                });
+            }
+            if (isset($filters['jenis_ruangan_lemasmil'])) {
+                $query->whereHas('gateway.ruanganLemasmil', function ($q) use ($filters) {
+                    $q->where('jenis_ruangan_lemasmil', 'LIKE', '%' . $filters['jenis_ruangan_lemasmil'] . '%');
+                });
+            }
+            if (isset($filters['wbp_profile_id'])) {
+                $query->whereHas('gateway.wbpProfile', function ($q) use ($filters) {
+                    $q->where('wbp_profile_id', 'LIKE', '%' . $filters['wbp_profile_id'] . '%');
+                });
+            }
+            if (isset($filters['gmac'])) {
+                $query->whereHas('gateway', function ($q) use ($filters) {
+                    $q->where('gmac', 'LIKE', '%' . $filters['gmac'] . '%');
+                });
+            }
+            if (isset($filters['status_gateway'])) {
+                $query->whereHas('gateway', function ($q) use ($filters) {
+                    $q->where('status_gateway', 'LIKE', '%' . $filters['status_gateway'] . '%');
+                });
+            }
 
             $query->latest();
             $paginatedData = $query->paginate($request->input('pageSize', ApiResponse::$defaultPagination));
