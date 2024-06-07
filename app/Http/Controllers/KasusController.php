@@ -66,66 +66,131 @@ class KasusController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(KasusRequest $request)
-    {
-        DB::beginTransaction();
-        try {
-            $kasus = Kasus::create($request->all());
-            $pivotoditurData = [];
-            if ($request->has('oditur_penyidikan_id')) {
-                foreach ($request->oditur_penyidikan_id as $index => $oditurId) {
-                    $pivotoditurData[] = [
-                        'id' => \Illuminate\Support\Str::uuid(),
-                        'kasus_id' => $kasus->id,
-                        'oditur_penyidikan_id' => $oditurId,
-                        'role_ketua' => $request->role_ketua[$index],
-                        'created_at' => now(),
-                        'updated_at' => now()
-                    ];
-                }
-                DB::table('pivot_kasus_oditur')->insert($pivotoditurData);
-            }
-            $pivotSaksiData = [];
-            if ($request->has('saksi_id')) {
-                foreach ($request->saksi_id as $index => $saksiId) {
-                    $pivotSaksiData[] = [
-                        'id' => \Illuminate\Support\Str::uuid(),
-                        'kasus_id' => $kasus->id,
-                        'saksi_id' => $saksiId,
-                        'keterangan' => $request->keterangan_saksi[$index],
-                        'created_at' => now(),
-                        'updated_at' => now()
-                    ];
-                }
-                DB::table('pivot_kasus_saksi')->insert($pivotSaksiData);
-            }
 
-            $pivotWbpData = [];
-            if ($request->has('wbp_profile_id') && is_array($request->wbp_profile_id)) {
-                foreach ($request->wbp_profile_id as $index => $wbpId) {
-                    $pivotWbpData[] = [
-                        'id' => \Illuminate\Support\Str::uuid(),
-                        'kasus_id' => $kasus->id,
-                        'wbp_profile_id' => $wbpId,
-                        'keterangan' => $request->keterangan_wbp[$index], // pastikan ini sesuai dengan struktur request Anda
-                        'created_at' => now(),
-                        'updated_at' => now()
-                    ];
-                }
-                DB::table('pivot_kasus_wbp')->insert($pivotWbpData);
-            }
+     public function store(KasusRequest $request)
+     {
+         DB::beginTransaction();
+         try {
+             $kasusData = $request->except(['oditur_penyidikan_id', 'role_ketua', 'saksi_id', 'keterangan_saksi', 'wbp_profile_id', 'keterangan_wbp']);
+             $kasus = Kasus::create($kasusData);
+             
+             $pivotoditurData = [];
+             if ($request->has('oditur_penyidikan_id')) {
+                 foreach ($request->oditur_penyidikan_id as $index => $oditurId) {
+                     $pivotoditurData[] = [
+                         'id' => \Illuminate\Support\Str::uuid(),
+                         'kasus_id' => $kasus->id,
+                         'oditur_penyidikan_id' => $oditurId,
+                         'role_ketua' => $request->role_ketua[$index],
+                         'created_at' => now(),
+                         'updated_at' => now()
+                     ];
+                 }
+                 DB::table('pivot_kasus_oditur')->insert($pivotoditurData);
+             }
+     
+             $pivotSaksiData = [];
+             if ($request->has('saksi_id')) {
+                 foreach ($request->saksi_id as $index => $saksiId) {
+                     $pivotSaksiData[] = [
+                         'id' => \Illuminate\Support\Str::uuid(),
+                         'kasus_id' => $kasus->id,
+                         'saksi_id' => $saksiId,
+                         'keterangan' => $request->keterangan_saksi[$index],
+                         'created_at' => now(),
+                         'updated_at' => now()
+                     ];
+                 }
+                 DB::table('pivot_kasus_saksi')->insert($pivotSaksiData);
+             }
+     
+             $pivotWbpData = [];
+             if ($request->has('wbp_profile_id') && is_array($request->wbp_profile_id)) {
+                 foreach ($request->wbp_profile_id as $index => $wbpId) {
+                     $pivotWbpData[] = [
+                         'id' => \Illuminate\Support\Str::uuid(),
+                         'kasus_id' => $kasus->id,
+                         'wbp_profile_id' => $wbpId,
+                         'keterangan' => $request->keterangan_wbp[$index],
+                         'created_at' => now(),
+                         'updated_at' => now()
+                     ];
+                 }
+                 DB::table('pivot_kasus_wbp')->insert($pivotWbpData);
+             }
+     
+             DB::commit();
+             $kasus->oditurPenyidik = $pivotoditurData;
+             $kasus->saksiPivot = $pivotSaksiData;
+             $kasus->wbpProfilePivot = $pivotWbpData;
+             return ApiResponse::created($kasus);
+         } catch (Exception $e) {
+             DB::rollBack();
+             return ApiResponse::error('Data kasus gagal disimpan.', $e->getMessage());
+         }
+     }
+     
+
+    // public function store(KasusRequest $request)
+    // {
+    //     DB::beginTransaction();
+    //     try {
+    //         $kasus = Kasus::create($request->all());
+    //         $pivotoditurData = [];
+    //         if ($request->has('oditur_penyidikan_id')) {
+    //             foreach ($request->oditur_penyidikan_id as $index => $oditurId) {
+    //                 $pivotoditurData[] = [
+    //                     'id' => \Illuminate\Support\Str::uuid(),
+    //                     'kasus_id' => $kasus->id,
+    //                     'oditur_penyidikan_id' => $oditurId,
+    //                     'role_ketua' => $request->role_ketua[$index],
+    //                     'created_at' => now(),
+    //                     'updated_at' => now()
+    //                 ];
+    //             }
+    //             DB::table('pivot_kasus_oditur')->insert($pivotoditurData);
+    //         }
+    //         $pivotSaksiData = [];
+    //         if ($request->has('saksi_id')) {
+    //             foreach ($request->saksi_id as $index => $saksiId) {
+    //                 $pivotSaksiData[] = [
+    //                     'id' => \Illuminate\Support\Str::uuid(),
+    //                     'kasus_id' => $kasus->id,
+    //                     'saksi_id' => $saksiId,
+    //                     'keterangan' => $request->keterangan_saksi[$index],
+    //                     'created_at' => now(),
+    //                     'updated_at' => now()
+    //                 ];
+    //             }
+    //             DB::table('pivot_kasus_saksi')->insert($pivotSaksiData);
+    //         }
+
+    //         $pivotWbpData = [];
+    //         if ($request->has('wbp_profile_id') && is_array($request->wbp_profile_id)) {
+    //             foreach ($request->wbp_profile_id as $index => $wbpId) {
+    //                 $pivotWbpData[] = [
+    //                     'id' => \Illuminate\Support\Str::uuid(),
+    //                     'kasus_id' => $kasus->id,
+    //                     'wbp_profile_id' => $wbpId,
+    //                     'keterangan' => $request->keterangan_wbp[$index], // pastikan ini sesuai dengan struktur request Anda
+    //                     'created_at' => now(),
+    //                     'updated_at' => now()
+    //                 ];
+    //             }
+    //             DB::table('pivot_kasus_wbp')->insert($pivotWbpData);
+    //         }
     
             
-            DB::commit();
-            $kasus->oditurPenyidik = $pivotoditurData;
-            $kasus->saksiPivot = $pivotSaksiData;
-            $kasus->wbpProfilePivot = $pivotWbpData;
-            return ApiResponse::created($kasus);
-        } catch (Exception $e) {
-            DB::rollBack();
-            return ApiResponse::error('Data kasus gagal disimpan.', $e->getMessage());
-        }
-    }
+    //         DB::commit();
+    //         $kasus->oditurPenyidik = $pivotoditurData;
+    //         $kasus->saksiPivot = $pivotSaksiData;
+    //         $kasus->wbpProfilePivot = $pivotWbpData;
+    //         return ApiResponse::created($kasus);
+    //     } catch (Exception $e) {
+    //         DB::rollBack();
+    //         return ApiResponse::error('Data kasus gagal disimpan.', $e->getMessage());
+    //     }
+    // }
 
     /**
      * Display the specified resource.
