@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Helpers\ApiResponse;
 use App\Http\Requests\PetugasRequest;
+use App\Http\Resources\PetugasResource;
 use App\Models\Petugas;
 use Exception;
 use Illuminate\Auth\Events\Validated;
@@ -20,16 +21,28 @@ class PetugasController extends Controller
   public function index(Request $request)
   {
     try {
-      if ($request->has('petugas_id')) {
-        $petugas = Petugas::findOrFail($request->petugas_id);
-        return response()->json($petugas, 200);
+      $query = Petugas::with(['pangkat', 'kesatuan', 'provinsi', 'kota', 'agama', 'status_kawin', 'pendidikan', 'pendidikan', 'bidang_keahlian', 'lokasi_otmil', 'lokasi_lemasmil']);
+
+      $filterableColumns = [
+        'petugas_id' => 'id',
+        'nrp' => 'nrp',
+        'nama_petugas' => 'nama_petugas',
+        'jabatan' => 'jabatan',
+      ];
+      $filters = $request->input('filter', []);
+
+
+      foreach ($filterableColumns as $requestKey => $column) {
+        if (isset($filters[$requestKey])) {
+          $query->where($column, 'like', '%' . $filters[$requestKey] . '%');
+        }
       }
-      if ($request->has('nama')) {
-        $query = Petugas::where('nama', 'like', '%' . $request->nama . '%')->latest();
-      } else {
-        $query = Petugas::latest();
-      }
-      return ApiResponse::paginate($query);
+      $query->latest();
+      $paginatedData = $query->paginate($request->input('pageSize', ApiResponse::$defaultPagination));
+
+      $resourceCollection = PetugasResource::collection($paginatedData);
+
+      return ApiResponse::pagination($resourceCollection, 'Successfully get Data');
     } catch (\Exception $e) {
       return ApiResponse::error('Failed to get Data.', $e->getMessage());
     }

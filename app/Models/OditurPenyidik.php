@@ -17,6 +17,15 @@ class OditurPenyidik extends Model
     public $timestamps = true;
 
     protected $fillable = ['nip', 'nama_oditur', 'alamat'];
+    protected $hidden = ['created_at', 'updated_at', 'deleted_at'];
+
+    public function toArray()
+    {
+        $array = parent::toArray();
+        $array['oditur_penyidik_id'] = $array['id'];
+        unset($array['id']);
+        return $array;
+    }
 
     public function penyidikan(): HasMany
     {

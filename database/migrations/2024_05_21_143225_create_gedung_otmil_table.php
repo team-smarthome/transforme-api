@@ -15,10 +15,10 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->string('nama_gedung_otmil', length: 100);
             $table->uuid('lokasi_otmil_id')->nullable(false);
-            $table->double('panjang');
-            $table->double('lebar');
-            $table->double('posisi_X');
-            $table->double('posisi_Y');
+            $table->double('panjang', 8,2)->default(0.00);
+            $table->double('lebar', 8,2)->default(0.00);
+            $table->double('posisi_X', 8,2)->default(0.00);
+            $table->double('posisi_Y', 8,2)->default(0.00);
             $table->timestamps();
             $table->softDeletes();
 
