@@ -32,7 +32,6 @@ class PetugasShiftResource extends JsonResource
       "nomor_petugas" => $this->petugas->nomor_petugas ?? null,
       "nama_lokasi_otmil" => $this->petugas->lokasi_otmil->nama_lokasi_otmil ?? null,
       "nama_lokasi_lemasmil" => $this->petugas->lokasi_lemasmil->nama_lokasi_lemasmil ?? null,
-      "schedule_id" => $this->schedule_id,
       "sc" => $this->schedule ?? null,
       "tanggal" => $this->schedule->tanggal ?? null,
       "bulan" => $this->schedule->bulan ?? null,

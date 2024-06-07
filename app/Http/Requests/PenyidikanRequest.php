@@ -32,7 +32,7 @@ class PenyidikanRequest extends FormRequest
             'dokumen_bap_id' => 'nullable|string|max:255',
             'wbp_profile_id' => 'required|string|max:255',
             'saksi_id' => 'required|string|max:255',
-            'oditur_penyidikan_id' => 'required|string|max:255',
+            'oditur_penyidikan_id' => 'nullable|string|max:255',
             'zona_waktu' => 'required|string|max:255'
         ];
     }
