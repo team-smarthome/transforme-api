@@ -289,7 +289,7 @@ class WbpProfileController extends Controller
             }
 
             $kasusData = null;
-    
+
             if ($request['is_new_kasus']) {
                 $kasusData = Kasus::create([
                     'nama_kasus' => $request['nama_kasus'],
@@ -421,64 +421,163 @@ class WbpProfileController extends Controller
         }
     }
 
-    // public function update(Request $request) {
-    //     try {
-    //         $base64Image = $request['foto_wajah'];
-    //         $image = "";
-    //         if(str_pos($base64Image, 'data:image/')){
-    //             $image = Helpers::HandleImageBase64($base64Image);        
-    //         }
+    public function update(Request $request) {
+        try {
+            // return $request['foto_wajah'];
+            // exit();
+            DB::beginTransaction();
+            $findWbp = WbpProfile::where('id', $request['wbp_profile_id'])->first();
+            if(empty($findWbp)){ 
+                return response()->json([
+                    'status' => 'Failed',
+                    'message' => 'WbpProfile with this NRP already exists.',
+                ], 404);
+            }
 
-    //         $findWbp = WbpProfile::where('id', $request['wbp_profile_id'])->first();
-    //         // if(empty($findWbp)){
-    //         //     return response()->json([
-    //         //         'status' => 'Failed',
-    //         //         'message' => 'WbpProfile with this NRP already exists.',
-    //         //     ], 404);
-    //         // }
-    //         if ($request['is_new_kasus']) {
-    //             $kasusData = Kasus::create([
-    //                 'nama_kasus' => $request['nama_kasus'],
-    //                 'nomor_kasus' => $request['nomor_kasus'],
-    //                 'wbp_profile_id' => $uuid,
-    //                 'kategori_perkara_id' => $request['kategori_perkara_id'],
-    //                 'jenis_perkara_id' => $request['jenis_perkara_id'],
-    //                 'lokasi_kasus' => $request['lokasi_kasus'],
-    //                 'waktu_kejadian' => $request['waktu_kejadian'],
-    //                 'tanggal_pelimpahan_kasus' => $request['tanggal_pelimpahan_kasus'],
-    //                 'waktu_pelaporan_kasus' => $request['waktu_pelaporan_kasus'],
-    //                 'zona_waktu' => $request['zona_waktu'],
-    //                 'tanggal_mulai_penyidikan' => $request['tanggal_mulai_penyidikan'],
-    //                 'tanggal_mulai_sidang' => $request['tanggal_mulai_sidang'],
-    //             ]);
+            $kasusData = null;
+            if ($request['is_new_kasus'] == "true" || $request['is_new_kasus'] == true) {
+                $kasusData = Kasus::create([
+                    'nama_kasus' => $request['nama_kasus'],
+                    'nomor_kasus' => $request['nomor_kasus'],
+                    'wbp_profile_id' => $request['wbp_profile_id'],
+                    'kategori_perkara_id' => $request['kategori_perkara_id'],
+                    'jenis_perkara_id' => $request['jenis_perkara_id'],
+                    'lokasi_kasus' => $request['lokasi_kasus'],
+                    'waktu_kejadian' => $request['waktu_kejadian'],
+                    'tanggal_pelimpahan_kasus' => $request['tanggal_pelimpahan_kasus'],
+                    'waktu_pelaporan_kasus' => $request['waktu_pelaporan_kasus'],
+                    'zona_waktu' => $request['zona_waktu'],
+                    'tanggal_mulai_penyidikan' => $request['tanggal_mulai_penyidikan'],
+                    'tanggal_mulai_sidang' => $request['tanggal_mulai_sidang'],
+                ]);
                 
-    //             $updatePivotKasus = PivotKasusWbp::where('kasus_id', $request['existing_kasus_id'])->where('wbp_profile_id', $request['wbp_profile_id'])
-    //             ->update([
-    //                 'kasus_id' => $kasusData->id,
-    //                 "keterangan" => "Tersangka"
-    //             ]);
+                $updatePivotKasus = PivotKasusWbp::where('kasus_id', $request['existing_kasus_id'])->where('wbp_profile_id', $request['wbp_profile_id'])
+                ->update([
+                    'kasus_id' => $kasusData->id,
+                    "keterangan" => "Tersangka"
+                ]);
 
-    //             foreach ($request['wbp_profile_ids'] as $index => $wbp_profile_id) {
-    //                 $request_keterangan = $request['keterangans'];
-    //                 $keterangan = $request_keterangan[$index];
+                $existingKasusId = $request['existing_kasus_id'];
+                $findKasus = Kasus::where('id', $existingKasusId)->first();
+
+                $deletePivotKasus = PivotKasusWbp::where('kasus_id', $existingKasusId)
+                ->where('wbp_profile_id', '!=', $findKasus->wbp_profile_id)
+                ->forceDelete();
+                foreach ($request['wbp_profile_ids'] as $index => $wbp_profile_id) {
+                    $request_keterangan = $request['keterangans'];
+                    $keterangan = $request_keterangan[$index];
     
-    //                 $PivotKasusWbp = PivotKasusWbp::create([
-    //                 'kasus_id' => $kasusData->id,
-    //                 'wbp_profile_id' => $wbp_profile_id,
-    //                 'keterangan' => $keterangan,
-    //                 ]);
+                    $PivotKasusWbp = PivotKasusWbp::create([
+                    'kasus_id' => $kasusData->id,
+                    'wbp_profile_id' => $wbp_profile_id,
+                    'keterangan' => $keterangan,
+                    ]);
                     
-    //             };
-    //         }
-    //     } catch (\Exception $e) {
-    //         DB::rollBack();
-    //         return response()->json([
-    //             'status' => 'Failed',
-    //             'message' => 'Failed to create data.',
-    //             'error' => $e->getMessage(),
-    //         ], 500);
-    //     }
-    // }
+                    $oditur_penyidik_ids = $request['oditur_penyidik_id'];
+                    $role_ketua_oditur_ids = $request['role_ketua_oditur_ids'];
+                    foreach ($oditur_penyidik_ids as $oditur_penyidik_id) 
+                    {
+                        $role = ($oditur_penyidik_id == $role_ketua_oditur_ids) ? 1 : 0;
+                        $PivotKasusOditur = PivotKasusOditur::create([
+                        'kasus_id' => $kasusData->id,
+                        'role_ketua' => $role,
+                        'oditur_penyidikan_id' => $oditur_penyidik_id
+                        ]);      
+                    };
+
+                    $saksi_ids = $request['saksi_id'];
+                    $keteranganSaksis = $request['keteranganSaksis'];
+                    foreach ($saksi_ids as $index => $saksi) {
+                        $keterangan = $keteranganSaksis[$index];
+                        $PivotKasusSaksi = PivotKasusSaksi::create([
+                        'kasus_id' => $kasusData->id,
+                        'saksi_id' => $saksi,
+                        'keterangan' => $keterangan
+                        ]);
+                    }
+                };
+            }else if($request['is_new_kasus'] == "false" || $request['is_new_kasus'] == false){
+                $kasus_id = $request['kasus_id'];
+                $updatePivotKasus = PivotKasusWbp::where('kasus_id', $request['existing_kasus_id'])->where('wbp_profile_id', $request['wbp_profile_id'])
+                ->update([
+                    'kasus_id' => $kasus_id,
+                    "keterangan" => "Tersangka"
+                ]);
+            }
+
+            $image = $request['foto_wajah'];
+            if(strpos($image, 'data:image/') === 0 && $image != $findWbp->foto_wajah){
+                $image = Helpers::HandleImageBase64($image);        
+            }
+            $data_foto_wajah_fr = $request['foto_wajah'] == $findWbp->foto_wajah_fr ? $findWbp->foto_wajah_fr : $request['foto_wajah']; 
+            $UpdateWbp = WbpProfile::where('id', $request['wbp_profile_id'])
+            ->update([
+                'nama' => $request['nama'],
+                'pangkat_id' => $request['pangkat_id'],
+                'kesatuan_id' => $request['kesatuan_id'],
+                'tempat_lahir' => $request['tempat_lahir'],
+                'tanggal_lahir' => $request['tanggal_lahir'],
+                'jenis_kelamin' => $request['jenis_kelamin'],
+                'provinsi_id' => $request['provinsi_id'],
+                'kota_id' => $request['kota_id'],
+                'alamat' => $request['alamat'],
+                'agama_id' => $request['agama_id'],
+                'status_kawin_id' => $request['status_kawin_id'],
+                'pendidikan_id' => $request['pendidikan_id'],
+                'bidang_keahlian_id' => $request['bidang_keahlian_id'],
+                'nomor_tahanan' => $request['nomor_tahanan'],
+                'is_isolated' => $request['is_isolated'],
+                'is_sick' => $request['is_sick'],
+                'wbp_sickness' => $request['wbp_sickness'],
+                'gelang_id' => $request['gelang_id'],
+                'nama_kontak_keluarga' => $request['nama_kontak_keluarga'],
+                'hubungan_kontak_keluarga' => $request['hubungan_kontak_keluarga'],
+                'nomor_kontak_keluarga' => $request['nomor_kontak_keluarga'],
+                'hunian_wbp_lemasmil_id' => $request['hunian_wbp_lemasmil_id'],
+                'hunian_wbp_otmil_id' => $request['hunian_wbp_otmil_id'],
+                'matra_id' => $request['matra_id'],
+                'nrp' => $request['nrp'],
+                'kasus_id' => $request['is_new_kasus'] ? $kasusData->id : $request['kasus_id'],
+                'status_wbp_kasus_id' => $request['status_wbp_kasus_id'],
+                'residivis' => $request['residivis'],
+                'tanggal_penetapan_tersangka' => $request['tanggal_penetapan_tersangka'],
+                'tanggal_penetapan_terdakwa' => $request['tanggal_penetapan_terdakwa'],
+                'tanggal_penetapan_terpidana' => $request['tanggal_penetapan_terpidana'],
+                'foto_wajah' => $image,
+                'foto_wajah_fr' => $data_foto_wajah_fr,
+            ]);
+
+            $deleteAksesRuangan = AksesRuangan::where('wbp_profile_id', $request['wbp_profile_id'])->forceDelete();
+
+            $DMAC = $request['DMAC'];
+            $nama_gateway = $request['nama_gateway'];
+            $akses_ruangan_otmil_id = $request['akses_ruangan_otmil_id'];
+
+            foreach ($akses_ruangan_otmil_id as $akses_otmil) {
+                $AksesRuangan = AksesRuangan::create([
+                    'dmac' => $DMAC,
+                    'nama_gateway' => $nama_gateway,
+                    'ruangan_otmil_id' => $akses_otmil["id"],
+                    'ruangan_lemasmil_id' => null,
+                    'is_permitted' => $akses_otmil["isPermitted"],
+                    'wbp_profile_id' => $request['wbp_profile_id']
+                ]);
+            }
+            DB::commit();
+    
+            return response()->json([
+                'status' => 'OK',
+                'message' => 'Successfully updated data.',
+            ], 201);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'status' => 'Failed',
+                'message' => 'Failed to create data.',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
     public function destroy(Request $request)
     {
         $request->validate([
