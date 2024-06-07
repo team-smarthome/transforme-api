@@ -17,7 +17,7 @@ class PetugasShiftResource extends JsonResource
   {
     return [
       "petugas_shift_id" => $this->id,
-      "shift_id" => PetugasShift::find($this->id)->shift_id ?? null,
+      "shift_id" => $this->shift_id ?? null,
       "nama_shift" => $this->shift->nama_shift ?? null,
       "waktu_mulai" => $this->shift->waktu_mulai ?? null,
       "waktu_selesai" => $this->shift->waktu_selesai ?? null,
@@ -32,7 +32,7 @@ class PetugasShiftResource extends JsonResource
       "nomor_petugas" => $this->petugas->nomor_petugas ?? null,
       "nama_lokasi_otmil" => $this->petugas->lokasi_otmil->nama_lokasi_otmil ?? null,
       "nama_lokasi_lemasmil" => $this->petugas->lokasi_lemasmil->nama_lokasi_lemasmil ?? null,
-      "sc" => $this->schedule ?? null,
+      "schedule_id" => $this->schedule_id,
       "tanggal" => $this->schedule->tanggal ?? null,
       "bulan" => $this->schedule->bulan ?? null,
       "tahun" => $this->schedule->tahun ?? null,
@@ -42,6 +42,7 @@ class PetugasShiftResource extends JsonResource
       "penugasan_id" => $this->penugasan_id,
       "nama_penugasan" => $this->penugasan->nama_penugasan ?? null,
       "ruangan_otmil_id" => $this->ruangan_otmil_id,
+      "nama_ruangan_otmil" => $this->ruangan_otmil->nama_ruangan_otmil ?? null,
       "jenis_ruangan_otmil" => $this->ruangan_otmil->jenis_ruangan_otmil ?? null,
       "ruangan_lemasmil_id" => $this->ruangan_lemasmil_id,
       "nama_ruangan_lemasmil" => $this->ruangan_lemasmil->nama_ruangan_lemasmil ?? null,
@@ -49,10 +50,10 @@ class PetugasShiftResource extends JsonResource
       "status_pengganti" => $this->status_pengganti,
       "status_zona_otmil" => $this->ruangan_otmil->zona->nama_zona ?? null,
       "status_zona_lemasmil" => $this->ruangan_lemasmil->zona->nama_zona ?? null,
-      "grup_petugas_id" => $this->petugas->grup_petugas_id,
+      "grup_petugas_id" => $this->petugas->grup_petugas_id ?? null,
       "nama_grup_petugas" => $this->petugas->grup_petugas->nama_grup_petugas ?? null,
       "created_at" => $this->created_at,
-      "updated_at" => $this->updated_at
+      "updated_at" => $this->updated_at,
     ];
   }
 }
