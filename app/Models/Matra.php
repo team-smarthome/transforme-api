@@ -10,24 +10,20 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Matra extends Model
 {
-    use HasFactory, SoftDeletes, HasUuids;
+  use HasFactory, SoftDeletes, HasUuids;
 
-    protected $table = 'matra';
-    public $incrementing = false;
-    protected $keyType = 'uuid';
-    public $timestamps = true;
-    protected $hidden = ['created_at', 'updated_at'];
-    public function toArray()
-    {
-        $array = parent::toArray();
-        $array['matra_id'] = $array['id'];
-        unset($array['id']);
-        return $array;
-    }
-    protected $fillable = ['nama_matra'];
+  protected $table = 'matra';
+  public $incrementing = false;
+  protected $keyType = 'uuid';
+  public $timestamps = true;
+  protected $fillable = ['nama_matra'];
 
-    public function matraWbp(): HasMany
-    {
-        return $this->hasMany(WbpProfile::class, 'matra_id', 'id');
-    }
+  public function matraWbp(): HasMany
+  {
+    return $this->hasMany(WbpProfile::class, 'matra_id', 'id');
+  }
+  public function petugas(): HasMany
+  {
+    return $this->hasMany(Petugas::class, 'matra_id', 'id');
+  }
 }

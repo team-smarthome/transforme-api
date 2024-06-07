@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Helpers\ApiResponse;
+use App\Http\Resources\LantaiOtmilResource;
 use App\Models\LantaiOtmil;
 class LantaiController extends Controller
 {
@@ -11,19 +12,47 @@ class LantaiController extends Controller
     public function index(Request $request)
     {
         try {
-            $keyword = $request->input('search');
+            // $keyword = $request->input('search');
 
-            $getData = LantaiOtmil::with(['lokasiOtmil', 'gedungOtmil'])
-            ->where('nama_lantai', 'LIKE', '%' . $keyword . '%')
-            ->orWhereHas('gedungOtmil', function ($q) use ($keyword){
-                $q ->where('nama_gedung_otmil', 'LIKE', '%' . $keyword . '%');
-            })->orWhereHas('lokasiOtmil', function ($r) use ($keyword){
-                $r ->where('nama_lokasi_otmil', 'LIKE', '%' . $keyword . '%');
-            })->get();
+            // $getData = LantaiOtmil::with(['lokasiOtmil', 'gedungOtmil'])
+            // ->where('nama_lantai', 'LIKE', '%' . $keyword . '%')
+            // ->orWhereHas('gedungOtmil', function ($q) use ($keyword){
+            //     $q ->where('nama_gedung_otmil', 'LIKE', '%' . $keyword . '%');
+            // })->orWhereHas('lokasiOtmil', function ($r) use ($keyword){
+            //     $r ->where('nama_lokasi_otmil', 'LIKE', '%' . $keyword . '%');
+            // })->get();
             
-            return ApiResponse::success([
-                'data' => $getData
-            ]);
+            // return ApiResponse::success([
+            //     'data' => $getData
+            // ]);
+
+            $query = LantaiOtmil::with(['lokasiOtmil', 'gedungOtmil']);
+
+            $filterableColumns = [
+                'lantai_otmil_id' => 'id',
+                'nama_lantai' => 'nama_lantai',
+                'panjang' => 'panjang',
+                'lebar' => 'lebar',
+                'posisi_X' => 'posisi_X',
+                'posisi_Y' => 'posisi_Y',
+                'lokasi_otmil_id' => 'lokasi_otmil_id',
+                'gedung_otmil_id' => 'gedung_otmil_id',
+            ];
+
+            $filters = $request->input('filter', []);
+
+            foreach ($filterableColumns as $requestKey => $column) {
+                if (isset($filters[$requestKey])) {
+                    $query->where($column, 'like', '%' . $filters[$requestKey] .'%');
+                }
+            }
+
+            $query->latest();
+            $paginatedData = $query->paginate($request->input('pageSize', ApiResponse::$defaultPagination));
+
+            $resourceCollection = LantaiOtmilResource::collection($paginatedData);
+
+            return ApiResponse::pagination($resourceCollection);
         } catch (\Exception $e) {
             return ApiResponse::error('An error occurred while fetching data.', $e->getMessage());
         }

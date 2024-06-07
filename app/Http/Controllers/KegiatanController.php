@@ -7,6 +7,7 @@ use App\Models\Kegiatan;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests\KegiatanRequest;
 use App\Helpers\ApiResponse;
+use App\Http\Resources\KegiatanResource;
 use Exception;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 
@@ -16,28 +17,42 @@ class KegiatanController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $query = Kegiatan::with(['ruanganOtmil', 'ruanganLemasmil', 'wbpProfile']);
-        $filterableColumns = [
-            'kegiatan_id' => 'id',
-            'nama_kegiatan' => 'nama_kegiatan',
-            'ruangan_otmil_id' => 'ruangan_otmil_id',
-            'ruangan_lemasmil_id' => 'ruangan_lemasmil_id',
-            'status_kegiatan' => 'status_kegiatan',
-            'waktu_mulai_kegiatan' => 'waktu_mulai_kegiatan',
-            'waktu_selesai_kegiatan' => 'waktu_selesai_kegiatan',
-            'zona_waktu' => 'zona_waktu',
-        ];
+        try {
+            $query = Kegiatan::with(['ruanganOtmil', 'ruanganLemasmil', 'wbpProfile']);
+            $filterableColumns = [
+                'kegiatan_id' => 'id',
+                'nama_kegiatan' => 'nama_kegiatan',
+                'ruangan_otmil_id' => 'ruangan_otmil_id',
+                'nama_ruangan_otmil' => 'ruanganOtmil.nama_ruangan_otmil',
+                'ruangan_lemasmil_id' => 'ruangan_lemasmil_id',
+                'status_kegiatan' => 'status_kegiatan',
+                'waktu_mulai_kegiatan' => 'waktu_mulai_kegiatan',
+                'waktu_selesai_kegiatan' => 'waktu_selesai_kegiatan',
+                'zona_waktu' => 'zona_waktu',
+            ];
 
-        foreach ($filterableColumns as $requestKey => $column) {
-            if ($value = request($requestKey)) {
-                $query->where($column, 'like', '%' . $value . '%');
+            $filters = $request->input('filter', []);
+            foreach ($filterableColumns as $requestKey => $column) {
+                if (isset($filters[$requestKey])) {
+                    if ($requestKey === 'nama_ruangan_otmil') {
+                        $query->whereHas('ruanganOtmil', function ($q) use ($filters, $requestKey) {
+                            $q->where('nama_ruangan_otmil', 'LIKE', '%' . $filters[$requestKey] . '%');
+                        });
+                    } else {
+                        $query->where($column, 'LIKE', '%' . $filters[$requestKey] . '%');
+                    }
+                }
             }
-        }
 
-        $query->latest();
-        return ApiResponse::paginate($query);
+            $query->latest();
+            $paginateData = $query->paginate($request->input('pageSize', ApiResponse::$defaultPagination));
+            $resourceCollection = KegiatanResource::collection($paginateData);
+            return ApiResponse::pagination($resourceCollection);
+        } catch (\Exception $e) {
+            return ApiResponse::error('Failed to get data.', $e->getMessage());
+        }
     }
 
     /**
@@ -72,7 +87,6 @@ class KegiatanController extends Controller
             DB::commit();
             $kegiatan->wbpProfile = $kegiatanWbp;
             return ApiResponse::created($kegiatan);
-            
         } catch (Exception $e) {
             DB::rollBack();
             return [
@@ -113,7 +127,7 @@ class KegiatanController extends Controller
             $craetedKegiatanWbp = DB::table('kegiatan_wbp')->where('kegiatan_id', $id)
                 ->pluck('created_at', 'wbp_profile_id')
                 ->toArray();
-            if ($request -> has('peserta')) {
+            if ($request->has('peserta')) {
                 $pivotData = [];
                 foreach ($request->peserta as $wbpProfileId) {
                     $pivotData[] = [

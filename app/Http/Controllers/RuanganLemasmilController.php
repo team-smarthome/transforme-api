@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\RuanganLemasmil;
 use App\Http\Requests\RuanganLemasmilRequest;
+use App\Http\Resources\RuanganLemasmilResource;
 use App\Helpers\ApiResponse;
 use Exception;
 
@@ -13,58 +14,34 @@ class RuanganLemasmilController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
-    {
-        try {
-            if(request('ruangan_lemasmil_id')) {
-                $query = RuanganLemasmil::with(['lokasiLemasmil', 'zona', 'lantaiLemasmil'])
-                ->where('id', request('ruangan_lemasmil_id'));
-                if(request('nama_ruangan_lemasmil') && $query->exists()) {
-                    $query->where('nama_ruangan_lemasmil', 'like', '%' . request('nama_ruangan_lemasmil') . '%');
-                    if(request('lokasi_lemasmil_id') && $query->exists()) {
-                        $query->where('lokasi_lemasmil_id', 'like', '%' . request('lokasi_lemasmil_id') . '%');
-                        if(request('zona_id') && $query->exists()) {
-                            $query->where('zona_id', 'like', '%' . request('zona_id') . '%');
-                            if(request('lantai_lemasmil_id') && $query->exists()) {
-                                $query->where('lantai_lemasmil_id', 'like', '%' . request('lantai_lemasmil_id') . '%');
-                            }
-                        }
-                    }
+    public function index(Request $request)
+    {   try {
+            $query = RuanganLemasmil::with(['lokasiLemasmil', 'lantaiLemasmil', 'zona']);
+            $filterableColumns = [
+                'ruangan_lemasmil_id' => 'id',
+                'nama_ruangan_lemasmil' => 'nama_ruangan_lemasmil',
+                'lokasi_lemasmil_id' => 'lokasi_lemasmil_id',
+                'nama_lokasi_lemasmil' => 'lokasiLemasmil.nama_lokasi_lemasmil',
+                'lantai_lemasmil_id' => 'lantai_lemasmil_id',
+                'nama_lantai' => 'lantaiLemasmil.nama_lantai',
+                'zona_id' => 'zona_id',
+                'nama_zona' => 'zona.nama_zona'
+            ];
+
+            $filters = request()->input('filter', []);
+
+            foreach ($filterableColumns as $requestKey => $column) {
+                if (isset($filters[$requestKey])) {
+                    $query->where($column, 'like', '%' . $filters[$requestKey] . '%');
                 }
-            } elseif(request('nama_ruangan_lemasmil')) {
-                $query = RuanganLemasmil::with(['lokasiLemasmil', 'zona', 'lantaiLemasmil'])
-                ->where('nama_ruangan_lemasmil', 'like', '%' . request('nama_ruangan_lemasmil') . '%')->latest();
-                if(request('lokasi_lemasmil_id') && $query->exists()) {
-                    $query->where('lokasi_lemasmil_id', 'like', '%' . request('lokasi_lemasmil_id') . '%');
-                    if(request('zona_id') && $query->exists()) {
-                        $query->where('zona_id', 'like', '%' . request('zona_id') . '%');
-                        if(request('lantai_lemasmil_id') && $query->exists()) {
-                            $query->where('lantai_lemasmil_id', 'like', '%' . request('lantai_lemasmil_id') . '%');
-                        }
-                    }
-                }
-            } elseif(request('lokasi_lemasmil_id')) {
-                $query = RuanganLemasmil::with(['lokasiLemasmil', 'zona', 'lantaiLemasmil'])
-                ->where('lokasi_lemasmil_id', 'like', '%' . request('lokasi_lemasmil_id') . '%')->latest();
-                if(request('zona_id') && $query->exists()) {
-                    $query->where('zona_id', 'like', '%' . request('zona_id') . '%');
-                    if(request('lantai_lemasmil_id') && $query->exists()) {
-                        $query->where('lantai_lemasmil_id', 'like', '%' . request('lantai_lemasmil_id') . '%');
-                    }
-                }
-            } elseif(request('zona_id')) {
-                $query = RuanganLemasmil::with(['lokasiLemasmil', 'zona', 'lantaiLemasmil'])
-                ->where('zona_id', 'like', '%' . request('zona_id') . '%')->latest();
-                if(request('lantai_lemasmil_id') && $query->exists()) {
-                    $query->where('lantai_lemasmil_id', 'like', '%' . request('lantai_lemasmil_id') . '%');
-                }
-            } elseif(request('lantai_lemasmil_id')) {
-                $query = RuanganLemasmil::with(['lokasiLemasmil', 'zona', 'lantaiLemasmil'])
-                ->where('lantai_lemasmil_id', 'like', '%' . request('lantai_lemasmil_id') . '%')->latest();
-            } else {
-                $query = RuanganLemasmil::with(['lokasiLemasmil', 'zona', 'lantaiLemasmil'])->latest();
             }
-            return ApiResponse::paginate($query);
+
+            $query->latest();
+
+            $paginatedData = $query->paginate(request()->input('pageSize', ApiResponse::$defaultPagination));
+            $resourceCollection = RuanganLemasmilResource::collection($paginatedData);
+
+            return ApiResponse::pagination($resourceCollection);
 
         } catch (\Exception $e) {
             return ApiResponse::error('Failed to get Data.', $e->getMessage());
@@ -87,6 +64,7 @@ class RuanganLemasmilController extends Controller
         try {
             $ruanganLemasmil = new RuanganLemasmil([
                 'nama_ruangan_lemasmil' => $request->nama_ruangan_lemasmil,
+                'jenis_ruangan_lemasmil' => $request->jenis_ruangan_lemasmil,
                 'lokasi_lemasmil_id' => $request->lokasi_lemasmil_id,
                 'zona_id' => $request->zona_id,
                 'lantai_lemasmil_id' => $request->lantai_lemasmil_id,
@@ -139,6 +117,7 @@ class RuanganLemasmilController extends Controller
             }
 
             $ruanganLemasmil->nama_ruangan_lemasmil = $request->nama_ruangan_lemasmil;
+            $ruanganLemasmil->jenis_ruangan_lemasmil = $request->jenis_ruangan_lemasmil;
             $ruanganLemasmil->lokasi_lemasmil_id = $request->lokasi_lemasmil_id;
             $ruanganLemasmil->zona_id = $request->zona_id;
             $ruanganLemasmil->lantai_lemasmil_id = $request->lantai_lemasmil_id;

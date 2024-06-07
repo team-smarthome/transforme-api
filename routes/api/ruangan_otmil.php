@@ -1,14 +1,16 @@
 <?php
 
-use App\Http\Controllers\RuanganController;
-use App\Http\Middleware\AuthSanctumMiddleware;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\RuanganOtmilController;
+use App\Http\Middleware\AuthSanctumMiddleware;
 
+Route::middleware([AuthSanctumMiddleware::class . ':operator,admin,superadmin'])->group(function () {
+    Route::get('ruangan_otmil', [RuanganOtmilController::class, 'index']);
+});
 
+Route::middleware([AuthSanctumMiddleware::class . ':admin,superadmin'])->group(function () {
+    Route::post('ruangan_otmil', [RuanganOtmilController::class, 'store']);
+    Route::put('ruangan_otmil', [RuanganOtmilController::class, 'update']);
+    Route::delete('ruangan_otmil', [RuanganOtmilController::class, 'destroy']);
 
-    Route::get('ruangan-otmil', [RuanganController::class, 'index']);
-    Route::post('ruangan-otmil', [RuanganController::class, 'store']);
-    // Route::get('ruangan-otmil', [RuanganController::class, 'show']);
-    Route::put('ruangan-otmil', [RuanganController::class, 'update']);
-    Route::delete('ruangan-otmil', [RuanganController::class, 'destroy']);
-    
+});

@@ -1,6 +1,9 @@
 <?php
 
-use App\Http\Controllers\ProvinsiController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ProvinsiController;
+use App\Http\Middleware\AuthSanctumMiddleware;
 
-Route::get('provinsi', [ProvinsiController::class, 'index']);
+Route::middleware([AuthSanctumMiddleware::class . ':operator,admin,superadmin'])->group(function () {
+  Route::get('provinsi', [ProvinsiController::class, 'index']);
+});

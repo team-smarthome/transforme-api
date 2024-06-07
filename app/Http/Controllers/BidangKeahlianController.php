@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Helpers\ApiResponse;
 use App\Http\Requests\BidangKeahlianRequest;
+use App\Http\Resources\BidangKeahlianResource;
 use App\Models\BidangKeahlian;
 use Exception;
 use Illuminate\Database\QueryException;
@@ -18,18 +19,26 @@ class BidangKeahlianController extends Controller
     public function index(Request $request)
     {
         try {
-            if ($request->has('bidang_keahlian_id')) {
-                $bidang_keahlian = BidangKeahlian::findOrFail($request->bidang_keahlian_id);
-                return response()->json($bidang_keahlian, 200);
+            $query = BidangKeahlian::query();
+            $filterableColumns = [
+                'bidang_keahlian_id' => 'id',
+                'nama_bidang_keahlian' => 'nama_bidang_keahlian',
+            ];
+
+            $filters = $request->input('filter', []);
+
+            foreach ($filterableColumns as $requestKey => $column) {
+                if (isset($filters[$requestKey])) {
+                    $query->where($column, 'like', '%' . $filters[$requestKey] . '%');
+                }
             }
 
-            if ($request->has('nama_bidang_keahlian')) {
-                $query = BidangKeahlian::where('nama_bidang_keahlian', 'like', '%' . $request->nama_bidang_keahlian . '%')->latest();
-            } else {
-                $query = BidangKeahlian::latest();
-            }
+            $query->latest();
+            $paginatedData = $query->paginate($request->input('pageSize', ApiResponse::$defaultPagination));
+            $resourceCollection = BidangKeahlianResource::collection($paginatedData);
 
-            return ApiResponse::paginate($query);
+            return ApiResponse::pagination($resourceCollection);
+
         } catch (\Exception $e) {
             return ApiResponse::error('Failed to get Data.', $e->getMessage());
         }
