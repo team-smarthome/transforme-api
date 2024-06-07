@@ -8,28 +8,50 @@ use App\Models\LokasiLemasmil;
 use Illuminate\Database\QueryException;
 use Exception;
 use App\Http\Requests\LokasiLemasmilRequest;
-
+use App\Http\Resources\LokasiLemasmilResource;
 
 class LokasiLemasmilController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         try {
-            if (request('lokasi_lemasmil_id')) {
-                $query = LokasiLemasmil::where('id', request('lokasi_lemasmil_id'));
-                if (request('nama_lokasi_lemasmil') && $query->exists()) {
-                    $query = LokasiLemasmil::where('nama_lokasi_lemasmil', 'like', '%' . request('nama_lokasi_lemasmil') . '%');
-                } 
-            } elseif(request('nama_lokasi_lemasmil')) {
-                $query = LokasiLemasmil::where('nama_lokasi_lemasmil', 'like', '%' . request('nama_lokasi_lemasmil') . '%')->latest();
-            } else {
-                $query = LokasiLemasmil::latest();
+            // if (request('lokasi_lemasmil_id')) {
+            //     $query = LokasiLemasmil::where('id', request('lokasi_lemasmil_id'));
+            //     if (request('nama_lokasi_lemasmil') && $query->exists()) {
+            //         $query = LokasiLemasmil::where('nama_lokasi_lemasmil', 'like', '%' . request('nama_lokasi_lemasmil') . '%');
+            //     } 
+            // } elseif(request('nama_lokasi_lemasmil')) {
+            //     $query = LokasiLemasmil::where('nama_lokasi_lemasmil', 'like', '%' . request('nama_lokasi_lemasmil') . '%')->latest();
+            // } else {
+            //     $query = LokasiLemasmil::latest();
+            // }
+
+            // return ApiResponse::paginate($query);
+            $query = LokasiLemasmil::query();
+            $filterableColumns = [
+                'lokasi_lemasmil_id' => 'id',
+                'nama_lokasi_lemasmil' => 'nama_lokasi_lemasmil',
+                'latitude' => 'latitude',
+                'longitude' => 'longitude'
+            ];
+
+            $filters = $request->input('filter', []);
+
+            foreach ($filterableColumns as $requestKey => $column) {
+                if (isset($filters[$requestKey])) {
+                    $query->where($column, 'like', '%' . $filters[$requestKey] .'%');
+                }
             }
 
-            return ApiResponse::paginate($query);
+            $query->latest();
+            $paginatedData = $query->paginate($request->input('pageSize', ApiResponse::$defaultPagination));
+
+            $resourceCollection = LokasiLemasmilResource::collection($paginatedData);
+
+            return ApiResponse::pagination($resourceCollection, 'Successfully get Data');
 
         } catch (\Exception $e) {
             return ApiResponse::error('Failed to get Data.', $e->getMessage());

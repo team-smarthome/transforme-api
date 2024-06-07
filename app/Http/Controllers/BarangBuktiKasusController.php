@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\BarangBuktiKasus;
 use App\Http\Requests\BarangBuktiKasusRequest;
 use App\Helpers\ApiResponse;
+use App\Http\Resources\BarangBuktiKasusResource;
 use Exception;
 
 class BarangBuktiKasusController extends Controller
@@ -13,60 +14,91 @@ class BarangBuktiKasusController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         try {
-            if (request('barang_bukti_kasus_id')) {
-                $query = BarangBuktiKasus::with(['kasus', 'jenisPerkara'])
-                    ->where('id', request('barang_bukti_kasus_id'));
-                if (request('kasus_id') && $query->exists()) {
-                    $query->where('kasus_id', 'like', '%' . request('kasus_id') . '%');
-                    if (request('nama_bukti_kasus') && $query->exists()) {
-                        $query->where('nama_bukti_kasus', 'like', '%' . request('nama_bukti_kasus') . '%');
-                        if (request('nomor_barang_bukti') && $query->exists()) {
-                            $query->where('nomor_barang_bukti', 'like', '%' . request('nomor_barang_bukti') . '%');
-                            if (request('jenis_perkara_id') && $query->exists()) {
-                                $query->where('jenis_perkara_id', 'like', '%' . request('jenis_perkara_id') . '%');
-                            }   
-                        }
-                    } 
-                 }
-            } elseif(request('kasus_id')) {
-                $query = BarangBuktiKasus::with(['kasus', 'jenisPerkara'])
-                    ->where('kasus_id', 'like', '%' . request('kasus_id') . '%')->latest();
-                if (request('nama_bukti_kasus') && $query->exists()) {
-                    $query->where('nama_bukti_kasus', 'like', '%' . request('nama_bukti_kasus') . '%');
-                    if (request('nomor_barang_bukti') && $query->exists()) {
-                        $query->where('nomor_barang_bukti', 'like', '%' . request('nomor_barang_bukti') . '%');
-                        if (request('jenis_perkara_id') && $query->exists()) {
-                            $query->where('jenis_perkara_id', 'like', '%' . request('jenis_perkara_id') . '%');
-                        }   
-                    }
-                } 
-            } elseif(request('nama_bukti_kasus')) {
-                $query = BarangBuktiKasus::with(['kasus', 'jenisPerkara'])
-                    ->where('nama_bukti_kasus', 'like', '%' . request('nama_bukti_kasus') . '%')->latest();
-                if (request('nomor_barang_bukti') && $query->exists()) {
-                    $query->where('nomor_barang_bukti', 'like', '%' . request('nomor_barang_bukti') . '%');
-                    if (request('jenis_perkara_id') && $query->exists()) {
-                        $query->where('jenis_perkara_id', 'like', '%' . request('jenis_perkara_id') . '%');
-                    }   
-                }
-            } elseif(request('nomor_barang_bukti')) {
-                $query = BarangBuktiKasus::with(['kasus', 'jenisPerkara'])
-                    ->where('nomor_barang_bukti', 'like', '%' . request('nomor_barang_bukti') . '%')->latest();
-                if (request('jenis_perkara_id') && $query->exists()) {
-                    $query->where('jenis_perkara_id', 'like', '%' . request('jenis_perkara_id') . '%');
-                }   
-            } elseif(request('jenis_perkara_id')) {
-                $query = BarangBuktiKasus::with(['kasus', 'jenisPerkara'])
-                    ->where('jenis_perkara_id', 'like', '%' . request('jenis_perkara_id') . '%')->latest();
+            // if (request('barang_bukti_kasus_id')) {
+            //     $query = BarangBuktiKasus::with(['kasus', 'jenisPerkara'])
+            //         ->where('id', request('barang_bukti_kasus_id'));
+            //     if (request('kasus_id') && $query->exists()) {
+            //         $query->where('kasus_id', 'like', '%' . request('kasus_id') . '%');
+            //         if (request('nama_bukti_kasus') && $query->exists()) {
+            //             $query->where('nama_bukti_kasus', 'like', '%' . request('nama_bukti_kasus') . '%');
+            //             if (request('nomor_barang_bukti') && $query->exists()) {
+            //                 $query->where('nomor_barang_bukti', 'like', '%' . request('nomor_barang_bukti') . '%');
+            //                 if (request('jenis_perkara_id') && $query->exists()) {
+            //                     $query->where('jenis_perkara_id', 'like', '%' . request('jenis_perkara_id') . '%');
+            //                 }   
+            //             }
+            //         } 
+            //      }
+            // } elseif(request('kasus_id')) {
+            //     $query = BarangBuktiKasus::with(['kasus', 'jenisPerkara'])
+            //         ->where('kasus_id', 'like', '%' . request('kasus_id') . '%')->latest();
+            //     if (request('nama_bukti_kasus') && $query->exists()) {
+            //         $query->where('nama_bukti_kasus', 'like', '%' . request('nama_bukti_kasus') . '%');
+            //         if (request('nomor_barang_bukti') && $query->exists()) {
+            //             $query->where('nomor_barang_bukti', 'like', '%' . request('nomor_barang_bukti') . '%');
+            //             if (request('jenis_perkara_id') && $query->exists()) {
+            //                 $query->where('jenis_perkara_id', 'like', '%' . request('jenis_perkara_id') . '%');
+            //             }   
+            //         }
+            //     } 
+            // } elseif(request('nama_bukti_kasus')) {
+            //     $query = BarangBuktiKasus::with(['kasus', 'jenisPerkara'])
+            //         ->where('nama_bukti_kasus', 'like', '%' . request('nama_bukti_kasus') . '%')->latest();
+            //     if (request('nomor_barang_bukti') && $query->exists()) {
+            //         $query->where('nomor_barang_bukti', 'like', '%' . request('nomor_barang_bukti') . '%');
+            //         if (request('jenis_perkara_id') && $query->exists()) {
+            //             $query->where('jenis_perkara_id', 'like', '%' . request('jenis_perkara_id') . '%');
+            //         }   
+            //     }
+            // } elseif(request('nomor_barang_bukti')) {
+            //     $query = BarangBuktiKasus::with(['kasus', 'jenisPerkara'])
+            //         ->where('nomor_barang_bukti', 'like', '%' . request('nomor_barang_bukti') . '%')->latest();
+            //     if (request('jenis_perkara_id') && $query->exists()) {
+            //         $query->where('jenis_perkara_id', 'like', '%' . request('jenis_perkara_id') . '%');
+            //     }   
+            // } elseif(request('jenis_perkara_id')) {
+            //     $query = BarangBuktiKasus::with(['kasus', 'jenisPerkara'])
+            //         ->where('jenis_perkara_id', 'like', '%' . request('jenis_perkara_id') . '%')->latest();
 
-            } else {
-                $query = BarangBuktiKasus::with(['kasus', 'jenisPerkara'])->latest();
+            // } else {
+            //     $query = BarangBuktiKasus::with(['kasus', 'jenisPerkara'])->latest();
+            // }
+
+            // return ApiResponse::paginate($query);
+            $query = BarangBuktiKasus::with(['kasus', 'jenisPerkara']);
+
+            $filterableColumns = [
+                'barang_bukti_kasus_id' => 'id',
+                'kasus_id' => 'kasus_id',
+                'nama_kasus' => 'nama_kasus',
+                'nomor_kasus' => 'nomor_kasus',
+                'nama_bukti_kasus' => 'nama_bukti_kasus',
+                'nomor_barang_bukti' => 'nomor_barang_bukti',
+                'dokumen_barang_bukti' => 'dokumen_barang_bukti',
+                'gambar_barang_bukti' => 'gambar_barang_bukti',
+                'keterangan' => 'keterangan',
+                'longitude' => 'longitude',
+                'tanggal_diambil' => 'tanggal_diambil',
+                'jenis_perkara_id' => 'jenis_perkara_id',
+                'nama_jenis_perkara' => 'nama_jenis_perkara'
+            ];
+
+            $filters = $request->input('filter', []);
+
+            foreach ($filterableColumns as $requestKey => $column) {
+                if (isset($filters[$requestKey])) {
+                    $query->where($column,'like','%'. $filters[$requestKey] .'%');
+                }
             }
 
-            return ApiResponse::paginate($query);
+            $query->latest();
+            $paginatedData = $query->paginate($request->input('pageSize', ApiResponse::$defaultPagination));
+
+            $resourceCollection = BarangBuktiKasusResource::collection($paginatedData);
+            return ApiResponse::pagination($resourceCollection);
 
         } catch (\Exception $e) {
             return ApiResponse::error('Failed to get Data.', $e->getMessage());
