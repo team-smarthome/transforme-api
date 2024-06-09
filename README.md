@@ -18,7 +18,7 @@ git pull origin development-stagging
 ```bash
 git pull origin development-stagging-v2
 ```
-### Cara Install
+### Cara Install dan menggunakannya
 
 ```bash
 $ git clone
