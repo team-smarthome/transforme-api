@@ -68,7 +68,7 @@ class HunianWbpOtmilController extends Controller
     public function show(Request $request)
     {
         $id = $request->input('id');
-        $hunianWbpOtmil = HunianWbpOtmil::findOrFail( $id );
+        $hunianWbpOtmil = HunianWbpOtmil::findOrFail($id);
         return response()->json($hunianWbpOtmil, 200);
     }
 
@@ -85,17 +85,17 @@ class HunianWbpOtmilController extends Controller
      */
     public function update(Request $request)
     {
-        $id = $request->input('id');
+        $hunianOtmilId = $request->input('hunian_wbp_otmil_id');
         // $request->validate([
         //     'lokasi_otmil_id' => 'required|string|max:100',
         //     'nama_hunian_wbp_otmil' => 'required|string|max:100'
         // ]);
 
-        $hunianWbpOtmil = HunianWbpOtmil::findOrFail( $id );
+        $hunianWbpOtmil = HunianWbpOtmil::findOrFail($hunianOtmilId);
 
         $existingHunianWbpOtmil = HunianWbpOtmil::where('nama_hunian_wbp_otmil', $hunianWbpOtmil->nama_hunian_wbp_otmil)->first();
 
-        if ($existingHunianWbpOtmil && $existingHunianWbpOtmil->id !== $id) {
+        if ($existingHunianWbpOtmil && $existingHunianWbpOtmil->id !== $hunianOtmilId) {
             return ApiResponse::error('Nama hunian wbp otmil sudah ada.', null, 422);
         }
 
@@ -110,14 +110,15 @@ class HunianWbpOtmilController extends Controller
      */
     public function destroy(Request $request)
     {
-        $id = $request->input('id');
+        $id = $request->input('hunian_wbp_otmil_id');
         $hunianWbpOtmil = HunianWbpOtmil::findOrFail($id);
         $hunianWbpOtmil->delete();
 
         return ApiResponse::deleted();
     }
 
-    public function restore($id){
+    public function restore($id)
+    {
         $hunianWbpOtmil = HunianWbpOtmil::withTrashed()->findOrFail($id);
         $hunianWbpOtmil->restore();
 

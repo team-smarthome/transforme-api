@@ -85,7 +85,7 @@ class HunianWbpLemasmilController extends Controller
      */
     public function update(Request $request)
     {
-        $id = $request->input('id');
+        $id = $request->input('hunian_wbp_lemasmil_id');
         $hunianWbpLemasmil = HunianWbpLemasmil::findOrFail($id);
 
         $existingHunianWbpLemasmil = HunianWbpLemasmil::where('nama_hunian_wbp_lemasmil', $hunianWbpLemasmil->nama_hunian_wbp_lemasmil)->first();
@@ -105,7 +105,7 @@ class HunianWbpLemasmilController extends Controller
      */
     public function destroy(Request $request)
     {
-        $id = $request->input('id');
+        $id = $request->input('hunian_wbp_lemasmil_id');
         $hunianWbpLemasmil = HunianWbpLemasmil::findOrFail($id);
         $hunianWbpLemasmil->delete();
 
