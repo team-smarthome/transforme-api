@@ -25,7 +25,7 @@ class PengunjungSeeder extends Seeder
                 'kota_id' => '20256ac2-caa3-4e7b-802b-eba531b9cf5c',
                 'alamat' => 'bandung',
                 'foto_wajah' => 'bandung',
-                'wbp_profile_id' => '12cfa0a1-5ab3-4daa-9292-29397946312w',
+                'wbp_profile_id' => '12cfa0a1-5ab3-4daa-9292-29397946312o',
                 'hubungan_wbp' => 'bandung',
                 'nik' => 'bandung',
                 'foto_wajah_fr' => 'bandung',

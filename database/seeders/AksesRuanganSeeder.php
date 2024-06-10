@@ -20,8 +20,8 @@ class AksesRuanganSeeder extends Seeder
                 'dmac' => '00:0a:95:9d:68:16',
                 'nama_gateway' => 'Gateway 1',
                 'ruangan_otmil_id' => 'f6e62e45-498d-45a8-affd-e5e363c99442',
-                'ruangan_lemasmil_id' => 'db10dd62-c048-44aa-a85e-9c29551704d2',
-                'wbp_profile_id' => '12cfa0a1-5ab3-4daa-9292-29397946312w',
+                'ruangan_lemasmil_id' => 'db10dd62-c048-44bb-a85e-9c2955170420',
+                'wbp_profile_id' => '12cfa0a1-5ab3-4daa-9292-29397946312o',
                 'is_permitted' => 1,
                 'created_at' => now(),
             ]

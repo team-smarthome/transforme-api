@@ -29,7 +29,8 @@ class DokumenBapRequest extends FormRequest
             'nama_dokumen_bap' => 'required|string',
             'link_dokumen_bap' => 'nullable|mimes:pdf,doc,docx|max:10240',
             'wbp_profile_id' => 'nullable|string',
-            'saksi_id' => 'nullable|string'
+            'saksi_id' => 'nullable|string',
+            'kasus_id' => 'nullable|string'
         ];
     }
 
@@ -42,7 +43,7 @@ class DokumenBapRequest extends FormRequest
         ], 422));
     }
 
-    protected function messages(): array
+    public function messages(): array
     {
         return [
             'penyidikan_id.required' => 'Penyidikan harus diisi',
@@ -52,7 +53,8 @@ class DokumenBapRequest extends FormRequest
             'link_dokumen_bap.mimes' => 'Link dokumen bap harus berupa file pdf, doc, docx',
             'link_dokumen_bap.max' => 'Link dokumen bap maksimal 10240 karakter',
             'wbp_profile_id.string' => 'Wbp profile harus berupa string',
-            'saksi_id.string' => 'Saksi harus berupa string'
+            'saksi_id.string' => 'Saksi harus berupa string',
+            'kasus_id.string' => 'Kasus harus berupa string'
         ];
     }
 }
