@@ -6,32 +6,44 @@ use Illuminate\Http\Request;
 use App\Models\DokumenBap;
 use App\Http\Requests\DokumenBapRequest;
 use App\Helpers\ApiResponse;
+use App\Http\Resources\DokumenBapResource;
 
 class DokumenBapController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         try {
-            $query = DokumenBap::with(['penyidikan', 'wbpProfile', 'saksi']);
+            $query = DokumenBap::with(['penyidikan', 'wbpProfile', 'saksi'   ]);
             $filterableColumns = [
                 'dokumen_bap_id' => 'id',
-                'penyidikan_id' => 'penyidikan_id',
                 'nama_dokumen_bap' => 'nama_dokumen_bap',
                 'link_dokumen_bap' => 'link_dokumen_bap',
+                'penyidikan_id' => 'penyidikan_id',
                 'wbp_profile_id' => 'wbp_profile_id',
-                'saksi_id' => 'saksi_id'
+                'saksi_id' => 'saksi_id',
             ];
+
+            $filters = $request->input('filter', []);
+
             foreach ($filterableColumns as $requestKey => $column) {
-                if ($value = request($requestKey)) {
-                    $query->where($column, 'like', '%' . $value . '%');
+                // if ($value = request($requestKey)) {
+                //     $query->where($column, 'like', '%' . $value . '%');
+                // }
+
+                if (isset($filters[$requestKey])) {
+                    $query->where($column, 'like', '%' . $filters[$requestKey] .'%');
                 }
             }
 
             $query->latest();
-            return ApiResponse::paginate($query);
+            $paginatedData = $query->paginate($request->input('pageSize', ApiResponse::$defaultPagination));
+
+            $resourceCollection = DokumenBapResource::collection($paginatedData);
+
+            return ApiResponse::pagination($resourceCollection, 'Successfully get Data');
         } catch (\Exception $e) {
             return ApiResponse::error('Failed to get Data.', $e->getMessage());
         }
