@@ -59,6 +59,7 @@ class AktivitasPengunjungController extends Controller
     {
         try {
             $aktivitasPengunjung =  new AktivitasPengunjung([
+                'aktivitas_pengunjung_id' => $request->aktivitas_pengunjung_id,
                 'nama_aktivitas_pengunjung' => $request->nama_aktivitas_pengunjung,
                 'waktu_mulai_kunjungan' => $request->waktu_mulai_kunjungan,
                 'waktu_selesai_kunjungan' => $request->waktu_selesai_kunjungan,

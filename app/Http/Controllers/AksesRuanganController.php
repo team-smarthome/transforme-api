@@ -54,9 +54,7 @@ class AksesRuanganController extends Controller
                 }
             })->paginate($perPage);
 
-            return ApiResponse::success([
-                'data' => AksesRuanganResource::collection($query)
-            ]);
+            return ApiResponse::success(AksesRuanganResource::collection($query));
         } catch (\Exception $e) {
             return ApiResponse::error($e->getMessage());
         }
