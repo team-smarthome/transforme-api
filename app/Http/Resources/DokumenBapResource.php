@@ -22,7 +22,7 @@ class DokumenBapResource extends JsonResource
             'nomor_penyidikan' => $this->penyidikan->nomor_penyidikan,
             'agenda_penyidikan' => $this->penyidikan->agenda_penyidikan,
             'kasus_id' => $this->penyidikan->kasus_id,
-            'nomor_kasus' => $this->penyidikan->kasus->nama_kasus,
+            'nomor_kasus' => $this->penyidikan->kasus->nomor_kasus,
             'nama_kasus' => $this->penyidikan->kasus->nama_kasus,
             'nrp_wbp' => $this->wbpProfile->nrp,
             'lokasi_otmil' => $this->wbpProfile->hunianWbpOtmil->lokasiOtmil->nama_lokasi_otmil,

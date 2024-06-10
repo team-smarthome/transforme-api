@@ -21,7 +21,10 @@ class SaksiResource extends JsonResource
             'alamat' => $this->alamat,
             'jenis_kelamin' => (string)$this->jenis_kelamin,
             'kasus_id' => $this->kasus_id,
-            'nama_kasus' => $this->kasus->nama_kasus
+            // 'nama_kasus' => $this->kasus->nama_kasus
+            'nama_kasus' => $this->whenLoaded('kasus', function () {
+                return $this->kasus ? $this->kasus->nama_kasus : null;
+            }),
         ];
     }
 }
