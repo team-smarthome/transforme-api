@@ -30,7 +30,7 @@ class petugasShiftController extends Controller
         ->leftJoin('ruangan_otmil', 'ruangan_otmil.id', '=', 'petugas_shift.ruangan_otmil_id')
         ->leftJoin('ruangan_lemasmil', 'ruangan_lemasmil.id', '=', 'petugas_shift.ruangan_lemasmil_id')
         ->leftJoin('lokasi_otmil', 'lokasi_otmil.id', '=', 'petugas.lokasi_otmil_id')
-        // ->leftJoin('lokasi_lemasmil', 'lokasi_lemasmil.lokasi_lemasmil_id', '=', 'petugas.lokasi_lemasmil_id')
+        ->leftJoin('lokasi_lemasmil', 'lokasi_lemasmil.id', '=', 'petugas.lokasi_lemasmil_id')
         ->leftJoin('pangkat', 'petugas.pangkat_id', '=', 'pangkat.id')
         ->leftJoin('kesatuan', 'petugas.kesatuan_id', '=', 'kesatuan.id')
         ->leftJoin('lokasi_kesatuan', 'kesatuan.lokasi_kesatuan_id', '=', 'lokasi_kesatuan.id')
@@ -50,7 +50,7 @@ class petugasShiftController extends Controller
           'petugas.divisi',
           'petugas.nomor_petugas',
           'lokasi_otmil.nama_lokasi_otmil',
-          // 'lokasi_lemasmil.nama_lokasi_lemasmil',
+          'lokasi_lemasmil.nama_lokasi_lemasmil',
           'schedule.tanggal',
           'schedule.bulan',
           'schedule.tahun',
@@ -151,7 +151,7 @@ class petugasShiftController extends Controller
   public function edit(petugasShiftRequest $request)
   {
     try {
-      $id = $request->input('id');
+      $id = $request->input('petugas_shift_id');
       $petugas_shift = PetugasShift::findOrFail($id);
       $data = $request->validated();
 
@@ -179,7 +179,7 @@ class petugasShiftController extends Controller
   public function destroy(Request $request)
   {
     try {
-      $id = $request->input('id');
+      $id = $request->input('petugas_shift_id');
       $petugas_shift = PetugasShift::findOrFail($id);
 
       $petugas_shift->delete();
