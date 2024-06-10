@@ -29,12 +29,7 @@ class LantaiController extends Controller
             $query = LantaiOtmil::with(['lokasiOtmil', 'gedungOtmil']);
 
             $filterableColumns = [
-                'lantai_otmil_id' => 'id',
                 'nama_lantai' => 'nama_lantai',
-                'panjang' => 'panjang',
-                'lebar' => 'lebar',
-                'posisi_X' => 'posisi_X',
-                'posisi_Y' => 'posisi_Y',
                 'lokasi_otmil_id' => 'lokasi_otmil_id',
                 'gedung_otmil_id' => 'gedung_otmil_id',
             ];

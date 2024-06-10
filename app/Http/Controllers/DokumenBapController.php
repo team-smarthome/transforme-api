@@ -16,27 +16,57 @@ class DokumenBapController extends Controller
     public function index(Request $request)
     {
         try {
-            $query = DokumenBap::with(['penyidikan', 'wbpProfile', 'saksi'   ]);
+            $query = DokumenBap::with(['penyidikan.kasus', 'wbpProfile.hunianWbpOtmil.lokasiOtmil', 'wbpProfile.hunianWbpLemasmil.lokasiLemasmil', 'saksi']);
             $filterableColumns = [
                 'dokumen_bap_id' => 'id',
                 'nama_dokumen_bap' => 'nama_dokumen_bap',
-                'link_dokumen_bap' => 'link_dokumen_bap',
-                'penyidikan_id' => 'penyidikan_id',
-                'wbp_profile_id' => 'wbp_profile_id',
-                'saksi_id' => 'saksi_id',
+                'nomor_penyidikan' => 'penyidikan.nomor_penyidikan',
+                'nomor_kasus' => 'penyidikan.kasus.nomor_kasus',
+                'nrp_wbp' => 'wbpProfile.nrp',
+                'nama' => 'wbpProfile.nama',
+                'nama_saksi' => 'saksi.nama_saksi',
+                'lokasi_otmil' => 'wbpProfile.hunianWbpOtmil.lokasiOtmil.nama_lokasi_otmil',
+                'lokasi_lemasmil' => 'wbpProfile.hunianWbpLemasmil.lokasiLemasmil.nama_lokasi_lemasmil'
             ];
 
             $filters = $request->input('filter', []);
 
             foreach ($filterableColumns as $requestKey => $column) {
-                // if ($value = request($requestKey)) {
-                //     $query->where($column, 'like', '%' . $value . '%');
-                // }
-
                 if (isset($filters[$requestKey])) {
-                    $query->where($column, 'like', '%' . $filters[$requestKey] .'%');
-                }
+                    if ($requestKey === 'nomor_penyidikan') {
+                        // Handle the relationship filter
+                        $query->whereHas('penyidikan', function ($q) use ($filters, $requestKey) {
+                            $q->where('nomor_penyidikan', 'LIKE', '%' . $filters[$requestKey] . '%');
+                        });
+                    } else if ($requestKey === 'nomor_kasus') {
+                        $query->whereHas('penyidikan.kasus', function($q) use($filters, $requestKey){
+                            $q->where('nomor_kasus', 'LIKE', '%' . $filters[$requestKey] . '%');
+                        });
+                    } else if($requestKey === 'nrp_wbp'){
+                        $query->whereHas('wbpProfile', function($q) use($filters, $requestKey){
+                            $q->where('nrp', 'LIKE', '%' . $filters[$requestKey] . '%');
+                        });
+                    } else if($requestKey === 'nama'){
+                        $query->whereHas('wbpProfile', function($q) use($filters, $requestKey){
+                            $q->where('nama', 'LIKE', '%' . $filters[$requestKey] . '%');
+                        });
+                    } else if($requestKey === 'nama_saksi'){
+                        $query->whereHas('saksi', function($q) use($filters, $requestKey){
+                            $q->where('nama_saksi', 'LIKE', '%' . $filters[$requestKey] . '%');
+                        });
+                    } else if($requestKey === 'lokasi_otmil'){
+                        $query->whereHas('wbpProfile.hunianWbpOtmil.lokasiOtmil', function($q) use($filters, $requestKey){
+                            $q->where('nama_lokasi_otmil', 'LIKE', '%' . $filters[$requestKey] . '%');
+                        });
+                    } else if($requestKey === 'lokasi_lemasmil'){
+                        $query->whereHas('wbpProfile.hunianWbpLemasmil.lokasiLemasmil', function($q) use($filters, $requestKey){
+                            $q->where('nama_lokasi_lemasmil', 'LIKE', '%' . $filters[$requestKey] . '%');
+                        });
+                    } else {
+                        $query->where($column, 'LIKE', '%' . $filters[$requestKey] . '%');
+                    }
             }
+        }
 
             $query->latest();
             $paginatedData = $query->paginate($request->input('pageSize', ApiResponse::$defaultPagination));
