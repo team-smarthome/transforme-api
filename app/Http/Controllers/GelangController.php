@@ -113,12 +113,30 @@ class GelangController extends Controller
             $totalGelang = $gelangData->count();
             $gelangLow = $gelangData->where('baterai', '<', 25)->count();
             $gelangAktif = $gelangData->where('baterai', '>=', 25)->count();
-            
+
             $paginatedData = $query->paginate($request->input('pageSize', ApiResponse::$defaultPagination));
 
             $resourceCollection = DashboardGelangResource::collection($paginatedData);
+            $responseData = [
+                "status" => "OK",
+                "message" => "Successfully get Data",
+                "records" => $resourceCollection->toArray($request),
+                "total_gelang" => $totalGelang,
+                "gelang_aktif" => $gelangAktif,
+                "gelang_low" => $gelangLow,
+                "pagination" => [
+                    "currentPage" => $paginatedData->currentPage(),
+                    "pageSize" => $paginatedData->perPage(),
+                    "from" => $paginatedData->firstItem(),
+                    "to" => $paginatedData->lastItem(),
+                    "totalRecords" => $paginatedData->total(),
+                    "totalPages" => $paginatedData->lastPage()
+                ]
+            ];
 
-            return ApiResponse::pagination($resourceCollection, 'Successfully get Data');
+            return response()->json($responseData);
+
+            // return ApiResponse::pagination($resourceCollection, 'Successfully get Data');
             // return ApiResponse::success([
             //     'total_gelang' => $totalGelang,
             //     'gelang_low' => $gelangLow,
