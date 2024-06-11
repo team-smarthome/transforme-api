@@ -32,4 +32,12 @@ class KameraLog extends Model
   {
     return $this->belongsTo(Kamera::class, 'kamera_id', 'id');
   }
+  public function petugas(): BelongsTo
+  {
+    return $this->belongsTo(Petugas::class, 'foto_wajah_fr', 'foto_wajah_fr');
+  }
+  public function pengunjung(): BelongsTo
+  {
+    return $this->belongsTo(Pengunjung::class, 'foto_wajah_fr', 'foto_wajah_fr');
+  }
 }

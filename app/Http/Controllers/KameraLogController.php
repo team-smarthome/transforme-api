@@ -27,14 +27,47 @@ class KameraLogController extends Controller
     if (!in_array($sortField, $allowedSortFields)) {
       $sortField = 'timestamp'; // Default to 'timestamp' if the provided field is not allowed
     }
-    $query = KameraLog::query();
+    $query = KameraLog::with([
+      'kamera.ruanganOtmil.lokasiOtmil',
+      'kamera.ruanganLemasMil.lokasiLemasMil',
+      'wbp_profile',
+      'petugas',
+      'pengunjung'
+    ]);
 
 
     // Apply filters
     $filters = $request->input('filter', []);
     foreach ($filters as $field => $value) {
       if (!empty($value)) {
-        $query->where($field, 'LIKE', "%$value%");
+        switch ($field) {
+          case 'nama_kamera':
+            $query->whereHas('kamera', function ($query) use ($value) {
+              $query->where('nama_kamera', 'LIKE', "%$value%");
+            });
+            break;
+          case 'tipe_lokasi':
+            $query->where(function ($query) use ($value) {
+              $query->whereHas('kamera.ruanganOtmil', function ($query) use ($value) {
+                $query->where('tipe_lokasi', $value);
+              })->orWhereHas('kamera.ruanganLemasmil', function ($query) use ($value) {
+                $query->where('tipe_lokasi', $value);
+              });
+            });
+            break;
+          case 'nama_lokasi':
+            $query->where(function ($query) use ($value) {
+              $query->whereHas('kamera.ruanganOtmil.lokasiOtmil', function ($query) use ($value) {
+                $query->where('nama_lokasi_otmil', 'LIKE', "%$value%");
+              })->orWhereHas('kamera.ruanganLemasmil.lokasiLemasMil', function ($query) use ($value) {
+                $query->where('nama_lokasi_lemasmil', 'LIKE', "%$value%");
+              });
+            });
+            break;
+          default:
+            $query->where($field, 'LIKE', "%$value%");
+            break;
+        }
       }
     }
 
@@ -44,54 +77,7 @@ class KameraLogController extends Controller
     // Apply sorting and pagination
     $query->latest();
     // Execute the query and get the results
-    $records = $query->get();
 
-    // Format the records for response
-    $formattedRecords = [];
-    foreach ($records as $row) {
-      $recordData = [
-        'kamera_log_id' => $row->kamera_log_id,
-        'image' => $row->image,
-        'timestamp' => $row->timestamp,
-        'kamera_id' => $row->kamera_id,
-        'nama_kamera' => $row->nama_kamera,
-        'lokasi_id' => $row->lokasi_otmil_id ?: $row->lokasi_lemasmil_id,
-        'tipe_lokasi' => $row->lokasi_otmil_id ? 'otmil' : 'lemasmil',
-        'nama_lokasi' => $row->nama_lokasi_otmil ?: $row->nama_lokasi_lemasmil,
-      ];
-
-      if ($row->wbp_profile_id) {
-        $recordData['wbp_profile_id'] = $row->wbp_profile_id;
-        $recordData['nama_wbp'] = $row->nama_wbp;
-        $recordData['foto_wajah_wbp'] = $row->foto_wajah_wbp;
-      }
-
-      if ($row->petugas_id) {
-        $recordData['petugas_id'] = $row->petugas_id;
-        $recordData['nama_petugas'] = $row->nama_petugas;
-        $recordData['foto_wajah_petugas'] = $row->foto_wajah_petugas;
-      }
-
-      if ($row->data_pengunjung_id) {
-        $recordData['data_pengunjung_id'] = $row->data_pengunjung_id;
-        $recordData['nama_pengunjung'] = $row->nama_pengunjung;
-        $recordData['foto_wajah_pengunjung'] = $row->foto_wajah_pengunjung;
-      }
-
-      if ($row->wbp_profile_id === null && $row->petugas_id === null && $row->data_pengunjung_id === null) {
-        $recordData['keterangan'] = 'Tidak Dikenal';
-      } elseif ($row->wbp_profile_id !== null) {
-        $recordData['keterangan'] = 'WBP';
-      } elseif ($row->petugas_id !== null) {
-        $recordData['keterangan'] = 'Petugas';
-      } elseif ($row->data_pengunjung_id !== null) {
-        $recordData['keterangan'] = 'Pengunjung';
-      } else {
-        $recordData['keterangan'] = 'Kesalahan Data';
-      }
-
-      $formattedRecords[] = $recordData;
-    }
 
     // Prepare the JSON response with pagination information
     $paginatedData = $query->paginate($request->input('pageSize', ApiResponse::$defaultPagination));
