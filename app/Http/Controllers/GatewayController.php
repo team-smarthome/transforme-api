@@ -19,11 +19,16 @@ class GatewayController extends Controller
         try {
             $query = Gateway::with(['ruanganOtmil.zona', 'ruanganLemasmil.zona', 'ruanganOtmil.lokasiOtmil', 'ruanganLemasmil.lokasiLemasmil']);
             $filterableColumns = [
-                'gateway_id' => 'id', 
+                'gateway_id' => 'id',
                 'gmac' => 'gmac',
                 'nama_gateway' => 'nama_gateway',
                 'ruangan_otmil_id' => 'ruangan_otmil_id',
+                'nama_ruangan_otmil' => 'ruanganOtmil.nama_ruangan_otmil',
+                'jenis_ruangan_otmil' => 'ruanganOtmil.jenis_ruangan_otmil',
+                'lokasi_otmil_id' => 'ruanganOtmil.lokasiOtmil.lokasi_otmil_id',
                 'ruangan_lemasmil_id' => 'ruangan_lemasmil_id',
+                'nama_ruangan_lemasmil' => 'ruanganLemasmil.nama_ruangan_lemasmil',
+                'jenis_ruangalemasmilil' => 'ruanganLemasmil.jenis_ruangan_lemasmil',
                 'status_gateway' => 'status_gateway',
                 'v_gateway_topic' => 'v_gateway_topic'
             ];
@@ -32,14 +37,63 @@ class GatewayController extends Controller
 
             foreach ($filterableColumns as $requestKey => $column) {
                 if (isset($filters[$requestKey])) {
-                    $query->where($column, 'like', '%' . $filters[$requestKey] . '%');
+                    if ($requestKey === 'nama_ruangan_otmil') {
+                        $query->whereHas('ruanganOtmil', function ($q) use ($filters, $requestKey) {
+                            $q->where('nama_ruangan_otmil', 'LIKE', '%' . $filters[$requestKey] . '%');
+                        });
+                    } elseif ($requestKey === 'nama_ruangan_lemasmil') {
+                        $query->whereHas('ruanganLemasmil', function ($q) use ($filters, $requestKey) {
+                            $q->where('nama_ruangan_lemasmil', 'LIKE', '%' . $filters[$requestKey] . '%');
+                        });
+                    } elseif ($requestKey === 'jenis_ruangan_otmil') {
+                        $query->whereHas('ruanganOtmil', function ($q) use ($filters, $requestKey) {
+                            $q->where('jenis_ruangan_otmil', 'LIKE', '%' . $filters[$requestKey] . '%');
+                        });
+                    } elseif ($requestKey === 'jenis_ruangan_lemasmil') {
+                        $query->whereHas('ruanganLemasmil', function ($q) use ($filters, $requestKey) {
+                            $q->where('jenis_ruangan_lemasmil', 'LIKE', '%' . $filters[$requestKey] . '%');
+                        });
+                    } elseif ($requestKey === 'lokasi_otmil_id') {
+                        $query->whereHas('ruanganOtmil.lokasiOtmil', function ($q) use ($filters, $requestKey) {
+                            $q->where('lokasi_otmil_id', 'LIKE', '%' . $filters[$requestKey] . '%');
+                        });
+                    } elseif ($requestKey === 'lokasi_lemasmil_id') {
+                        $query->whereHas('ruanganLemasmil.lokasiLemasmil', function ($q) use ($filters, $requestKey) {
+                            $q->where('lokasi_lemasmil_id', 'LIKE', '%' . $filters[$requestKey] . '%');
+                        });
+                    } else {
+                        $query->where($column, 'LIKE', '%' . $filters[$key] . '%');
+                    }
                 }
             }
             $query->latest();
-            
+            $gatewayData = $query->get();
+
+            $totalGateway = $gatewayData->count();
+            $totalaktif = $gatewayData->where('status_gateway', 'aktif')->count();
+            $totalnonaktif = $gatewayData->where('status_gateway', 'nonaktif')->count();
+
             $paginatedData = $query->paginate($request->input('pageSize', ApiResponse::$defaultPagination));
             $resourceCollection = GatewayResource::collection($paginatedData);
-            return ApiResponse::pagination($resourceCollection);
+
+            $responseData = [
+                "status" => "OK",
+                "message" => "Successfully get Data",
+                "records" => $resourceCollection->toArray($request),
+                "totalGateway" => $totalGateway,
+                "totalaktif" => $totalaktif,
+                "totalnonaktif" => $totalnonaktif,
+                "pagination" => [
+                    "currentPage" => $paginatedData->currentPage(),
+                    "pageSize" => $paginatedData->perPage(),
+                    "from" => $paginatedData->firstItem(),
+                    "to" => $paginatedData->lastItem(),
+                    "totalRecords" => $paginatedData->total(),
+                    "totalPages" => $paginatedData->lastPage()
+                ]
+            ];
+
+            return response()->json($responseData);
         } catch (\Exception $e) {
             return ApiResponse::error('Failed to get Data.', $e->getMessage());
         }
@@ -63,7 +117,7 @@ class GatewayController extends Controller
             if (Gateway::where('gmac', $request->gmac)->exists()) {
                 return ApiResponse::error('Failed to create Gateway.', 'Gmac already exists.');
             }
-    
+
             // Buat objek Gateway baru
             $gateway = new Gateway([
                 'gmac' => $request->gmac,
@@ -73,7 +127,7 @@ class GatewayController extends Controller
                 'status_gateway' => $request->status_gateway,
                 'v_gateway_topic' => $request->v_gateway_topic
             ]);
-    
+
             // Simpan gateway
             if ($gateway->save()) {
                 $data = $gateway->toArray();
@@ -84,7 +138,7 @@ class GatewayController extends Controller
             return ApiResponse::error('Failed to create Gateway.', $e->getMessage());
         }
     }
-    
+
 
     /**
      * Display the specified resource.
@@ -134,7 +188,7 @@ class GatewayController extends Controller
         try {
             $id = $request->input('gateway_id');
             $gateway = Gateway::findOrFail($id);
-            if(!$gateway) {
+            if (!$gateway) {
                 return ApiResponse::error('Gateway not found.', 'Gateway not found.', 404);
             }
             $gateway->delete();
