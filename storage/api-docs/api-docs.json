@@ -7828,6 +7828,3997 @@
                     }
                 }
             }
+        },
+        "/api/kesatuan": {
+            "get": {
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "tags": ["Kesatuan"],
+                "summary": "Kesatuan Read Data",
+                "description": "Read Kesatuan Data",
+                "operationId": "KesatuanReadData",
+                "requestBody": {
+                    "required": false,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "page": { "type": "integer", "example": 1 },
+                                    "pageSize": {
+                                        "type": "integer",
+                                        "example": 10
+                                    },
+                                    "filter": {
+                                        "type": "object",
+                                        "properties": {
+                                            "nama_kesatuan": {
+                                                "type": "string",
+                                                "example": ""
+                                            },
+                                            "nama_lokasi_kesatuan": {
+                                                "type": "string",
+                                                "example": ""
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successfully get Data",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "status": "OK",
+                                    "message": "Successfully get Data",
+                                    "records": {
+                                        "kesatuan_id": "18ff69b7-3d9f-4a60-a602-5baf4f3cc081",
+                                        "nama_kesatuan": "Kesatuan Jakarta",
+                                        "lokasi_kesatuan_id": "d54069af-78d0-49fa-aaa4-6e53819eb13a",
+                                        "nama_lokasi_kesatuan": "Jakarta",
+                                        "is_deleted": null
+                                    },
+                                    "pagination": {
+                                        "currentPage": 1,
+                                        "pageSize": 10,
+                                        "from": 1,
+                                        "to": 1,
+                                        "totalRecords": 1,
+                                        "totalPages": 1
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "status": "error",
+                                    "message": "Unauthorized"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "summary": "Create a new Kesatuan",
+                "tags": ["Kesatuan"],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "nama_kesatuan": {
+                                        "type": "string"
+                                    },
+                                    "lokasi_kesatuan_id": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successfully created Data",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "OK"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Successfully created Data"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "kesatuan_id": {
+                                            "type": "string",
+                                            "format": "uuid"
+                                        },
+                                        "nama_kesatuan": {
+                                            "type": "string",
+                                            "example": "Nama Kesatuan Contoh"
+                                        },
+                                        "lokasi_kesatuan_id": {
+                                            "type": "string",
+                                            "format": "uuid"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/kota ": {
+            "get": {
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "tags": ["Kota"],
+                "summary": "Kota Read Data",
+                "description": "Read Kota Data",
+                "operationId": "KotaReadData",
+                "requestBody": {
+                    "required": false,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "page": { "type": "integer", "example": 1 },
+                                    "pageSize": {
+                                        "type": "integer",
+                                        "example": 10
+                                    },
+                                    "filter": {
+                                        "type": "object",
+                                        "properties": {
+                                            "nama_kota": {
+                                                "type": "string",
+                                                "example": ""
+                                            },
+                                            "provinsi_id": {
+                                                "type": "string",
+                                                "format": "uuid"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successfully get Data",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "status": "OK",
+                                    "message": "Successfully get Data",
+                                    "records": {
+                                        "kota_id": "a546390a-8024-4300-b024-48102874b882",
+                                        "nama_kota": "Jakarta Barat",
+                                        "provinsi_id": "bd304f3c-b18d-4982-8e41-1a3606bdf06e",
+                                        "updated_at": "2024-05-27T06:13:47.000000Z",
+                                        "created_at": "2024-05-27T06:13:47.000000Z"
+                                    },
+                                    "pagination": {
+                                        "currentPage": 1,
+                                        "pageSize": 10,
+                                        "from": 1,
+                                        "to": 1,
+                                        "totalRecords": 1,
+                                        "totalPages": 1
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "status": "error",
+                                    "message": "Unauthorized"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/lantai_lemasmil": {
+            "get": {
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "tags": ["Lantai Lemasmil"],
+                "summary": "Lantai Lemasmil Read Data",
+                "description": "Read Lantai Lemasmil Data",
+                "operationId": "LantaiLemasmilReadData",
+                "requestBody": {
+                    "required": false,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "page": { "type": "integer", "example": 1 },
+                                    "pageSize": {
+                                        "type": "integer",
+                                        "example": 10
+                                    },
+                                    "filter": {
+                                        "type": "object",
+                                        "properties": {
+                                            "nama_lantai": {
+                                                "type": "string",
+                                                "example": ""
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successfully get Data",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "status": "OK",
+                                    "message": "Successfully get Data",
+                                    "records": {
+                                        "lantai_lemasmil_id": "0c9ce686-12cd-435c-8f86-b519b7dd16b8",
+                                        "nama_lantai": "Lantai Lemas Militer",
+                                        "panjang": 2,
+                                        "lebar": 1,
+                                        "posisi_X": 1,
+                                        "posisi_Y": 1,
+                                        "lokasi_lemasmil": {
+                                            "lokasi_lemasmil_id": "48633be0-b005-4029-8bbb-293db9564ba0",
+                                            "nama_lokasi_lemasmil": "Jakarta Lemasmil",
+                                            "created_at": "2024-05-27T06:13:47.000000Z",
+                                            "updated_at": "2024-05-27T06:13:47.000000Z"
+                                        },
+                                        "gedung_lemasmil": {
+                                            "gedung_lemasmil_id": "9c247cbc-6987-409f-9a1f-574ba14b5883",
+                                            "nama_gedung_lemasmil": "Gedung A",
+                                            "created_at": "2024-05-27T10:20:54.000000Z",
+                                            "updated_at": "2024-05-27T10:20:54.000000Z"
+                                        },
+                                        "created_at": "2024-05-28T07:45:17.000000Z",
+                                        "updated_at": "2024-05-28T07:45:17.000000Z",
+                                        "deleted_at": null
+                                    },
+                                    "pagination": {
+                                        "currentPage": 1,
+                                        "pageSize": 10,
+                                        "from": 1,
+                                        "to": 1,
+                                        "totalRecords": 1,
+                                        "totalPages": 1
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "status": "error",
+                                    "message": "Unauthorized"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "summary": "Create a new Lantai Lemasmil",
+                "tags": ["Lantai Lemasmil"],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "nama_lantai": {
+                                        "type": "string"
+                                    },
+                                    "panjang": {
+                                        "type": "integer"
+                                    },
+                                    "lebar": {
+                                        "type": "integer"
+                                    },
+                                    "posisi_X": {
+                                        "type": "integer"
+                                    },
+                                    "posisi_Y": {
+                                        "type": "integer"
+                                    },
+                                    "lokasi_lemasmil_id": {
+                                        "type": "string",
+                                        "format": "uuid"
+                                    },
+                                    "gedung_lemasmil_id": {
+                                        "type": "string",
+                                        "format": "uuid"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successfully created Data",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "OK"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Successfully created Data"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "nama_lantai": {
+                                        "type": "string",
+                                        "example": "Nama Lantai contoh"
+                                        },
+                                        "panjang": {
+                                            "type": "integer",
+                                            "example": "Nama Lantai contoh"
+                                        },
+                                        "lebar": {
+                                            "type": "integer",
+                                            "example": 4
+                                        },
+                                        "posisi_X": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "posisi_Y": {
+                                            "type": "integer",
+                                            "example": 2
+                                        },
+                                        "lokasi_lemasmil_id": {
+                                            "type": "string",
+                                            "example": "9c385811-1eea-46d5-b56c-b28739b27108"
+                                        },
+                                        "gedung_lemasmil_id": {
+                                            "type": "string",
+                                            "example": "9c382240-5f53-4e22-af30-6b792f767eeb"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "summary": "Update Lantai Lemasmil",
+                "tags": ["Lantai Lemasmil"],
+                "parameters": [
+                    {
+                        "name": "_method",
+                        "in": "query",
+                        "description": "Method override",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "lantai_lemasmil_id": {
+                                        "type": "uuid"
+                                    },
+                                    "nama_lantai": {
+                                        "type": "string",
+                                        "example": "Nama Lantai contoh"
+                                    },
+                                    "panjang": {
+                                            "type": "integer",
+                                            "example": "Nama Lantai contoh"
+                                    },
+                                    "lebar": {
+                                        "type": "integer",
+                                        "example": 4
+                                    },
+                                    "posisi_X": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "posisi_Y": {
+                                        "type": "integer",
+                                        "example": 2
+                                    },
+                                    "lokasi_lemasmil_id": {
+                                        "type": "string",
+                                        "example": "9c385811-1eea-46d5-b56c-b28739b27108"
+                                    },
+                                    "gedung_lemasmil_id": {
+                                        "type": "string",
+                                        "example": "9c382240-5f53-4e22-af30-6b792f767eeb"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successfully updated Data",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "status": "OK",
+                                    "message": "Successfully updated Data"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "status": "error",
+                                    "message": "Unauthorized"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "summary": "Delete Lantai Lemasmil",
+                "tags": ["Lantai Lemasmil"],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "lantai_lemasmil_id": {
+                                        "type": "string",
+                                        "format": "uuid"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successfully deleted Data",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "status": "OK",
+                                    "message": "Successfully deleted Data"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/lantai_otmil": {
+            "get": {
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "tags": ["Lantai Otmil "],
+                "summary": "Lantai Otmil  Read Data",
+                "description": "Read Lantai Otmil  Data",
+                "operationId": "LantaiOtmilReadData",
+                "requestBody": {
+                    "required": false,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "page": { "type": "integer", "example": 1 },
+                                    "pageSize": {
+                                        "type": "integer",
+                                        "example": 10
+                                    },
+                                    "filter": {
+                                        "type": "object",
+                                        "properties": {
+                                            "nama_lantai": {
+                                                "type": "string",
+                                                "example": "Nama Lantai contoh"
+                                            },
+                                            "lokasi_otmil_id": {
+                                                "type": "uuid",
+                                                "example": "190cc9b1-b01f-4d1e-9043-a6a96e851b32"
+                                            },
+                                            "gedung_otmil_id": {
+                                                "type": "uuid",
+                                                "example": "9c384035-e8c3-4efd-aa39-7e97b64830de"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successfully get Data",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "status": "OK",
+                                    "message": "Successfully get Data",
+                                    "records": {
+                                        "lantai_otmil_id": "0c9ce686-12cd-435c-8f86-b519b7dd16b8",
+                                        "nama_lantai": "Lantai Otmil",
+                                        "panjang": 2,
+                                        "lebar": 1,
+                                        "posisi_X": 1,
+                                        "posisi_Y": 1,
+                                        "lokasi_otmil": {
+                                            "lokasi_otmil_id": "890cc9b1-b01f-4d1f-9075-a6a96e851b25",
+                                            "nama_lokasi_otmil": "Jakarta Otmil",
+                                            "created_at": "2024-05-27T06:13:47.000000Z",
+                                            "updated_at": "2024-05-27T06:13:47.000000Z"
+                                        },
+                                        "gedung_otmil": {
+                                            "gedung_otmil_id": "9c24689c-c070-4ff3-9f3a-afcd361f2c01",
+                                            "nama_gedung_otmil": "Gedung A",
+                                            "created_at": "2024-05-27T09:24:38.000000Z",
+                                            "updated_at": "2024-05-27T09:24:38.000000Z"
+                                        },
+                                        "created_at": "2024-05-28T07:32:45.000000Z",
+                                        "updated_at": "2024-05-28T07:32:45.000000Z",
+                                        "deleted_at": null
+                                    },
+                                    "pagination": {
+                                        "currentPage": 1,
+                                        "pageSize": 10,
+                                        "from": 1,
+                                        "to": 1,
+                                        "totalRecords": 1,
+                                        "totalPages": 1
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "status": "error",
+                                    "message": "Unauthorized"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "summary": "Create a new Lantai Otmil",
+                "tags": ["Lantai Otmil"],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "nama_lantai": {
+                                        "type": "string"
+                                    },
+                                    "panjang": {
+                                        "type": "integer"
+                                    },
+                                    "lebar": {
+                                        "type": "integer"
+                                    },
+                                    "posisi_X": {
+                                        "type": "integer"
+                                    },
+                                    "posisi_Y": {
+                                        "type": "integer"
+                                    },
+                                    "lokasi_otmil_id": {
+                                        "type": "string",
+                                        "format": "uuid"
+                                    },
+                                    "gedung_otmil_id": {
+                                        "type": "string",
+                                        "format": "uuid"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successfully created Data",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "OK"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Successfully created Data"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "nama_lantai": {
+                                        "type": "string",
+                                        "example": "Nama Lantai contoh"
+                                        },
+                                        "panjang": {
+                                            "type": "integer",
+                                            "example": "Nama Lantai contoh"
+                                        },
+                                        "lebar": {
+                                            "type": "integer",
+                                            "example": 4
+                                        },
+                                        "posisi_X": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "posisi_Y": {
+                                            "type": "integer",
+                                            "example": 2
+                                        },
+                                        "lokasi_otmil_id": {
+                                            "type": "string",
+                                            "example": "9c385811-1eea-46d5-b56c-b28739b27108"
+                                        },
+                                        "gedung_otmil_id": {
+                                            "type": "string",
+                                            "example": "9c382240-5f53-4e22-af30-6b792f767eeb"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "summary": "Update Lantai Lemasmil",
+                "tags": ["Lantai Lemasmil"],
+                "parameters": [
+                    {
+                        "name": "_method",
+                        "in": "query",
+                        "description": "Method override",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "lantai_lemasmil_id": {
+                                        "type": "uuid"
+                                    },
+                                    "nama_lantai": {
+                                        "type": "string",
+                                        "example": "Nama Lantai contoh"
+                                    },
+                                    "panjang": {
+                                            "type": "integer",
+                                            "example": "Nama Lantai contoh"
+                                    },
+                                    "lebar": {
+                                        "type": "integer",
+                                        "example": 4
+                                    },
+                                    "posisi_X": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "posisi_Y": {
+                                        "type": "integer",
+                                        "example": 2
+                                    },
+                                    "lokasi_otmil_id": {
+                                        "type": "string",
+                                        "example": "890cc9b1-b01f-4d1f-9075-a6a96e851b25"
+                                    },
+                                    "gedung_otmil_id": {
+                                        "type": "string",
+                                        "example": "9c24689c-c070-4ff3-9f3a-afcd361f2c01"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successfully updated Data",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "status": "OK",
+                                    "message": "Successfully updated Data"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "status": "error",
+                                    "message": "Unauthorized"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "summary": "Delete Lantai Lemasmil",
+                "tags": ["Lantai Lemasmil"],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "lantai_lemasmil_id": {
+                                        "type": "string",
+                                        "format": "uuid"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successfully deleted Data",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "status": "OK",
+                                    "message": "Successfully deleted Data"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/lokasi_kesatuan": {
+            "get": {
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "tags": ["Lokasi Kesatuan"],
+                "summary": "Lokasi Kesatuan  Read Data",
+                "description": "Read Lokasi Kesatuan  Data",
+                "operationId": "LokasiKesatuanReadData",
+                "requestBody": {
+                    "required": false,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "page": { "type": "integer", "example": 1 },
+                                    "pageSize": {
+                                        "type": "integer",
+                                        "example": 10
+                                    },
+                                    "filter": {
+                                        "type": "object",
+                                        "properties": {
+                                            "nama_lokasi_kesatuan": {
+                                                "type": "string",
+                                                "example": "Nama Lokasi Kesatuan contoh"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successfully get Data",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "status": "OK",
+                                    "message": "Successfully get Data",
+                                    "records": {
+                                        "nama_lokasi_kesatuan": "Kodim",
+                                        "deleted_at": null,
+                                        "lokasi_kesatuan_id": "9c403797-720a-469a-8e0f-5b6ae8afbef3"
+                                    },
+                                    "pagination": {
+                                        "currentPage": 1,
+                                        "pageSize": 10,
+                                        "from": 1,
+                                        "to": 1,
+                                        "totalRecords": 1,
+                                        "totalPages": 1
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "status": "error",
+                                    "message": "Unauthorized"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "summary": "Create a new Lokasi Kesatuan",
+                "tags": ["LokasiKesatuan"],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "nama_lokasi_kesatuan": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successfully created Data",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "OK"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Successfully created Data"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "nama_lokasi_kesatuan": {
+                                        "type": "string",
+                                        "example": "Nama lokasi kesatuan contoh"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/lokasi_lemasmil": {
+            "get": {
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "tags": ["LokasiLemasmil"],
+                "summary": "Lokasi Lemasmil Read Data",
+                "description": "Read Lokasi Lemasmil Data",
+                "operationId": "LokasiLemasmilReadData",
+                "requestBody": {
+                    "required": false,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "page": { "type": "integer", "example": 1 },
+                                    "pageSize": {
+                                        "type": "integer",
+                                        "example": 10
+                                    },
+                                    "filter": {
+                                        "type": "object",
+                                        "properties": {
+                                            "nama_lokasi_lemasmil": {
+                                                "type": "string",
+                                                "example": ""
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successfully get Data",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "status": "OK",
+                                    "message": "Successfully get Data",
+                                    "records": {
+                                        "lokasi_lemasmil_id": "48633be0-b005-4029-8bbb-293db9564ba0",
+                                        "nama_lokasi_lemasmil": "Jakarta Lemasmil",
+                                        "latitude": "123456",
+                                        "longitude": "123456"
+                                    },
+                                    "pagination": {
+                                        "currentPage": 1,
+                                        "pageSize": 10,
+                                        "from": 1,
+                                        "to": 1,
+                                        "totalRecords": 1,
+                                        "totalPages": 1
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "status": "error",
+                                    "message": "Unauthorized"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "summary": "Create a new Lokasi Lemasmil",
+                "tags": ["LokasiLemasmil"],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "nama_lokasi_lemasmil": {
+                                        "type": "string"
+                                    },
+                                    "latitude": {
+                                        "type": "string"
+                                    },
+                                    "longitude": {
+                                        "type": "string"
+                                    },
+                                    "panjang": {
+                                        "type": "integer"
+                                    },
+                                    "lebar": {
+                                        "type": "integer"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successfully created Data",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "OK"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Successfully created Data"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "nama_lokasi_lemasmil": {
+                                        "type": "string",
+                                        "example": "Nama lokasi lemasmil contoh"
+                                        },
+                                        "latitude": {
+                                            "type": "string",
+                                            "example": "Contoh latitude"
+                                        },
+                                        "longitude": {
+                                            "type": "string",
+                                            "example": "Contoh longitude"
+                                        },
+                                        "panjang": {
+                                            "type": "integer",
+                                            "example": 3
+                                        },
+                                        "lebar": {
+                                            "type": "integer",
+                                            "example": 5
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "summary": "Update Lokasi Lemasmil",
+                "tags": ["LokasiLemasmil"],
+                "parameters": [
+                    {
+                        "name": "_method",
+                        "in": "query",
+                        "description": "Method override",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "lokasi_lemasmil_id": {
+                                        "type": "string",
+                                        "example": "48633be0-b005-4029-8bbb-293db9564ba0"
+                                    },
+                                    "nama_lokasi_lemasmil": {
+                                        "type": "string",
+                                        "example": "Nama Contoh lokasi lemasmil"
+                                    },
+                                    "latitude": {
+                                        "type": "string",
+                                        "example": "Nama contoh latitude"
+                                    },
+                                    "longitude": {
+                                        "type": "string",
+                                        "example": "Nama contoh latitude"
+                                    },
+                                    "panjang": {
+                                        "type": "string",
+                                        "example": 5
+                                    },
+                                    "lebar": {
+                                        "type": "string",
+                                        "example": 3
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successfully updated Data",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "status": "OK",
+                                    "message": "Successfully updated Data"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "status": "error",
+                                    "message": "Unauthorized"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "summary": "Delete Lokasi Lemasmil",
+                "tags": ["LokasiLemasmil"],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "lokasi_lemasmil_id": {
+                                        "type": "string",
+                                        "format": "uuid"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successfully deleted Data",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "status": "OK",
+                                    "message": "Successfully deleted Data"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/lokasi_otmil": {
+            "get": {
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "tags": ["LokasiOtmil"],
+                "summary": "Lokasi Otmil Read Data",
+                "description": "Read Lokasi Otmil Data",
+                "operationId": "LokasiOtmilReadData",
+                "requestBody": {
+                    "required": false,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "page": { "type": "integer", "example": 1 },
+                                    "pageSize": {
+                                        "type": "integer",
+                                        "example": 10
+                                    },
+                                    "filter": {
+                                        "type": "object",
+                                        "properties": {
+                                            "nama_lokasi_otmil": {
+                                                "type": "string",
+                                                "example": ""
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successfully get Data",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "status": "OK",
+                                    "message": "Successfully get Data",
+                                    "records": {
+                                        "lokasi_otmil_id": "190cc9b1-b01f-4d1e-9043-a6a96e851b32",
+                                        "nama_lokasi_otmil": "Bogor Otmil",
+                                        "latitude": "7890",
+                                        "longitude": "7890",
+                                        "panjang": 113456,
+                                        "lebar": 143456,
+                                        "created_at": "2024-05-27T06:13:47.000000Z",
+                                        "updated_at": null
+                                    },
+                                    "pagination": {
+                                        "currentPage": 1,
+                                        "pageSize": 10,
+                                        "from": 1,
+                                        "to": 1,
+                                        "totalRecords": 1,
+                                        "totalPages": 1
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "status": "error",
+                                    "message": "Unauthorized"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "summary": "Create a new Lokasi Otmil",
+                "tags": ["LokasiOtmil"],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "nama_lokasi_otmil": {
+                                        "type": "string"
+                                    },
+                                    "latitude": {
+                                        "type": "string"
+                                    },
+                                    "longitude": {
+                                        "type": "string"
+                                    },
+                                    "panjang": {
+                                        "type": "integer"
+                                    },
+                                    "lebar": {
+                                        "type": "integer"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successfully created Data",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "OK"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Successfully created Data"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "nama_lokasi_otmil": {
+                                        "type": "string",
+                                        "example": "Nama lokasi otmil contoh"
+                                        },
+                                        "latitude": {
+                                            "type": "string",
+                                            "example": "Contoh latitude"
+                                        },
+                                        "longitude": {
+                                            "type": "string",
+                                            "example": "Contoh longitude"
+                                        },
+                                        "panjang": {
+                                            "type": "integer",
+                                            "example": 3
+                                        },
+                                        "lebar": {
+                                            "type": "integer",
+                                            "example": 5
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "summary": "Update Lokasi Otmil",
+                "tags": ["LokasiOtmil"],
+                "parameters": [
+                    {
+                        "name": "_method",
+                        "in": "query",
+                        "description": "Method override",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "lokasi_otmil_id": {
+                                        "type": "string",
+                                        "example": "48633be0-b005-4029-8bbb-293db9564ba0"
+                                    },
+                                    "nama_lokasi_otmil": {
+                                        "type": "string",
+                                        "example": "Nama Contoh lokasi otmil"
+                                    },
+                                    "latitude": {
+                                        "type": "string",
+                                        "example": "Nama contoh latitude"
+                                    },
+                                    "longitude": {
+                                        "type": "string",
+                                        "example": "Nama contoh latitude"
+                                    },
+                                    "panjang": {
+                                        "type": "string",
+                                        "example": 5
+                                    },
+                                    "lebar": {
+                                        "type": "string",
+                                        "example": 3
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successfully updated Data",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "status": "OK",
+                                    "message": "Successfully updated Data"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "status": "error",
+                                    "message": "Unauthorized"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "summary": "Delete Lokasi Otmil",
+                "tags": ["LokasiOtmil"],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "lokasi_otmil_id": {
+                                        "type": "string",
+                                        "format": "uuid"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successfully deleted Data",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "status": "OK",
+                                    "message": "Successfully deleted Data"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/matra": {
+            "get": {
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "tags": ["Matra"],
+                "summary": "Matra Read Data",
+                "description": "Read Matra Data",
+                "operationId": "MatraReadData",
+                "requestBody": {
+                    "required": false,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "page": { "type": "integer", "example": 1 },
+                                    "pageSize": {
+                                        "type": "integer",
+                                        "example": 10
+                                    },
+                                    "filter": {
+                                        "type": "object",
+                                        "properties": {
+                                            "nama_matra": {
+                                                "type": "string",
+                                                "example": "contoh nama matra"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successfully get Data",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "status": "OK",
+                                    "message": "Successfully get Data",
+                                    "records": {
+                                        "id": "9c36682a-1b8c-4564-affe-a52b21e0859e",
+                                        "nama_matra": "Angkatan barat",
+                                        "created_at": "2024-06-05T08:08:17.000000Z",
+                                        "updated_at": "2024-06-05T08:08:17.000000Z",
+                                        "deleted_at": null
+                                    },
+                                    "pagination": {
+                                        "currentPage": 1,
+                                        "pageSize": 10,
+                                        "from": 1,
+                                        "to": 1,
+                                        "totalRecords": 1,
+                                        "totalPages": 1
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "status": "error",
+                                    "message": "Unauthorized"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "summary": "Create a new Matra",
+                "tags": ["Matra"],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "nama_matra": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successfully created Data",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "OK"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Successfully created Data"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "nama_matra": {
+                                        "type": "string",
+                                        "example": "Angkatan Laut"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "summary": "Update Matra",
+                "tags": ["Matra"],
+                "parameters": [
+                    {
+                        "name": "_method",
+                        "in": "query",
+                        "description": "Method override",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "matra_id": {
+                                        "type": "string",
+                                        "example": "9c25f942-a500-487a-a906-db91f7ab9cd6"
+                                    },
+                                    "nama_matra": {
+                                        "type": "string",
+                                        "example": "Nama Contoh matra"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successfully updated Data",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "status": "OK",
+                                    "message": "Successfully updated Data"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "status": "error",
+                                    "message": "Unauthorized"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "summary": "Delete Matra",
+                "tags": ["Matra"],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "matra_id": {
+                                        "type": "string",
+                                        "format": "uuid"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successfully deleted Data",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "status": "OK",
+                                    "message": "Successfully deleted Data"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/oditur_penuntut": {
+            "get": {
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "tags": ["Oditur Penuntut"],
+                "summary": "Oditur Penuntut Read Data",
+                "description": "Read Oditur Penuntut Data",
+                "operationId": "OditurPenuntutReadData",
+                "requestBody": {
+                    "required": false,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "page": { "type": "integer", "example": 1 },
+                                    "pageSize": {
+                                        "type": "integer",
+                                        "example": 10
+                                    },
+                                    "filter": {
+                                        "type": "object",
+                                        "properties": {
+                                            "nama_oditur": {
+                                                "type": "string",
+                                                "example": "contoh nama oditur"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successfully get Data",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "status": "OK",
+                                    "message": "Successfully get Data",
+                                    "records": {
+                                        "oditur_penuntut_id": "9c4288c0-5059-4ae8-b6c3-996232fce68b",
+                                        "nip": "123",
+                                        "nama_oditur": "Salma",
+                                        "alamat": "Bogor"
+                                    },
+                                    "pagination": {
+                                        "currentPage": 1,
+                                        "pageSize": 10,
+                                        "from": 1,
+                                        "to": 1,
+                                        "totalRecords": 1,
+                                        "totalPages": 1
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "status": "error",
+                                    "message": "Unauthorized"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "summary": "Create a new Oditur Penuntut",
+                "tags": ["OditurPenuntut"],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "nip": {
+                                        "type": "string"
+                                    },
+                                    "nama_oditur": {
+                                        "type": "string"
+                                    },
+                                    "alamat": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successfully created Data",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "OK"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Successfully created Data"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "nip": {
+                                            "type": "string",
+                                            "example": "Angkatan Laut"
+                                        },
+                                        "nama_oditur": {
+                                            "type": "string",
+                                            "example": "Nama oditur contoh"
+                                        },
+                                        "alamat": {
+                                            "type": "string",
+                                            "example": "Nama alamat contoh"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "summary": "Update Oditur Penuntut",
+                "tags": ["OditurPenuntut"],
+                "parameters": [
+                    {
+                        "name": "_method",
+                        "in": "query",
+                        "description": "Method override",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "oditur_penuntut_id": {
+                                        "type": "string",
+                                        "format": "uuid"
+                                    },
+                                    "nip": {
+                                        "type": "string",
+                                        "example": ""
+                                    },
+                                    "nama_oditur": {
+                                        "type": "string",
+                                        "example": ""
+                                    },
+                                    "alamat": {
+                                        "type": "string",
+                                        "example": ""
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successfully updated Data",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "status": "OK",
+                                    "message": "Successfully updated Data"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "status": "error",
+                                    "message": "Unauthorized"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "summary": "Delete Oditur Penuntut",
+                "tags": ["OditurPenuntut"],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "oditur_penuntut_id": {
+                                        "type": "string",
+                                        "format": "uuid"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successfully deleted Data",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "status": "OK",
+                                    "message": "Successfully deleted Data"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/oditur_penyidik": {
+            "get": {
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "tags": ["Oditur Penyidik"],
+                "summary": "Oditur Penyidik Read Data",
+                "description": "Read Oditur Penyidik Data",
+                "operationId": "OditurPenyidikReadData",
+                "requestBody": {
+                    "required": false,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "page": { "type": "integer", "example": 1 },
+                                    "pageSize": {
+                                        "type": "integer",
+                                        "example": 10
+                                    },
+                                    "filter": {
+                                        "type": "object",
+                                        "properties": {
+                                            "nama_oditur": {
+                                                "type": "string",
+                                                "example": "contoh nama oditur"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successfully get Data",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "status": "OK",
+                                    "message": "Successfully get Data",
+                                    "records": {
+                                        "oditur_penyidik_id": "a5b00059-b97f-4561-a987-382477f40fd8",
+                                        "nip": "123456",
+                                        "nama_oditur": "Jaka",
+                                        "alamat": "jakarta"
+                                    },
+                                    "pagination": {
+                                        "currentPage": 1,
+                                        "pageSize": 10,
+                                        "from": 1,
+                                        "to": 1,
+                                        "totalRecords": 1,
+                                        "totalPages": 1
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "status": "error",
+                                    "message": "Unauthorized"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "summary": "Create a new Oditur Penyidik",
+                "tags": ["OditurPenyidik"],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "nip": {
+                                        "type": "string"
+                                    },
+                                    "nama_oditur": {
+                                        "type": "string"
+                                    },
+                                    "alamat": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successfully created Data",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "OK"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Successfully created Data"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "nip": {
+                                            "type": "string",
+                                            "example": "Angkatan Laut"
+                                        },
+                                        "nama_oditur": {
+                                            "type": "string",
+                                            "example": "Nama oditur contoh"
+                                        },
+                                        "alamat": {
+                                            "type": "string",
+                                            "example": "Nama alamat contoh"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "summary": "Update Oditur Penyidik",
+                "tags": ["OditurPenuntut"],
+                "parameters": [
+                    {
+                        "name": "_method",
+                        "in": "query",
+                        "description": "Method override",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "oditur_penyidik_id": {
+                                        "type": "string",
+                                        "format": "uuid",
+                                        "example": "0fb4282e-a843-49a3-b319-58cf6dbcc7ea"
+                                    },
+                                    "nip": {
+                                        "type": "string",
+                                        "example": "24820320"
+                                    },
+                                    "nama_oditur": {
+                                        "type": "string",
+                                        "example": "ario"
+                                    },
+                                    "alamat": {
+                                        "type": "string",
+                                        "example": "Kebayora"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successfully updated Data",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "status": "OK",
+                                    "message": "Successfully updated Data"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "status": "error",
+                                    "message": "Unauthorized"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "summary": "Delete Oditur Penyidik",
+                "tags": ["OditurPenyidik"],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "oditur_penyidik_id": {
+                                        "type": "string",
+                                        "format": "uuid"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successfully deleted Data",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "status": "OK",
+                                    "message": "Successfully deleted Data"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/pangkat": {
+            "get": {
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "tags": ["pangkat"],
+                "summary": "pangkat Read Data",
+                "description": "Read pangkat Data",
+                "operationId": "PangkatReadData",
+                "requestBody": {
+                    "required": false,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "page": { "type": "integer", "example": 1 },
+                                    "pageSize": {
+                                        "type": "integer",
+                                        "example": 10
+                                    },
+                                    "filter": {
+                                        "type": "object",
+                                        "properties": {
+                                            "nama_pangkat": {
+                                                "type": "string",
+                                                "example": "contoh nama pangkat"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successfully get Data",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "status": "OK",
+                                    "message": "Successfully get Data",
+                                    "records": {
+                                        "nama_pangkat": "Letnan Senior",
+                                        "deleted_at": null,
+                                        "pangkat_id": "4ec3de3b-169f-4313-9b3d-0cef9ae3cbda"
+                                    },
+                                    "pagination": {
+                                        "currentPage": 1,
+                                        "pageSize": 10,
+                                        "from": 1,
+                                        "to": 1,
+                                        "totalRecords": 1,
+                                        "totalPages": 1
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "status": "error",
+                                    "message": "Unauthorized"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "summary": "Create a new Pangkat",
+                "tags": ["OditurPenyidik"],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "nama_pangkat": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successfully created Data",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "OK"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Successfully created Data"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "nama_pangkat": {
+                                            "type": "string",
+                                            "example": ""
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/pendidikan": {
+            "get": {
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "tags": ["Pendidikan"],
+                "summary": "Pendidikan Read Data",
+                "description": "Read Pendidikan Data",
+                "operationId": "PendidikanReadData",
+                "requestBody": {
+                    "required": false,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "page": { "type": "integer", "example": 1 },
+                                    "pageSize": {
+                                        "type": "integer",
+                                        "example": 10
+                                    },
+                                    "filter": {
+                                        "type": "object",
+                                        "properties": {
+                                            "nama_pendidikan": {
+                                                "type": "string",
+                                                "example": "contoh nama pendidikan"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successfully get Data",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "status": "OK",
+                                    "message": "Successfully get Data",
+                                    "records": {
+                                        "pendidikan_id": "997f13b9-4177-4163-81e7-f5d998b2c53e",
+                                        "nama_pendidikan": "Sarjana Teknik",
+                                        "tahun_lulus": 2019,
+                                        "is_deleted": null
+                                    },
+                                    "pagination": {
+                                        "currentPage": 1,
+                                        "pageSize": 10,
+                                        "from": 1,
+                                        "to": 1,
+                                        "totalRecords": 1,
+                                        "totalPages": 1
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "status": "error",
+                                    "message": "Unauthorized"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "summary": "Create a new Pendidikan",
+                "tags": ["Pendidikan"],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "nama_pangkat": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successfully created Data",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "OK"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Successfully created Data"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "nama_pendidikan": {
+                                            "type": "string",
+                                            "example": ""
+                                        },
+                                        "tahun_lulus": {
+                                            "type": "integer",
+                                            "example": ""
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/pengadilan_militer": {
+            "get": {
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "tags": ["Pengadilan Militer"],
+                "summary": "Pengadilan Militer Read Data",
+                "description": "Read Pengadilan Militer Data",
+                "operationId": "PengadilanMiliterReadData",
+                "requestBody": {
+                    "required": false,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "page": { "type": "integer", "example": 1 },
+                                    "pageSize": {
+                                        "type": "integer",
+                                        "example": 10
+                                    },
+                                    "filter": {
+                                        "type": "object",
+                                        "properties": {
+                                            "nama_provinsi": {
+                                                "type": "string",
+                                                "example": "contoh nama provinsi"
+                                            },
+                                            "nama_kota": {
+                                                "type": "string",
+                                                "example": "contoh nama kota"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successfully get Data",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "status": "OK",
+                                    "message": "Successfully get Data",
+                                    "records": {
+                                        "pengadilan_militer_id": "9c3877f3-3cdc-4d8d-9863-4b4567400866",
+                                        "nama_pengadilan_militer": "Pengadilan testing",
+                                        "provinsi_id": "bd304f3c-b18d-4982-8e41-1a3606bdf06e",
+                                        "nama_provinsi": "Jakarta",
+                                        "nama_kota": "Jakarta Utara",
+                                        "latitude": "test",
+                                        "longitude": "test1"
+                                    },
+                                    "pagination": {
+                                        "currentPage": 1,
+                                        "pageSize": 10,
+                                        "from": 1,
+                                        "to": 1,
+                                        "totalRecords": 1,
+                                        "totalPages": 1
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "status": "error",
+                                    "message": "Unauthorized"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "summary": "Create a new Pengadilan Militer",
+                "tags": ["PengadilanMiliter"],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "nama_pengadilan_militer": {
+                                        "type": "string"
+                                    },
+                                    "provinsi_id": {
+                                        "type": "string",
+                                        "format": "uuid"
+                                    },
+                                    "kota_id": {
+                                        "type": "string",
+                                        "format": "uuid"
+                                    },
+                                    "latitude": {
+                                        "type": "string"
+                                    },
+                                    "longitude": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successfully created Data",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "OK"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Successfully created Data"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "nama_pengadilan_militer": {
+                                            "type": "string",
+                                            "example": "Pengadilan testing"
+                                        },
+                                        "provinsi_id": {
+                                            "type": "string",
+                                            "example": ""
+                                        },
+                                        "kota_id": {
+                                            "type": "string",
+                                            "example": ""
+                                        },
+                                        "latitude": {
+                                            "type": "string",
+                                            "example": ""
+                                        },
+                                        "longitude": {
+                                            "type": "string",
+                                            "example": ""
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "summary": "Update Pengadilan Militer",
+                "tags": ["PengadilanMiliter"],
+                "parameters": [
+                    {
+                        "name": "_method",
+                        "in": "query",
+                        "description": "Method override",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "pengadilan_militer_id": {
+                                        "type": "string",
+                                        "format": "uuid",
+                                        "example": "9c2481c1-5f5c-4284-97bb-7b995b036639"
+                                    },
+                                    "nama_pengadilan_militer": {
+                                        "type": "string",
+                                        "example": "Pengadilan test"
+                                    },
+                                    "provinsi_id": {
+                                        "type": "string",
+                                        "format": "uuid",
+                                        "example": "Jawa Barat"
+                                    },
+                                    "kota_id": {
+                                        "type": "string",
+                                        "format": "uuid",
+                                        "example": "Bogor"
+                                    },
+                                    "lotitude": {
+                                        "type": "string",
+                                        "example": "test1234"
+                                    },
+                                    "longitude": {
+                                        "type": "string",
+                                        "example": "test1234"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successfully updated Data",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "status": "OK",
+                                    "message": "Successfully updated Data"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "status": "error",
+                                    "message": "Unauthorized"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "summary": "Delete Pengadilan Militer",
+                "tags": ["PengadilanMiliter"],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "pengadilan_militer_id": {
+                                        "type": "string",
+                                        "format": "uuid",
+                                        "example": "9c2481c1-5f5c-4284-97bb-7b995b036639"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successfully deleted Data",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "status": "OK",
+                                    "message": "Successfully deleted Data"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/pengunjung": {
+            "get": {
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "tags": ["Pengunjung"],
+                "summary": "Pengunjung Read Data",
+                "description": "Read Pengunjung Data",
+                "operationId": "PengunjungReadData",
+                "requestBody": {
+                    "required": false,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "page": { "type": "integer", "example": 1 },
+                                    "pageSize": {
+                                        "type": "integer",
+                                        "example": 10
+                                    },
+                                    "filter": {
+                                        "type": "object",
+                                        "properties": {
+                                            "nama_wbp": {
+                                                "type": "string",
+                                                "example": "contoh nama wbp"
+                                            },
+                                            "nama": {
+                                                "type": "string",
+                                                "example": "contoh nama pengunjung"
+                                            },
+                                            "alamat": {
+                                                "type": "string",
+                                                "example": "contoh nama alamat"
+                                            },
+                                            "wbp_profile_id": {
+                                                "type": "string",
+                                                "format": "uuid",
+                                                "example": "test1234"
+                                            },
+                                            "nik": {
+                                                "type": "string",
+                                                "example": "contoh nik"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successfully get Data",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "status": "OK",
+                                    "message": "Successfully get Data",
+                                    "records": {
+                                        "pengunjung_id": "9c385ca4-e69f-41c0-9a1e-f684775f2286",
+                                        "nama": "Leo",
+                                        "tempat_lahir": "Jakarta",
+                                        "tanggal_lahir": "2020-10-11",
+                                        "jenis_kelamin": 1,
+                                        "nama_provinsi": "Jakarta",
+                                        "nama_kota": "Jakarta Utara",
+                                        "provinsi_id": "bd304f3c-b18d-4982-8e41-1a3606bdf06e",
+                                        "kota_id": "20256ac2-caa3-4e7b-802b-eba531b9cf5c",
+                                        "alamat": "Jln Cideng Barat",
+                                        "foto_wajah": null,
+                                        "nama_wbp": "Rizki",
+                                        "wbp_profile_id": "9c3247cc-01e6-4742-a84c-532f288605e2",
+                                        "hubungan_wbp": "Keluarga",
+                                        "nik": "123123123"
+                                    },
+                                    "pagination": {
+                                        "currentPage": 1,
+                                        "pageSize": 10,
+                                        "from": 1,
+                                        "to": 1,
+                                        "totalRecords": 1,
+                                        "totalPages": 1
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "status": "error",
+                                    "message": "Unauthorized"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "summary": "create pengunjung information",
+                "tags": ["Pengunjung"],
+                "parameters": [
+                    {
+                        "name": "_method",
+                        "in": "query",
+                        "description": "Method override",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "nama": {
+                                        "type": "string"
+                                    },
+                                    "tempat_lahir": {
+                                        "type": "string"
+                                    },
+                                    "tanggal_lahir": {
+                                        "type": "string"
+                                    },
+                                    "jenis_kelamin": {
+                                        "type": "integer"
+                                    },
+                                    "provinsi_id": {
+                                        "type": "string",
+                                        "format": "uuid"
+                                    },
+                                    "kota_id": {
+                                        "type": "string",
+                                        "format": "uuid"
+                                    },
+                                    "alamat": {
+                                        "type": "string"
+                                    },
+                                    "foto_wajah": {
+                                        "type": "string",
+                                        "format": "binary",
+                                        "description": "Image file path"
+                                    },
+                                    "wbp_profile_id": {
+                                        "type": "string",
+                                        "format": "uuid"
+                                    },
+                                    "hubungan_wbp": {
+                                        "type": "string"
+                                    },
+                                    "nik": {
+                                        "type": "string"
+                                    },
+                                    "foto_wajah_fr": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successfully updated Data",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "status": "OK",
+                                    "message": "Successfully updated Data"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "status": "error",
+                                    "message": "Unauthorized"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "summary": "Update Pengunjung Militer",
+                "tags": ["Pengunjung"],
+                "parameters": [
+                    {
+                        "name": "_method",
+                        "in": "query",
+                        "description": "Method override",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "pengnjung_id": {
+                                        "type": "string",
+                                        "format": "uuid",
+                                        "example": "9c2481c1-5f5c-4284-97bb-7b995b036639"
+                                    },
+                                    "nama": {
+                                        "type": "string",
+                                        "example": "ario"
+                                    },
+                                    "tempat_lahir": {
+                                        "type": "string",
+                                        "example": "Bogor"
+                                    },
+                                    "tanggal_lahir": {
+                                        "type": "string",
+                                        "example": "2000-05-28"
+                                    },
+                                    "jenis_kelamin": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "provinsi_id": {
+                                        "type": "string",
+                                        "format": "uuid",
+                                        "example": "0fb4282e-a843-49a3-b319-58cf6dbcc7ea"
+                                    },
+                                    "kota_id": {
+                                        "type": "string",
+                                        "format": "uuid",
+                                        "example": "0fb4282e-a843-49a3-b319-58cf6dbcc7ea"
+                                    },
+                                    "alamat": {
+                                        "type": "string",
+                                        "example": "test alamat"
+                                    },
+                                    "foto_wajah": {
+                                        "type": "string",
+                                        "format": "binary",
+                                        "description": "Image file path"
+                                    },
+                                    "wbp_profile_id": {
+                                        "type": "string",
+                                        "format": "uuid",
+                                        "example": "9c3247cc-01e6-4742-a84c-532f288605e2"
+                                    },
+                                    "hubungan_wbp": {
+                                        "type": "string",
+                                        "example": "Kakak"
+                                    },
+                                    "nik": {
+                                        "type": "string",
+                                        "example": "89207655788"
+                                    },
+                                    "foto_wajah_fr": {
+                                        "type": "string",
+                                        "example": "foto_wajah test"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successfully updated Data",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "status": "OK",
+                                    "message": "Successfully updated Data"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "status": "error",
+                                    "message": "Unauthorized"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "summary": "Delete Pengunjung",
+                "tags": ["Pengunjung"],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "pengunjung_id": {
+                                        "type": "string",
+                                        "format": "uuid",
+                                        "example": "9c2c5b07-039a-435e-b5d9-82d3521eac55"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successfully deleted Data",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "status": "OK",
+                                    "message": "Successfully deleted Data"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/penugasan": {
+            "get": {
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "tags": ["Penugasan"],
+                "summary": "Penugasan Read Data",
+                "description": "Read Penugasan Data",
+                "operationId": "PenugasanReadData",
+                "requestBody": {
+                    "required": false,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "page": { "type": "integer", "example": 1 },
+                                    "pageSize": {
+                                        "type": "integer",
+                                        "example": 10
+                                    },
+                                    "filter": {
+                                        "type": "object",
+                                        "properties": {
+                                            "penugasan_id": {
+                                                "type": "string",
+                                                "format": "uuid",
+                                                "example": "b1b3b3b3-1f81-4329-982c-0c290077846a"
+                                            },
+                                            "nama_penugasan": {
+                                                "type": "string",
+                                                "example": "penugasan 1"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successfully get Data",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "status": "OK",
+                                    "message": "Successfully get Data",
+                                    "records": {
+                                        "penugasan_id": "b1b3b3b3-1f81-4329-982c-0c290077846a",
+                                        "nama_penugasan": "Penugasan 1",
+                                        "created_at": "2024-06-04T04:30:55.000000Z",
+                                        "updated_at": null
+                                    },
+                                    "pagination": {
+                                        "currentPage": 1,
+                                        "pageSize": 10,
+                                        "from": 1,
+                                        "to": 1,
+                                        "totalRecords": 1,
+                                        "totalPages": 1
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "status": "error",
+                                    "message": "Unauthorized"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "summary": "Create a new Kegiatan",
+                "tags": ["Kegiatan"],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "nama_penugasan": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successfully created Data",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "OK"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Successfully created Data"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "nama_penugasan": {
+                                            "type": "string",
+                                            "example": "patroli"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "summary": "Update Penugasan",
+                "tags": ["Penugasan"],
+                "parameters": [
+                    {
+                        "name": "_method",
+                        "in": "query",
+                        "description": "Method override",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "id": {
+                                        "type": "string",
+                                        "format": "uuid",
+                                        "example": "9c329cd3-dd3d-48e3-8995-8aa8a6796fe7"
+                                    },
+                                    "nama_penugasan": {
+                                        "type": "string",
+                                        "example": "nama penugasan"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successfully updated Data",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "status": "OK",
+                                    "message": "Successfully updated Data"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "status": "error",
+                                    "message": "Unauthorized"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "summary": "Delete Kegiatan",
+                "tags": ["Kegiatan"],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "id": {
+                                        "type": "string",
+                                        "format": "uuid",
+                                        "example": "9c329cd3-dd3d-48e3-8995-8aa8a6796fe7"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successfully deleted Data",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "status": "OK",
+                                    "message": "Successfully deleted Data"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/penyidikan": {
+            "get": {
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "tags": ["Penyidikan"],
+                "summary": "Penyidikan Read Data",
+                "description": "Read Penyidikan Data",
+                "operationId": "PenyidikanReadData",
+                "requestBody": {
+                    "required": false,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "page": { "type": "integer", "example": 1 },
+                                    "pageSize": {
+                                        "type": "integer",
+                                        "example": 10
+                                    },
+                                    "filter": {
+                                        "type": "object",
+                                        "properties": {
+                                            "penyidikan_id": {
+                                                "type": "string",
+                                                "format": "uuid",
+                                                "example": "b1b3b3b3-1f81-4329-982c-0c290077846a"
+                                            },
+                                            "nomor_penyidikan": {
+                                                "type": "string",
+                                                "example": "penugasan 1"
+                                            },
+                                            "agenda_penyidikan": {
+                                                "type": "string",
+                                                "example": "penugasan 1"
+                                            },
+                                            "dokumen_bap_id": {
+                                                "type": "string",
+                                                "format": "uuid",
+                                                "example": "9c2417c1-9bd2-496d-4102-8aec799aee90"
+                                            },
+                                            "wbp_profile_id": {
+                                                "type": "string",
+                                                "format": "uuid",
+                                                "example": "10cfa0a1-5ab3-4daa-9292-29397946316e"
+                                            },
+                                            "saksi_id": {
+                                                "type": "string",
+                                                "format": "uuid",
+                                                "example": "9c26a442-681a-4faf-af7a-11b4c40282f4"
+                                            },
+                                            "oditur_penyidikan_id": {
+                                                "type": "string",
+                                                "format": "uuid",
+                                                "example": "a5b00059-b97f-4561-a987-382477f40fd8"
+                                            },
+                                            "zona_waktu": {
+                                                "type": "string",
+                                                "example": "WIB"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successfully get Data",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "status": "OK",
+                                    "message": "Successfully get Data",
+                                    "records": {
+                                        "penyidikan_id": "c48bf881-b8b7-4ae4-a8da-ae7dab96d832",
+                                        "nomor_penyidikan": "001",
+                                        "kasus_id": "59353d58-ae92-4b94-b13a-ce7f64257135",
+                                        "nama_kasus": "Perampokan",
+                                        "nomor_kasus": "001",
+                                        "agenda_penyidikan": "penyidikan",
+                                        "wbp_profile_id": "10cfa0a1-5ab3-4daa-9292-29397946316e",
+                                        "nrp_wbp": "4343443434",
+                                        "nama_wbp": "Udin",
+                                        "saksi_id": "9c26a442-681a-4faf-af7a-11b4c40282f4",
+                                        "zona_waktu": "WIB",
+                                        "nama_saksi": "Rehan",
+                                        "oditur_penyidikan_id": "a5b00059-b97f-4561-a987-382477f40fd8",
+                                        "nip_oditur": "123456",
+                                        "nama_oditur": "Jaka",
+                                        "waktu_dimulai_penyidikan": "2024-05-28",
+                                        "waktu_selesai_penyidikan": "2024-05-28",
+                                        "jenis_perkara_id": "4c7b0b7e-328f-41ef-a443-6879e45c6ae2",
+                                        "nama_jenis_perkara": "Random",
+                                        "kategori_perkara_id": "8df5515e-814f-406c-a995-812f042d3c84",
+                                        "nama_kategori_perkara": "Perkara Perdata",
+                                        "dokumen_bap_id": "9c2417c1-9bd2-496d-4102-8aec799aee90",
+                                        "created_at": "2024-05-29T04:21:39.000000Z",
+                                        "updated_at": "2024-05-29T04:21:39.000000Z"
+                                    },
+                                    "pagination": {
+                                        "currentPage": 1,
+                                        "pageSize": 10,
+                                        "from": 1,
+                                        "to": 1,
+                                        "totalRecords": 1,
+                                        "totalPages": 1
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "status": "error",
+                                    "message": "Unauthorized"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "summary": "Create a new Penyidikan",
+                "tags": ["Penyidikan"],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "nomor_penyidikan": {
+                                        "type": "string",
+                                        "example": "387423"
+                                    },
+                                    "kasus_id": {
+                                        "type": "string",
+                                        "format": "uuid",
+                                        "example": "59353d58-ae92-4b94-b13a-ce7f64257135"
+                                    },
+                                    "waktu_dimulai_penyidikan": {
+                                        "type": "string",
+                                        "example": "2024-11-10"
+                                    },
+                                    "agenda_penyidikan": {
+                                        "type": "string",
+                                        "example": "test agenda"
+                                    },
+                                    "waktu_selesai_penyidikan": {
+                                        "type": "string",
+                                        "example": "2024-11-10"
+                                    },
+                                    "dokumen_bap_id": {
+                                        "type": "string",
+                                        "format": "uuid",
+                                        "example": "test bap id"
+                                    },
+                                    "wbp_profile_id": {
+                                        "type": "string",
+                                        "format": "uuid",
+                                        "example": "12cfa0a1-5ab3-4daa-9292-29397946312o"
+                                    },
+                                    "saksi_id": {
+                                        "type": "string",
+                                        "format": "uuid",
+                                        "example": "9c3a2239-1aef-4e74-90bf-c6e529e3e9dc"
+                                    },
+                                    "oditur_penyidikan_id": {
+                                        "type": "string",
+                                        "format": "uuid",
+                                        "example": "9c38196a-6132-4798-b9d3-60a07b6224bc"
+                                    },
+                                    "zona_waktu": {
+                                        "type": "string",
+                                        "example": "WIB"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successfully created Data",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "OK"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Successfully created Data"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "nomor_penyidikan": {
+                                            "type": "string",
+                                            "example": "patroli"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "summary": "Update penyidikan",
+                "tags": ["penyidikan"],
+                "parameters": [
+                    {
+                        "name": "_method",
+                        "in": "query",
+                        "description": "Method override",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "id": {
+                                        "type": "string",
+                                        "format": "uuid",
+                                        "example": "9c329cd3-dd3d-48e3-8995-8aa8a6796fe7"
+                                    },
+                                    "nomor_penyidikan": {
+                                        "type": "string",
+                                        "example": "387423"
+                                    },
+                                    "kasus_id": {
+                                        "type": "string",
+                                        "format": "uuid",
+                                        "example": "59353d58-ae92-4b94-b13a-ce7f64257135"
+                                    },
+                                    "waktu_dimulai_penyidikan": {
+                                        "type": "string",
+                                        "example": "2024-11-10"
+                                    },
+                                    "agenda_penyidikan": {
+                                        "type": "string",
+                                        "example": "test agenda"
+                                    },
+                                    "waktu_selesai_penyidikan": {
+                                        "type": "string",
+                                        "example": "2024-11-10"
+                                    },
+                                    "dokumen_bap_id": {
+                                        "type": "string",
+                                        "format": "uuid",
+                                        "example": "test bap id"
+                                    },
+                                    "wbp_profile_id": {
+                                        "type": "string",
+                                        "format": "uuid",
+                                        "example": "12cfa0a1-5ab3-4daa-9292-29397946312o"
+                                    },
+                                    "saksi_id": {
+                                        "type": "string",
+                                        "format": "uuid",
+                                        "example": "9c3a2239-1aef-4e74-90bf-c6e529e3e9dc"
+                                    },
+                                    "oditur_penyidikan_id": {
+                                        "type": "string",
+                                        "format": "uuid",
+                                        "example": "9c38196a-6132-4798-b9d3-60a07b6224bc"
+                                    },
+                                    "zona_waktu": {
+                                        "type": "string",
+                                        "example": "WIB"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successfully updated Data",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "status": "OK",
+                                    "message": "Successfully updated Data"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "status": "error",
+                                    "message": "Unauthorized"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "summary": "Delete Penyidikan",
+                "tags": ["Penyidikan"],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "id": {
+                                        "type": "string",
+                                        "format": "uuid",
+                                        "example": "d38bf884-b8b7-4ae4-a8da-ae7dab96d833"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successfully deleted Data",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "status": "OK",
+                                    "message": "Successfully deleted Data"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }
