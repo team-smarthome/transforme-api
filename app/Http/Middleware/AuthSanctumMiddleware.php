@@ -37,6 +37,7 @@ class AuthSanctumMiddleware
             })->first();
 
             if ($userRole && in_array($userRole->role_name, $roles)) {
+                $request->merge(['user' => $user]);
                 return $next($request);
             } else {
               if (!$userRole) {
