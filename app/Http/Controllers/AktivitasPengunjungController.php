@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\AktivitasPengunjung;
 use App\Http\Requests\AktivitasPengunjungRequest;
 use App\Helpers\ApiResponse;
+use App\Http\Resources\AktivitasPengunjungResource;
 use Exception;
 
 
@@ -14,31 +15,94 @@ class AktivitasPengunjungController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         try {
-            $query = AktivitasPengunjung::with(['ruanganOtmil', 'ruanganLemasmil', 'petugas', 'pengunjung', 'wbpProfile']);
+            $query = AktivitasPengunjung::with([
+                'ruanganLemasmil.lokasiLemasmil',
+                'ruanganOtmil.lokasiOtmil',
+                'ruanganLemasmil.zona',
+                'ruanganOtmil.zona',
+                'petugas',
+                'pengunjung',
+                'wbpProfile'
+            ]);
             $filterableColumns = [
-                'aktivitas_pengunjung_id' => 'id',
+                'lokasi_otmil_id' => 'ruanganOtmil.lokasi_otmil_id',
+                'nama_lokasi_otmil' => 'ruanganOtmil.lokasiOtmil.nama_lokasi_otmil',
+                'lokasi_lemasmil_id' => 'ruanganLemasmil.lokasi_lemasmil_id',
+                'nama_lokasi_lemasmil' => 'ruanganLemasmil.lokasiLemasmil.nama_lokasi_lemasmil',
+                'ruangan_otmil_id' => 'ruangan_otmil_id',
+                'ruangan_lemasmil_id' => 'ruangan_lemasmil_id',
+                'nama_ruangan_otmil' => 'ruanganOtmil.nama_ruangan_otmil',
+                'nama_ruangan_lemasmil' => 'ruanganLemasmil.nama_ruangan_lemasmil',
                 'nama_aktivitas_pengunjung' => 'nama_aktivitas_pengunjung',
                 'waktu_mulai_kunjungan' => 'waktu_mulai_kunjungan',
                 'waktu_selesai_kunjungan' => 'waktu_selesai_kunjungan',
                 'tujuan_kunjungan' => 'tujuan_kunjungan',
-                'ruangan_otmil_id' => 'ruangan_otmil_id',
-                'ruangan_lemasmil_id' => 'ruangan_lemasmil_id',
-                'petugas_id' => 'petugas_id',
+                'petugas_id' => 'petugas.petugas_id',
+                'nama_petugas' => 'petugas.nama',
                 'pengunjung_id' => 'pengunjung_id',
+                'nama_pengunjung' => 'pengunjung.nama',
                 'wbp_profile_id' => 'wbp_profile_id',
+                'nama_wbp' => 'wbpProfile.nama',
                 'zona_waktu' => 'zona_waktu'
             ];
+
+            $filters = $request->input('filter', []);
             foreach ($filterableColumns as $requestKey => $column) {
-                if ($value = request($requestKey)) {
-                    $query->where($column, 'like', '%' . $value . '%');
+                if (isset($filters[$requestKey])) {
+                    if ($requestKey === 'lokasi_otmil_id') {
+                        $query->whereHas('ruanganOtmil', function ($q) use ($filters, $requestKey) {
+                            $q->where('lokasi_otmil_id', 'LIKE', '%' . $filters[$requestKey] . '%');
+                        });
+                    }
+                    if ($requestKey === 'nama_lokasi_otmil') {
+                        $query->whereHas('ruanganOtmil.lokasiOtmil', function ($q) use ($filters, $requestKey) {
+                            $q->where('nama_lokasi_otmil', 'LIKE', '%' . $filters[$requestKey] . '%');
+                        });
+                    }
+                    if ($requestKey === 'lokasi_lemasmil_id') {
+                        $query->whereHas('ruanganLemasmil', function ($q) use ($filters, $requestKey) {
+                            $q->where('lokasi_lemasmil_id', 'LIKE', '%' . $filters[$requestKey] . '%');
+                        });
+                    }
+                    if ($requestKey === 'nama_lokasi_lemasmil') {
+                        $query->whereHas('ruanganLemasmil.lokasiLemasmil', function ($q) use ($filters, $requestKey) {
+                            $q->where('nama_lokasi_lemasmil', 'LIKE', '%' . $filters[$requestKey] . '%');
+                        });
+                    }
+                    if ($requestKey === 'nama_ruangan_otmil') {
+                        $query->whereHas('ruanganOtmil', function ($q) use ($filters, $requestKey) {
+                            $q->where('nama_ruangan_otmil', 'LIKE', '%' . $filters[$requestKey] . '%');
+                        });
+                    }
+                    if ($requestKey === 'nama_ruangan_lemasmil') {
+                        $query->whereHas('ruanganLemasmil', function ($q) use ($filters, $requestKey) {
+                            $q->where('nama_ruangan_lemasmil', 'LIKE', '%' . $filters[$requestKey] . '%');
+                        });
+                    }
+                    if ($requestKey === 'nama_petugas') {
+                        $query->whereHas('petugas', function ($q) use ($filters, $requestKey) {
+                            $q->where('nama', 'LIKE', '%' . $filters[$requestKey] . '%');
+                        });
+                    }
+                    if ($requestKey === 'nama_wbp') {
+                        $query->whereHas('wbpProfile', function ($q) use ($filters, $requestKey) {
+                            $q->where('nama', 'LIKE', '%' . $filters[$requestKey] . '%');
+                        });
+                    }
+                    else {
+                        $query->where($column, 'LIKE', '%' . $filters[$requestKey] . '%');
+                    }
                 }
             }
 
             $query->latest();
-            return ApiResponse::paginate($query);
+            $paginateData = $query->paginate($request->input('pageSize', ApiResponse::$defaultPagination));
+            $resourceCollection = AktivitasPengunjungResource::collection($paginateData);
+
+            return ApiResponse::pagination($resourceCollection, 'Successfully get data');
         } catch (\Exception $e) {
             return ApiResponse::error('Failed to get Data.', $e->getMessage());
         }
@@ -106,7 +170,7 @@ class AktivitasPengunjungController extends Controller
      */
     public function update(AktivitasPengunjungRequest $request)
     {
-       try {
+        try {
             $id = $request->input('aktivitas_pengunjung_id');
             $aktivitasPengunjung = AktivitasPengunjung::find($id);
             if (!$aktivitasPengunjung) {
@@ -129,8 +193,7 @@ class AktivitasPengunjungController extends Controller
             }
 
             return ApiResponse::error('Failed to update Aktivitas Pengunjung');
-
-       } catch (Exception $e) {
+        } catch (Exception $e) {
             return ApiResponse::error('Failed to update Aktivitas Pengunjung', $e->getMessage());
         }
     }

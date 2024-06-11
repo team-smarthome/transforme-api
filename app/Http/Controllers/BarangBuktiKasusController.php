@@ -71,26 +71,35 @@ class BarangBuktiKasusController extends Controller
             $query = BarangBuktiKasus::with(['kasus', 'jenisPerkara']);
 
             $filterableColumns = [
-                'barang_bukti_kasus_id' => 'id',
                 'kasus_id' => 'kasus_id',
-                'nama_kasus' => 'nama_kasus',
-                'nomor_kasus' => 'nomor_kasus',
+                'nama_kasus' => 'kasus.nama_kasus',
+                'nomor_kasus' => 'kasus.nomor_kasus',
                 'nama_bukti_kasus' => 'nama_bukti_kasus',
                 'nomor_barang_bukti' => 'nomor_barang_bukti',
-                'dokumen_barang_bukti' => 'dokumen_barang_bukti',
-                'gambar_barang_bukti' => 'gambar_barang_bukti',
-                'keterangan' => 'keterangan',
-                'longitude' => 'longitude',
                 'tanggal_diambil' => 'tanggal_diambil',
-                'jenis_perkara_id' => 'jenis_perkara_id',
-                'nama_jenis_perkara' => 'nama_jenis_perkara'
+                'nama_jenis_perkara' => 'jenisPerkara.nama_jenis_perkara'
             ];
 
             $filters = $request->input('filter', []);
 
             foreach ($filterableColumns as $requestKey => $column) {
                 if (isset($filters[$requestKey])) {
-                    $query->where($column,'like','%'. $filters[$requestKey] .'%');
+                    if ($requestKey === 'nama_kasus') {
+                        // Handle the relationship filter
+                        $query->whereHas('kasus', function ($q) use ($filters, $requestKey) {
+                            $q->where('nama_kasus', 'LIKE', '%' . $filters[$requestKey] . '%');
+                        });
+                    } else if($requestKey === 'nomor_kasus'){
+                        $query->whereHas('kasus', function($q) use($filters, $requestKey){
+                            $q->where('nomor_kasus', 'LIKE', '%' . $filters[$requestKey] . '%');
+                        });
+                    } else if($requestKey === 'nama_jenis_perkara'){
+                        $query->whereHas('jenisPerkara', function($q) use($filters, $requestKey){
+                            $q->where('nama_jenis_perkara', 'LIKE', '%' . $filters[$requestKey] . '%');
+                        });
+                    } else {
+                        $query->where($column,'like','%'. $filters[$requestKey] .'%');
+                    }
                 }
             }
 

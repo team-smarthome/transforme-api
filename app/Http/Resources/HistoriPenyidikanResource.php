@@ -17,6 +17,8 @@ class HistoriPenyidikanResource extends JsonResource
         return [
             'histori_penyidikan_id' => $this->id,
             'penyidikan_id' => $this->penyidikan_id,
+            'nama_wbp' => $this->penyidikan->wbpProfile->nama,
+            'nama_jenis_perkara' => $this->penyidikan->kasus->jenisPerkara->nama_jenis_perkara,
             'hasil_penyidikan' => $this->hasil_penyidikan,
             'lama_masa_tahanan' => $this->lama_masa_tahanan
         ];
