@@ -15,11 +15,14 @@ class KameraTersimpanController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
     try {
-        $query = GrupKameraTersimpan::with(['KameraTersimpan.kamera'])->get();
+        $user = $request->get('user');
         
+        // return $user->id;
+        // exit();
+        $query = GrupKameraTersimpan::with(['KameraTersimpan.kamera'])->where('user_id', $user->id)->get();        
         return ApiResponse::success($query);
 
     } catch (\Exception $e) {
@@ -30,7 +33,7 @@ class KameraTersimpanController extends Controller
     public function store(Request $request)
     {
         $uuid = Uuid::uuid4()->toString();
-        $userId = $request['user_id'];
+        $user = $request->get('user');
         $namaGrup = $request['nama_grup'];
         $kameras = $request['kamera'];
         try {
@@ -38,7 +41,7 @@ class KameraTersimpanController extends Controller
             $grupTersimpanData = GrupKameraTersimpan::create([
                 'id' => $uuid,
                 'nama_grup' => $namaGrup,
-                'user_id' => $userId
+                'user_id' => $user->id
             ]);
             foreach ($kameras as $kamera) {
             $kameraTersimpanData = KameraTersimpan::create([
@@ -62,13 +65,13 @@ class KameraTersimpanController extends Controller
     }
     public function update(Request $request)
     {
-        $userId = $request['user_id'];
+        $user = $request->get('user');
         $grupId = $request['grup_id'];
         $namaGrup = $request['nama_grup'];
         $kameras = $request['kamera'];
         try {
             DB::beginTransaction();
-            $updateGrupKamera = GrupKameraTersimpan::where('id', $grupId)
+            $updateGrupKamera = GrupKameraTersimpan::where('id', $grupId)->where('user_id', $user->id)
             ->update([
                 'nama_grup' => $namaGrup
             ]);
@@ -103,8 +106,9 @@ class KameraTersimpanController extends Controller
     public function destroy(Request $request)
     {
         try {
+            $user = $request->get('user');
             $grupId = $request['grup_id'];
-            $grupData = GrupKameraTersimpan::where('id', $grupId);
+            $grupData = GrupKameraTersimpan::where('id', $grupId)->where("user_id", $user->id);
             $grupData->delete();
             return ApiResponse::deleted('Data deleted successfully'
             );
