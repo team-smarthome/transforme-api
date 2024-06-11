@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Requests\SidangRequest;
 use App\Helpers\ApiResponse;
 use Exception;
+use App\Http\Resources\SidangResource;
 
 
 class SidangController extends Controller
@@ -15,7 +16,7 @@ class SidangController extends Controller
   /**
    * Display a listing of the resource.
    */
-  public function index()
+  public function index(Request $request)
   {
     try {
       // $sidang = Sidang::with('oditurPenuntut')->get();
@@ -24,20 +25,47 @@ class SidangController extends Controller
       //     'message' => 'Data sidang berhasil diambil',
       //     'data' => $sidang
       // ];
-      $query = Sidang::with(['oditurPenuntut', 'hakim', 'ahli', 'saksi']);
+      $query = Sidang::with(['oditurPenuntut', 'hakim', 'ahli', 'saksi', 'kasus', 'pengadilanMiliter', 'jenisPersidangan', 'wbpProfile']);
+
       $filterableColumns = [
-        'sidang_id' => 'id',
         'nama_sidang' => 'nama_sidang',
-        'kasus_id' => 'kasus_id',
+        'nama_jenis_persidangan' => 'jenisPersidangan.nama_jenis_persidangan',
+        'nama_wbp' => 'wbpProfile.nama',
+        'nomor_kasus' => 'kasus.nomor_kasus',
+        'nama_kasus' => 'kasus.nama_kasus'
       ];
+
+      $filters = $request->input('filter', []);
+
       foreach ($filterableColumns as $requestKey => $column) {
-        if ($value = request($requestKey)) {
-          $query->where($column, 'like', '%' . $value . '%');
+        if (isset($filters[$requestKey])) {
+          if($requestKey === 'nama_jenis_persidangan'){
+            $query->whereHas('jenisPersidangan', function($q) use($filters, $requestKey){
+              $q->where('nama_jenis_persidangan', 'LIKE', '%' . $filters[$requestKey] . '%');
+            });
+          } else if($requestKey === 'nama_wbp'){
+            $query->where('wbpProfile', function($q) use($filters, $requestKey){
+              $q->where('nama', 'LIKE', '%' . $filters[$requestKey] . '%');
+            });
+          } else if($requestKey === 'nomor_kasus'){
+            $query->where('kasus', function($q) use($filters, $requestKey){
+              $q->where('nomor_kasus', 'LIKE', '%' . $filters[$requestKey] . '%');
+            });
+          } else if($requestKey === 'nama_kasus'){
+            $query->where('kasus', function($q) use($filters, $requestKey){
+              $q->where('nama_kasus', 'LIKE', '%' . $filters[$requestKey] . '%');
+            });
+          } else{
+            $query->where($column, 'like', '%' . $filters[$requestKey] . '%');
+          }
         }
       }
 
       $query->latest();
-      return ApiResponse::paginate($query);
+      $paginatedData = $query->paginate($request->input('pageSize', ApiResponse::$defaultPagination));
+
+      $resouceCollections = SidangResource::collection($paginatedData);
+      return ApiResponse::pagination($resouceCollections, 'Successfully get Data');
     } catch (\Exception $e) {
       return [
         'status' => 'ERROR',
