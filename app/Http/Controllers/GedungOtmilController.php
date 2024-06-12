@@ -14,14 +14,17 @@ class GedungOtmilController extends Controller
         try {
             $query = GedungOtmil::query();
             $filterableColumns = ['nama_gedung_otmil'];
-            $filters = $request->input('filter', []);
+            $filters = $request->input('filter');
 
-            foreach ($filterableColumns as $column) {
-                if (isset($filters[$column])) {
-                    $query->where($column, 'like', '%' . $filters[$column] . '%');
+            // foreach ($filterableColumns as $column) {
+                if (isset($filters)) {
+                    $query->where("nama_gedung_otmil", 'like', '%' . $filters . '%')
+                    ->orWhereHas('lokasiOtmil', function ($q) use ($filters){
+                        $q ->where('nama_lokasi_otmil', 'like', '%' . $filters . '%');
+                    });
                 }
-            }
-
+            // }
+            $query->with('lokasiOtmil');
             $query->latest();
             $paginatedData = $query->paginate($request->input('pageSize', ApiResponse::$defaultPagination));
 
@@ -47,7 +50,7 @@ class GedungOtmilController extends Controller
 
         $dataGedung = GedungOtmil::create($request->all());
 
-        return ApiResponse::success([
+        return ApiResponse::created([
             'data' => new GedungOtmilResource($dataGedung)
         ]);
     }
