@@ -19,7 +19,8 @@ class KasusController extends Controller
     public function index(Request $request)
     {
         try {
-            $query = Kasus::with(['wbpProfilePivot', 'saksiPivot', 'oditurPenyidik']);
+            $query = Kasus::with(['wbpProfilePivot', 'saksiPivot', 'oditurPenyidik', 'jenisPerkara.kategoriPerkara.jenisPidana']);
+            
             $filterableColumns = [
                 'kasus_id' => 'id',
                 'nama_kasus' => 'nama_kasus',
@@ -35,26 +36,30 @@ class KasusController extends Controller
                 'tanggal_mulai_penyidikan' => 'tanggal_mulai_penyidikan',
                 'tanggal_mulai_sidang' => 'tanggal_mulai_sidang',
             ];
-
-            $filters = $request->input('filter', []);
-
+    
             foreach ($filterableColumns as $requestKey => $column) {
-                if (isset($filters[$requestKey])) {
-                    $query->where($column, 'like', '%' . $filters[$requestKey] . '%');
+                if ($request->has($requestKey)) {
+                    $query->where($column, 'like', '%' . $request->input($requestKey) . '%');
                 }
             }
 
+            if ($request->has('nama_jenis_pidana')) {
+                $query->whereHas('jenisPerkara.kategoriPerkara.jenisPidana', function ($q) use ($request) {
+                    $q->where('nama_jenis_pidana', 'like', '%' . $request->input('nama_jenis_pidana') . '%');
+                });
+            }
+    
             $query->latest();
             $paginatedData = $query->paginate($request->input('pageSize', ApiResponse::$defaultPagination));
             $resourceCollection = KasusResource::collection($paginatedData);
-
+    
             return ApiResponse::pagination($resourceCollection);
-
         } catch (\Exception $e) {
-            return ApiResponse::error('Data kasus gagal diambil.', $e->getMessage());
+            // Handle exception
+            return ApiResponse::error($e->getMessage());
         }
     }
-
+    
     /**
      * Show the form for creating a new resource.
      */
