@@ -32,7 +32,6 @@ class AktivitasGelangResource extends JsonResource
             "z0"=> $this->z0,
             "timestamp"=> $this->timestamp,
             "wbp_profile_id"=> $this->wbp_profile_id,
-            "rssi"=> $this->rssi,
             "nama_wbp" => $this->wbpProfile->nama,
             'gelang_id' => $this->wbpProfile->gelang_id,
             'nama_gelang' => $this->wbpProfile->gelang->nama_gelang,
@@ -43,10 +42,7 @@ class AktivitasGelangResource extends JsonResource
             'ruangan_lemasmil_id' => $this->wbpProfile->gelang->ruangan_lemasmil_id,
             'nama_ruangan_lemasmil' => $this->wbpProfile->gelang->ruanganLemasmil->nama_ruangan_lemasmil,
             'lokasi_lemasmil_id' => $this->wbpProfile->gelang->ruanganLemasmil->lokasi_lemasmil_id,
-            'nama_lokasi_lemasmil' => $this->wbpProfile->gelang->ruanganLemasmil->lokasiLemasmil->nama_lokasi_lemasmil,
-            "created_at"=> $this->created_at,
-            "updated_at"=> $this->updated_at,
-            "deleted_at"=> $this->deleted_at
+            'nama_lokasi_lemasmil' => $this->wbpProfile->gelang->ruanganLemasmil->lokasiLemasmil->nama_lokasi_lemasmil
         ];
     }
 }

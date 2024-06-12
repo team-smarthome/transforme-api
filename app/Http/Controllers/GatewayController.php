@@ -19,18 +19,16 @@ class GatewayController extends Controller
         try {
             $query = Gateway::with(['ruanganOtmil.zona', 'ruanganLemasmil.zona', 'ruanganOtmil.lokasiOtmil', 'ruanganLemasmil.lokasiLemasmil']);
             $filterableColumns = [
-                'gateway_id' => 'id',
+                'lokasi_otmil_id' => 'ruanganOtmil.lokasiOtmil.lokasi_otmil_id',
+                'lokasi_lemasmil_id' => 'ruanganLemasmil.lokasiLemasmil.lokasi_lemasmil_id',
+                'ruangan_otmil_id' => 'ruangan_otmil_id',
+                'ruangan_lemasmil_id' => 'ruangan_lemasmil_id',
                 'gmac' => 'gmac',
                 'nama_gateway' => 'nama_gateway',
-                'ruangan_otmil_id' => 'ruangan_otmil_id',
                 'nama_ruangan_otmil' => 'ruanganOtmil.nama_ruangan_otmil',
-                'jenis_ruangan_otmil' => 'ruanganOtmil.jenis_ruangan_otmil',
-                'lokasi_otmil_id' => 'ruanganOtmil.lokasiOtmil.lokasi_otmil_id',
-                'ruangan_lemasmil_id' => 'ruangan_lemasmil_id',
                 'nama_ruangan_lemasmil' => 'ruanganLemasmil.nama_ruangan_lemasmil',
-                'jenis_ruangalemasmilil' => 'ruanganLemasmil.jenis_ruangan_lemasmil',
-                'status_gateway' => 'status_gateway',
-                'v_gateway_topic' => 'v_gateway_topic'
+                'jenis_ruangan_otmil' => 'ruanganOtmil.jenis_ruangan_otmil',
+                'jenis_ruangan_lemasmil' => 'ruanganLemasmil.jenis_ruangan_lemasmil'
             ];
 
             $filters = $request->input('filter', []);
@@ -62,7 +60,7 @@ class GatewayController extends Controller
                             $q->where('lokasi_lemasmil_id', 'LIKE', '%' . $filters[$requestKey] . '%');
                         });
                     } else {
-                        $query->where($column, 'LIKE', '%' . $filters[$key] . '%');
+                        $query->where($column, 'LIKE', '%' . $filters[$requestKey] . '%');
                     }
                 }
             }

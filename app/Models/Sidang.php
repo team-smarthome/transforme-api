@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Sidang extends Model
 {
@@ -65,6 +66,11 @@ class Sidang extends Model
     return $this->belongsToMany(Saksi::class, 'pivot_sidang_saksi', 'sidang_id', 'saksi_id');
   }
 
+  public function wbpProfile(): BelongsTo
+  {
+    return $this->belongsTo(WbpProfile::class, 'wbp_profile_id', 'id');
+  }
+  
   public function kasus(): BelongsTo
   {
     return $this->belongsTo(Kasus::class, 'kasus_id', 'id');
@@ -80,10 +86,20 @@ class Sidang extends Model
     return $this->belongsTo(JenisPersidangan::class, 'jenis_persidangan_id', 'id');
   }
 
-  public function wbpProfile(): BelongsTo
-  {
-    return $this->belongsTo(WbpProfile::class, 'wbp_profile_id', 'id');
-  }
+  public function wbpProfilePivot(): BelongsToMany
+    {
+        return $this->belongsToMany(WbpProfile::class, 'pivot_kasus_wbp', 'kasus_id', 'wbp_profile_id')->withPivot('keterangan');
+    }
+
+    public function historiVonis(): BelongsTo
+    {
+      return $this->belongsTo(HistoriVonis::class, 'histori_vonis_id', 'id');
+    }
+
+    public function DokumenPersidangan(): BelongsTo
+    {
+      return $this->belongsTo(DokumenPersidangan::class, 'dokumen_persidangan_id', 'id');
+    }
 
   // public function kategoriPerkara(): BelongsTo
   // {

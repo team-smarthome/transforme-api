@@ -19,6 +19,26 @@ class GatewayLogController extends Controller
         try {
             $query = GatewayLog::with('wbpProfile', 'gateway.ruanganOtmil.lokasiOtmil', 'gateway.ruanganLemasmil.lokasiLemasmil');
 
+            // $filterableColumns = [
+            //     'lokasi_otmil_id' => 'gateway.ruanganOtmil.lokasi_otmil_id',
+            //     'nama_lokasi_otmil' => 'gateway.ruanganOtmil.lokasiOtmil.nama_lokasi_otmil',
+            //     'lokasi_lemasmil_id' => 'gateway.ruanganLemasmil.lokasi_lemasmil_id',
+            //     'nama_lokasi_lemasmil' => 'gateway.ruanganLemasmil.lokasiLemasmil.nama_lokasi_lemasmil',
+            //     'ruangan_otmil_id' => 'gateway.ruangan_otmil_id',
+            //     'ruangan_lemasmil_id' => 'gateway.ruangan_lemasmil_id',
+            //     'wbp_profile_id' => 'wbp_profile_id',
+            //     'nama_wbp' => 'wbpProfile.wbp_profile_id',
+            //     'nama_ruangan_otmil' => 'gateway.ruanganOtmil.nama_ruangan_otmil',
+            //     'nama_ruangan_lemasmil' => 'gateway.ruanganLemasmil.nama_ruangan_lemasmil',
+            //     'jenis_ruangan_otmil' => 'gateway.ruanganOtmil.jenis_ruangan_otmil',
+            //     'jenis_ruangan_lemasmil' => 'gateway.ruanganLemasmil.jenis_ruangan_lemasmil',
+            //     'gmac' => 'gateway.gmac',
+            //     'gateway_log_id' => 'id',
+            //     'nama_gateway' => 'gateway.nama_gateway',
+            //     'status_gateway' => 'gateway.status_gateway',
+            //     'timestamp' => 'created_at',
+            // ];
+
             $filters = $request->input('filter', []);
 
             if (isset($filters['nama_gateway'])) {

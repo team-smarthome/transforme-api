@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class PivotKasusWbp extends Pivot
 {
@@ -26,5 +27,10 @@ class PivotKasusWbp extends Pivot
     public function wbpProfile(): BelongsTo
     {
         return $this->belongsTo(WbpProfile::class, 'wbp_profile_id', 'id');
+    }
+
+    public function wbpProfilePivot(): BelongsToMany
+    {
+        return $this->belongsToMany(WbpProfile::class, 'pivot_kasus_wbp', 'wbp_profile_id', 'kasus_id');
     }
 }

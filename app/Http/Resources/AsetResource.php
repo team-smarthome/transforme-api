@@ -27,15 +27,13 @@ class AsetResource extends JsonResource
             'tanggal_masuk' => $this->tanggal_masuk,
             'foto_barang' => $this->image,
             'keterangan' => $this->keterangan,
+            'updated_at' => $this->updated_at,
             'status_zona_otmil' => $this->ruanganOtmil->zona->nama_zona,
             'status_zona_lemasmil' => $this->ruanganLemasmil->zona->nama_zona,
             'serial_number' => $this->serial_number,
             'model' => $this->model,
             'merek' => $this->merek,
             'garansi' => $this->garansi,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
-            'deleted_at' => $this->deleted_at
         ];
     }
 }

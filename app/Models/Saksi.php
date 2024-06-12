@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
@@ -40,5 +41,10 @@ class Saksi extends Model
     public function dokumenBap(): HasMany
     {
         return $this->hasMany(DokumenBap::class, 'saksi_id', 'id'); // satu saksi memiliki banyak dokumen bap
+    }
+
+    public function sidang(): BelongsToMany
+    {
+        return $this->belongsToMany(Sidang::class, 'pivot_sidang_saksi', 'saksi_id', 'sidang_id');
     }
 }

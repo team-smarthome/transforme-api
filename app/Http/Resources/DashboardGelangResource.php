@@ -16,9 +16,6 @@ class DashboardGelangResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        $wbpProfiles = WbpProfile::select('id', 'nama')
-            ->where('gelang_id', $this->id)
-            ->get();
 
         return [
             'gelang_id' => $this->id,

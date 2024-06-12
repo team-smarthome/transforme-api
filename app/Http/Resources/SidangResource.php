@@ -2,8 +2,13 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Ahli;
+use App\Models\Hakim;
 use App\Models\OditurPenuntut;
 use App\Models\Pengacara;
+use App\Models\PivotKasusWbp;
+use App\Models\Saksi;
+use App\Models\WbpProfile;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -27,6 +32,30 @@ class SidangResource extends JsonResource
             $query->select('sidang_pengacara.nama_pengacara');
         }])
         ->get();
+
+        $hakim = Hakim::select('id', 'nip', 'nama_hakim', 'alamat', 'departemen')
+            ->with(['sidang' => function($query){
+                $query->select('pivot_sidang_hakim.id', 'pivot_sidang_hakim.sidang_id', 'pivot_sidang_hakim.role_ketua', 'pivot_sidang_hakim.hakim_id');
+            }])
+            ->get();
+
+        $saksi = Saksi::select('id', 'nama_saksi', 'no_kontak', 'alamat', 'jenis_kelamin', 'kasus_id', 'keterangan')
+            ->with(['sidang' => function($query){
+                $query->select('pivot_sidang_saksi.id');
+            }])
+            ->get();
+
+        $ahli = Ahli::select('id', 'nama_ahli', 'bidang_ahli')
+            ->with(['sidang' => function($query){
+                $query->select('pivot_sidang_ahli.id');
+            }])
+            ->get();
+
+        $kasusWbp = PivotKasusWbp::select('id', 'wbp_profile_id')
+            // ->with(['kasus.wbpProfile' => function($query){
+            //     $query->select('kasus.wbpProfile.nama');
+            // }])
+            ->get();
 
         return [
             "sidang_id" => $this->id,
@@ -70,7 +99,19 @@ class SidangResource extends JsonResource
             "provinsi_id" => $this->pengadilanMiliter->provinsi_id,
             "nama_provinsi" => $this->pengadilanMiliter->provinsi->nama_provinsi,
             "nama_jenis_persidangan" => $this->jenisPersidangan->nama_jenis_persidangan,
-            "sidang_hakim" => [],
+            "sidang_hakim" => $hakim->map(function($hakims){
+                return $hakims->sidang->map(function($pivot) use ($hakims) {
+                    return [
+                        'pivot_sidang_hakim_id' => $pivot->id,
+                        'role_ketua' => $pivot->pivot->role_ketua,
+                        'hakim_id' => $hakims->id,
+                        'nip' => $hakims->nip,
+                        'nama_hakim' => $hakims->nama_hakim,
+                        'alamat' => $hakims->alamat,
+                        'departemen' => $hakims->departemen
+                    ];
+                });
+            })->flatten(1),
             "sidang_oditur" => $oditurPenuntut->map(function($oditur){
                 return $oditur->sidang->map(function($pivot) use ($oditur) {
                     return [
@@ -86,16 +127,44 @@ class SidangResource extends JsonResource
             "sidang_pengacara" => $pengacara->map(function($pengacara){
                 return $pengacara->sidang->map(function($sidang) use ($pengacara) {
                     return [
+                        // 'sidang_id' => $sidang->id,
                         'nama_pengacara' => $sidang->nama_pengacara,
                     ];
                 });
             })->flatten(1),
-            // 'oditur' => $oditurPenuntut->map(function ($oditur) {
-            //     return [
-            //         'oditur_penuntut_id' => $oditur->id,
-            //         // 'nama_wbp' => $wbp->nama
-            //     ];
-            // }),
+            "sidang_saksi" => $saksi->map(function($saksis){
+                return $saksis->sidang->map(function($pivot) use ($saksis) {
+                    return [
+                        'pivot_sidang_saksi_id' => $pivot->id,
+                        'saksi_id' => $saksis->id,
+                        'nama_saksi' => $saksis->nama_saksi
+                    ];
+                });
+            })->flatten(1),
+            "sidang_ahli" => $ahli->map(function($ahlis){
+                return $ahlis->sidang->map(function($pivot) use ($ahlis) {
+                    return [
+                        'pivot_sidang_ahli_id' => $pivot->id,
+                        'ahli_id' => $ahlis->id,
+                        'nama_ahli' => $ahlis->nama_ahli,
+                        'bidang_ahli' => $ahlis->bidang_ahli
+                    ];
+                });
+            })->flatten(1),
+            "sidang_kasus_wbp" => $kasusWbp->map(function($wbp){
+                return [
+                    'pivot_kasus_wbp_id' => $wbp->id,
+                    'wbp_profile_id' => $wbp->wbp_profile_id,
+                    'nama_wbp' => $this->wbpProfile->nama
+                ];
+            }),
+            "hasil_vonis" => $this->historiVonis->hasil_vonis ?? null,
+            "masa_tahanan_tahun" => $this->historiVonis->masa_tahanan_tahun ?? null,
+            "masa_tahanan_bulan" => $this->historiVonis->masa_tahanan_bulan ?? null,
+            "masa_tahanan_hari" => $this->historiVonis->masa_tahanan_hari ?? null,
+            "nama_dokumen_persidangan" => $this->dokumenPersidangan->nama_dokumen_persidangan ?? null,
+            "link_dokumen_persidangan" => $this->dokumenPersidangan->link_dokumen_persidangan ?? null,
+            "sidang_id_dokumen" => $this->dokumenPersidangan->sidang_id ?? null
         ];
     }
 }

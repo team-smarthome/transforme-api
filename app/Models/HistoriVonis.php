@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 
 class HistoriVonis extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes, HasUuids;
 
     protected $table = 'histori_vonis';
 
@@ -22,8 +22,20 @@ class HistoriVonis extends Model
         'masa_tahanan_hari'
     ];
 
-    public function sidang()
+    protected $keyType = 'uuid';
+    public $incrementing = false;
+    public $timestamps = true;
+
+    // public function toArray()
+    // {
+    //     $array = parent::toArray();
+    //     $array['histori_vonis_id'] = $array['id'];
+    //     unset($array['id']);
+    //     return $array;
+    // }
+
+    public function sidang(): BelongsTo
     {
-        return $this->belongsTo(Sidang::class);
+        return $this->belongsTo(Sidang::class, 'sidang_id', 'id');
     }
 }

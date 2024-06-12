@@ -32,7 +32,6 @@ class AhliController extends Controller
             // return ApiResponse::paginate($query);
             $query = Ahli::query();
             $filterableColumns = [
-                'ahli_id' => 'id',
                 'nama_ahli' => 'nama_ahli',
                 'bidang_ahli' => 'bidang_ahli',
                 'bukti_keahlian' => 'bukti_keahlian'
