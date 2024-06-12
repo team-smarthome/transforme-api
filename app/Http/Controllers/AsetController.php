@@ -19,25 +19,27 @@ class AsetController extends Controller
         try {
             $query = Aset::with(['tipeAset', 'ruanganOtmil', 'ruanganLemasmil']);
             $filterableColumns = [
-                'aset_id' => 'id',
-                'nama_aset' => 'nama_aset',
-                'tipe_aset_id' => 'tipe_aset_id',
-                'ruangan_otmil_id' => 'ruangan_otmil_id',
-                'ruangan_lemasmil_id' => 'ruangan_lemasmil_id',
+                'nama_tipe' => 'tipeAset.nama_tipe',
+                'nama_ruangan_otmil' => 'ruanganOtmil.nama_ruangan',
+                'nama_ruangan_lemasmil' => 'ruanganLemasmil.nama_ruangan',
                 'kondisi' => 'kondisi',
-                'keterangan' => 'keterangan',
                 'tanggal_masuk' => 'tanggal_masuk',
                 'serial_number' => 'serial_number',
                 'model' => 'model',
-                'image' => 'image',
                 'merek' => 'merek',
-                'garansi' => 'garansi'
             ];
-            $filters = request('filter', []);
+            $filters = $request->input('filter', []);
 
             foreach ($filterableColumns as $requestKey => $column) {
                 if (isset($filters[$requestKey])) {
-                    $query->where($column, 'like', '%' . $filters[$requestKey] . '%');
+                    if($requestKey === 'nama_tipe'){
+                        $query->whereHas('tipeAset', function($q) use($filters, $requestKey){
+                            $q->where('nama_tipe', 'LIKE', '%' . $filters[$requestKey] . '%');
+                        });
+                    }
+                    else{
+                        $query->where($column, 'LIKE', '%' . $filters[$requestKey] . '%');
+                    }
                 }
              }
 

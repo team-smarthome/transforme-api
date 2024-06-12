@@ -9,7 +9,7 @@ Route::middleware([AuthSanctumMiddleware::class . ':operator,admin,superadmin'])
 });
 
 Route::middleware([AuthSanctumMiddleware::class . ':admin,superadmin'])->group(function () {
-    Route::post('gateway', [GatewayController::class, 'store']);
+    Route::post('dashboard_gateway', [GatewayController::class, 'store']);
     Route::put('gateway', [GatewayController::class, 'update']);
     Route::delete('gateway', [GatewayController::class, 'destroy']);
 

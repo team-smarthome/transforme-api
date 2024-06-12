@@ -6,6 +6,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 
 class Ahli extends Pivot
@@ -27,10 +28,10 @@ class Ahli extends Pivot
     return $array;
   }
 
-  public function sidang(): BelongsTo
-  {
-    return $this->belongsTo(Sidang::class, 'sidang_id', 'id');
-  }
+  public function sidang(): BelongsToMany
+    {
+        return $this->belongsToMany(Sidang::class, 'pivot_sidang_ahli', 'ahli_id', 'sidang_id');
+    }
 
   public function ahli(): BelongsTo
   {
