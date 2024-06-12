@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\RuangIsolasiLog;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Concerns\HasUuids;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class WbpProfile extends Model
 {
@@ -171,4 +172,9 @@ class WbpProfile extends Model
   {
     return $this->hasMany(KameraLog::class, 'wbp_profile_id', 'id');
   }
+
+  public function RuangIsolasiLog(): BelongsTo 
+    {
+        return $this->belongsTo(RuangIsolasiLog::class, "wbp_profile_id", "id");
+    }
 }
