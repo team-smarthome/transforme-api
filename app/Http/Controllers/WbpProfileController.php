@@ -206,10 +206,10 @@ class WbpProfileController extends Controller
             return ApiResponse::success([
                 'data' => WbpProfileResource::collection($paginatedData),
                 'pagination' => [
-                    'total' => $paginatedData->total(),
-                    'per_page' => $paginatedData->perPage(),
-                    'current_page' => $paginatedData->currentPage(),
-                    'last_page' => $paginatedData->lastPage(),
+                    'totalRecords' => $paginatedData->total(),
+                    'pageSize' => $paginatedData->perPage(),
+                    'currentPage' => $paginatedData->currentPage(),
+                    'totalPages' => $paginatedData->lastPage(),
                     'from' => $paginatedData->firstItem(),
                     'to' => $paginatedData->lastItem(),
                 ]
