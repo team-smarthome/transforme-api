@@ -25,7 +25,7 @@ use App\Http\Resources\WbpProfileResource;
 
 class WbpProfileController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $nama = request()->input('nama');
         $is_isolated = request()->input('is_isolated');
@@ -202,7 +202,10 @@ class WbpProfileController extends Controller
                 }
             });
 
-            $paginatedData = $query->paginate($perPage);
+            $paginatedData = $query->paginate($request->input('pageSize', ApiResponse::$defaultPagination));
+            $resourceCollection = WbpProfileResource::collection($paginatedData);
+            return ApiResponse::pagination($resourceCollection);
+            // $paginatedData = $query->paginate($perPage);
             return ApiResponse::success([
                 'data' => WbpProfileResource::collection($paginatedData),
                 'pagination' => [

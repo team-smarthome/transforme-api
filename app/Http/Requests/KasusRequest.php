@@ -29,12 +29,12 @@ class KasusRequest extends FormRequest
             'kategori_perkara_id' => 'nullable|uuid',
             'jenis_perkara_id' => 'nullable|uuid',
             'lokasi_kasus' => 'nullable|string|max:255',
-            'waktu_kejadian' => 'nullable|date_format:Y-m-d H:i:s',
-            'tanggal_pelimpahan_kasus' => 'nullable|date_format:Y-m-d',
-            'waktu_pelaporan_kasus' => 'nullable|date_format:Y-m-d H:i:s',
+            'waktu_kejadian' => 'nullable',
+            'tanggal_pelimpahan_kasus' => 'nullable',
+            'waktu_pelaporan_kasus' => 'nullable',
             'zona_waktu' => 'nullable|string|max:3',
-            'tanggal_mulai_penyidikan' => 'nullable|date_format:Y-m-d H:i:s',
-            'tanggal_mulai_sidang' => 'nullable|date_format:Y-m-d H:i:s',
+            'tanggal_mulai_penyidikan' => 'nullable',
+            'tanggal_mulai_sidang' => 'nullable',
         ];
     }
 

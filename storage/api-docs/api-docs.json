@@ -6761,36 +6761,48 @@
                 "summary": "Kasus Read Data",
                 "description": "Read Kasus Data",
                 "operationId": "KasusReadData",
-                "requestBody": {
-                    "required": false,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "object",
-                                "properties": {
-                                    "page": { "type": "integer", "example": 1 },
-                                    "pageSize": {
-                                        "type": "integer",
-                                        "example": 10
-                                    },
-                                    "filter": {
-                                        "type": "object",
-                                        "properties": {
-                                            "kasus_id": {
-                                                "type": "string",
-                                                "example": ""
-                                            },
-                                            "nama_kasus": {
-                                                "type": "string",
-                                                "example": ""
-                                            }
-                                        }
-                                    }
-                                }
-                            }
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "pageSize",
+                        "in": "query",
+                        "description": "Number of records per page",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 10
+                        }
+                    },
+                    {
+                        "name": "nama_kasus",
+                        "in": "query",
+                        "description": "Name of the case",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "Perampokan Barang"
+                        }
+                    },
+                    {
+                        "name": "nama_jenis_pidana",
+                        "in": "query",
+                        "description": "Name of the crime type",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "Pidana Mati"
                         }
                     }
-                },
+                ],
                 "responses": {
                     "200": {
                         "description": "Successfully get Data",
@@ -6868,7 +6880,7 @@
                                 "schema": {},
                                 "example": {
                                     "status": "error",
-                                    "message": "Unauthorized"
+                                    "message": "Bearer token required"
                                 }
                             }
                         }
@@ -8297,7 +8309,7 @@
                                 "type": "object",
                                 "properties": {
                                     "lantai_lemasmil_id": {
-                                        "type": "uuid"
+                                        "type": "string"
                                     },
                                     "nama_lantai": {
                                         "type": "string",
@@ -8430,11 +8442,11 @@
                                                 "example": "Nama Lantai contoh"
                                             },
                                             "lokasi_otmil_id": {
-                                                "type": "uuid",
+                                                "type": "string",
                                                 "example": "190cc9b1-b01f-4d1e-9043-a6a96e851b32"
                                             },
                                             "gedung_otmil_id": {
-                                                "type": "uuid",
+                                                "type": "string",
                                                 "example": "9c384035-e8c3-4efd-aa39-7e97b64830de"
                                             }
                                         }
@@ -8634,7 +8646,7 @@
                                 "type": "object",
                                 "properties": {
                                     "lantai_lemasmil_id": {
-                                        "type": "uuid"
+                                        "type": "string"
                                     },
                                     "nama_lantai": {
                                         "type": "string",

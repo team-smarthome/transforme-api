@@ -76,23 +76,29 @@ class KasusController extends Controller
      {
          DB::beginTransaction();
          try {
-             $kasusData = $request->except(['oditur_penyidikan_id', 'role_ketua', 'saksi_id', 'keterangan_saksi', 'wbp_profile_id', 'keterangan_wbp']);
+             $kasusData = $request->except(['oditur_penyidik_id', 'role_ketua', 'saksi_id', 'keterangan_saksi', 'wbp_profile_id', 'keterangan_wbp']);
              $kasus = Kasus::create($kasusData);
              
              $pivotoditurData = [];
-             if ($request->has('oditur_penyidikan_id')) {
-                 foreach ($request->oditur_penyidikan_id as $index => $oditurId) {
+             if ($request->has('oditur_penyidik_id')) {
+                 foreach ($request->oditur_penyidik_id as $index => $oditurId) {
+                     $roleKetua = $request->role_ketua; // Ambil nilai role_ketua dari request
+             
+                     // Tentukan nilai role_ketua berdasarkan perbandingan dengan $oditurId
+                     $isKetua = ($roleKetua === $oditurId) ? 1 : 0;
+             
                      $pivotoditurData[] = [
                          'id' => \Illuminate\Support\Str::uuid(),
                          'kasus_id' => $kasus->id,
                          'oditur_penyidikan_id' => $oditurId,
-                         'role_ketua' => $request->role_ketua[$index],
+                         'role_ketua' => $isKetua,
                          'created_at' => now(),
                          'updated_at' => now()
                      ];
                  }
                  DB::table('pivot_kasus_oditur')->insert($pivotoditurData);
              }
+             
      
              $pivotSaksiData = [];
              if ($request->has('saksi_id')) {
@@ -225,13 +231,35 @@ class KasusController extends Controller
             $id = $request->input('kasus_id');
             $kasus = Kasus::findOrFail($id);
             $kasus->update($request->all());
-    
-            if ($request->has('oditur_penyidikan_id') && is_array($request->oditur_penyidikan_id)) {
+            
+            if ($request->has('oditur_penyidik_id') && is_array($request->oditur_penyidik_id)) {
                 $createdAtPivot = DB::table('pivot_kasus_oditur')
                     ->where('kasus_id', $kasus->id)
                     ->pluck('created_at', 'oditur_penyidikan_id')
                     ->toArray();
-                $this->updatePivotData($kasus, 'pivot_kasus_oditur', 'oditur_penyidikan_id', 'role_ketua', $request->oditur_penyidikan_id, $request->role_ketua, $createdAtPivot);
+                DB::table('pivot_kasus_oditur')->where('kasus_id', $kasus->id)->delete();
+                $pivotoditurData = [];
+                foreach ($request->oditur_penyidik_id as $index => $oditurId) {
+                    $roleKetua = $request->role_ketua; // Ambil nilai role_ketua dari request
+            
+                    // Tentukan nilai role_ketua berdasarkan perbandingan dengan $oditurId
+                    $isKetua = ($roleKetua === $oditurId) ? 1 : 0;
+            
+                    $pivotoditurData[] = [
+                        'id' => \Illuminate\Support\Str::uuid(),
+                        'kasus_id' => $kasus->id,
+                        'oditur_penyidikan_id' => $oditurId,
+                        'role_ketua' => $isKetua,
+                        'created_at' => $createdAtPivot[$oditurId] ?? now(),
+                        'updated_at' => now()
+                    ];
+                }
+                DB::table('pivot_kasus_oditur')->insert($pivotoditurData);
+                // $createdAtPivot = DB::table('pivot_kasus_oditur')
+                //     ->where('kasus_id', $kasus->id)
+                //     ->pluck('created_at', 'oditur_penyidikan_id')
+                //     ->toArray();
+                // $this->updatePivotData($kasus, 'pivot_kasus_oditur', 'oditur_penyidikan_id', 'role_ketua', $request->oditur_penyidik_id, $request->role_ketua, $createdAtPivot);
             }
     
             if ($request->has('saksi_id') && is_array($request->saksi_id)) {
@@ -242,12 +270,29 @@ class KasusController extends Controller
                 $this->updatePivotData($kasus, 'pivot_kasus_saksi', 'saksi_id', 'keterangan', $request->saksi_id, $request->keterangan_saksi, $createdAtPivot);
             }
     
-            if ($request->has('wbp_profile_id') && is_array($request->wbp_profile_id)) {
+            if ($request->has('wbp_profile_pivot') && is_array($request->wbp_profile_pivot)) {
                 $createdAtPivot = DB::table('pivot_kasus_wbp')
-                    ->where('kasus_id', $kasus->id)
-                    ->pluck('created_at', 'wbp_profile_id')
-                    ->toArray();
-                $this->updatePivotData($kasus, 'pivot_kasus_wbp', 'wbp_profile_id', 'keterangan', $request->wbp_profile_id, $request->keterangan_wbp, $createdAtPivot);
+                ->where('kasus_id', $kasus->id)
+                ->pluck('created_at', 'wbp_profile_id')
+                ->toArray();
+                DB::table('pivot_kasus_wbp')->where('kasus_id', $kasus->id)->delete();
+                $pivotWbpData = [];
+                foreach ($request->wbp_profile_pivot as $index => $wbpId) {
+                    $pivotWbpData[] = [
+                        'id' => \Illuminate\Support\Str::uuid(),
+                        'kasus_id' => $kasus->id,
+                        'wbp_profile_id' => $wbpId,
+                        'keterangan' => $request->keterangan_wbp[$index],
+                        'created_at' => $createdAtPivot[$wbpId] ?? now(),
+                        'updated_at' => now()
+                    ];
+                }
+                DB::table('pivot_kasus_wbp')->insert($pivotWbpData);
+                // $createdAtPivot = DB::table('pivot_kasus_wbp')
+                //     ->where('kasus_id', $kasus->id)
+                //     ->pluck('created_at', 'wbp_profile_id')
+                //     ->toArray();
+                // $this->updatePivotData($kasus, 'pivot_kasus_wbp', 'wbp_profile_id', 'keterangan', $request->wbp_profile_id, $request->keterangan_wbp, $createdAtPivot);
             }
     
             DB::commit();
@@ -262,22 +307,25 @@ class KasusController extends Controller
     {
         $pivotData = [];
         foreach ($ids as $index => $id) {
+            $isKetua = in_array($id, $roles) ? 1 : 0; // Periksa apakah id ada di dalam roles sebagai role_ketua
+
             $data = [
                 'id' => \Illuminate\Support\Str::uuid(),
                 'kasus_id' => $kasus->id,
                 $foreignKey => $id,
                 'created_at' => $createdAtPivot[$id] ?? now(), // Gunakan created_at yang ada jika tersedia
-                'updated_at' => now()
+                'updated_at' => now(),
+                $roleKey => $isKetua  // Set nilai role_ketua sesuai dengan kondisi di atas
             ];
-            if ($roleKey !== null && isset($roles[$index])) {
-                $data[$roleKey] = $roles[$index];
-            }
+
             $pivotData[] = $data;
         }
-    
+
         DB::table($pivotTable)->where('kasus_id', $kasus->id)->delete();
         DB::table($pivotTable)->insert($pivotData);
     }
+
+
     
     /**
      * Remove the specified resource from storage.
