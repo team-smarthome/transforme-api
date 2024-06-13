@@ -104,7 +104,7 @@ class JenisPersidanganController extends Controller
      */
     public function update(JenisPersidanganRequest $request)
     {
-        $id = $request->input('id');
+        $id = $request->input('jenis_persidangan_id');
         $jenis_persidangan = JenisPersidangan::findOrFail($id);
 
         $namaEditingJenisPersidangan = $request->input('nama_jenis_persidangan');
@@ -124,7 +124,7 @@ class JenisPersidanganController extends Controller
      */
     public function destroy(Request $request)
     {
-        $id = $request->input('id');
+        $id = $request->input('jenis_persidangan_id');
         $jenisPersidangan = JenisPersidangan::findOrFail($id);
         $jenisPersidangan->delete();
 

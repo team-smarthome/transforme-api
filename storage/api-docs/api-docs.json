@@ -615,7 +615,7 @@
                             "schema": {
                                 "type": "object",
                                 "properties": {
-                                    "id": {
+                                    "ahli_id": {
                                         "type": "string",
                                         "format": "uuid",
                                         "description": "Ahli ID"
@@ -15320,6 +15320,10 @@
                                             "tipe_aset_id": {
                                                 "type": "string",
                                                 "example": ""
+                                            },
+                                            "nama_tipe": {
+                                                "type": "string",
+                                                "example": ""
                                             }
                                         }
                                     }
@@ -15339,7 +15343,7 @@
                                     "message": "Successfully get Data",
                                     "records": {
                                         "tipe_aset_id": "7911d5aa-1f81-4329-982c-0c290077846d",
-                                        "nama_tipe_aset": null,
+                                        "nama_tipe": null,
                                         "created_at": "2024-06-07T17:38:05.000000Z",
                                         "updated_at": null,
                                         "deleted_at": null

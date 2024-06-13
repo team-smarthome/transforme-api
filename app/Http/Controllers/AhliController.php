@@ -103,12 +103,12 @@ class AhliController extends Controller
      */
     public function update(AhliRequest $request)
     {
-        $id = $request->input('id');
+        $id = $request->input('ahli_id');
         $ahli = Ahli::findOrFail($id);
 
         // Check if the updated name already exists
         $existingAhli = Ahli::where('nama_ahli', $ahli->nama_ahli)->first();
-        
+
         if ($existingAhli && $existingAhli->id !== $id) {
             return ApiResponse::error('Nama ahli sudah ada.', null, 422);
         }
@@ -123,7 +123,7 @@ class AhliController extends Controller
      */
     public function destroy(Request $request)
     {
-        $id = $request->input('id');
+        $id = $request->input('ahli_id');
         $ahli = Ahli::findOrFail($id);
         $ahli->delete();
 

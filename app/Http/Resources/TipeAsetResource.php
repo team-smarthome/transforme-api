@@ -16,7 +16,7 @@ class TipeAsetResource extends JsonResource
     {
         return [
             'tipe_aset_id' => $this->id,
-            'nama_tipe_aset' => $this->nama_tipe_aset,
+            'nama_tipe' => $this->nama_tipe,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'deleted_at' => $this->deleted_at

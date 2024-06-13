@@ -43,8 +43,8 @@ class SaksiController extends Controller
             'no_kontak' => 'required|string|max:25',
             'alamat' => 'required|string|max:100',
             'jenis_kelamin' => 'required|nullable',
-            'kasus_id' => 'required|string|max:36',
-            'keterangan' => 'required|string',
+            'kasus_id' => 'nullable|string|max:36',
+            'keterangan' => 'nullable',
         ]);
 
         $dataSaksi = Saksi::create($request->all());
@@ -61,8 +61,8 @@ class SaksiController extends Controller
             'no_kontak' => 'required|string|max:25',
             'alamat' => 'required|string|max:100',
             'jenis_kelamin' => 'required|nullable',
-            'kasus_id' => 'required|string|max:36',
-            'keterangan' => 'required|string',
+            'kasus_id' => 'nullable|string|max:36',
+            'keterangan' => 'nullable|string',
         ]);
 
         $saksiId = $request->input('saksi_id');
