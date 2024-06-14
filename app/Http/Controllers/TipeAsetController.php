@@ -22,7 +22,7 @@ class TipeAsetController extends Controller
             $query = TipeAset::query();
             $filterableColumns = [
                 'tipe_aset_id' => 'id',
-                'nama_tipe_aset' => 'nama_tipe_aset',
+                'nama_tipe' => 'nama_tipe',
             ];
 
             $filters = request('filter', []);
@@ -62,10 +62,10 @@ class TipeAsetController extends Controller
             $tipe_aset = TipeAset::create($request->validated());
 
             return ApiResponse::created($tipe_aset);
-    
+
         } catch (QueryException $e) {
             return ApiResponse::error('Database error', $e->getMessage(), 500);
-    
+
         } catch (Exception $e) {
             return ApiResponse::error('An unexpected error occurred', $e->getMessage(), 500);
         }
@@ -92,36 +92,39 @@ class TipeAsetController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(TipeAsetRequest $request, string $id)
+    public function update(Request $request)
     {
-        try {
-            $tipe_aset = TipeAset::findOrFail($id);
-        } catch (ModelNotFoundException $e) {
-            return ApiResponse::error('Tipe Aset tidak ditemukan.', null, 404);
-        }
-    
-        $namaEditTipeAset = $request->input('nama_tipe');
-        $existingTipeAset = TipeAset::where('nama_tipe', $tipe_aset->nama_tipe)->first();
-    
-        if ($existingTipeAset && $existingTipeAset->id !== $id) {
-            return ApiResponse::error('Nama Tipe Aset sudah ada.', null, 422);
-        }
-    
-        $tipe_aset->update($request->all());
-    
-        return ApiResponse::updated($tipe_aset);
+        $request->validate([
+            'nama_tipe' => 'required|string'
+        ]);
+
+        $idTipeAset = $request->input('tipe_aset_id');
+        $dataTipe = TipeAset::where('id', $idTipeAset)->first();
+        $dataTipe->update($request->all());
+
+        return ApiResponse::updated([
+            'data' => 'berhasil'
+        ]);
     }
-    
+
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
-    {
-        $tipe_aset = TipeAset::findOrFail($id);
-        $tipe_aset->delete();
 
-        return ApiResponse::deleted();
+    public function destroy(Request $request)
+    {
+        $request->validate([
+            'tipe_aset_id' => 'required|string|max:36'
+        ]);
+
+        $saksiId = $request->input('tipe_aset_id');
+        $dataSaksi = TipeAset::where('id', $saksiId)->first();
+        $dataSaksi->delete();
+
+        return ApiResponse::deleted([
+            'message' => 'Data berhasil dihapus.'
+        ]);
     }
 
     public function restore($id)

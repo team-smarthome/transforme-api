@@ -24,7 +24,7 @@ class JenisPersidanganRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'nama_jenis_persidangan' => 'required|string|max:255',
+            'nama_jenis_persidangan' => 'nullable|string|max:255',
         ];
     }
 
