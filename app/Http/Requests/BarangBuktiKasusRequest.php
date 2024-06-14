@@ -29,10 +29,10 @@ class BarangBuktiKasusRequest extends FormRequest
           'nama_bukti_kasus' => 'required|string|max:255', 
           'nomor_barang_bukti' => 'required|string|max:255',
           'dokumen_barang_bukti' => 'nullable|mimes:pdf,doc,docx|max:10240',
-          'gambar_barang_bukti' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:10240',
+          'gambar_barang_bukti' => 'nullable',
           'keterangan' => 'nullable|string',
           'tanggal_diambil' => 'required|date',
-          'longitude' => 'required|string|max:255',
+          'longitude' => 'nullable|string|max:255',
           'jenis_perkara_id' => 'required|exists:jenis_perkara,id'
         ];
     }
