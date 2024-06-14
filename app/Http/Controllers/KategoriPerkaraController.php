@@ -20,11 +20,11 @@ class KategoriPerkaraController extends Controller
                 'nama_kategori_perkara' => 'nama_kategori_perkara'
             ];
 
-            $filter = $request->input('filter', []);
+            // $filter = $request->input('filter', []);
 
             foreach ($filterData as $key => $column) {
-                if (isset($filter[$key])) {
-                    $query->where($column, 'like', '%' . $filter[$key] . '%');
+                if ($request->has($key)) {
+                    $query->where($column, 'like', '%' . $request->input($key) . '%');
                 }
             }
 
@@ -52,7 +52,7 @@ class KategoriPerkaraController extends Controller
     {
         $request->validate([
             'nama_kategori_perkara' => 'required|string|max:100',
-            'jenis_pidana_id' => 'required|string|max:100',
+            'jenis_pidana_id' => 'nullable|string|max:100',
         ]);
 
         $kategoriPerkara = KategoriPerkara::create($request->all());
