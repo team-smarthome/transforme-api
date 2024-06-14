@@ -28,7 +28,7 @@ class PetugasResource extends JsonResource
       "tanggal_lahir" => $this->tanggal_lahir,
       "jenis_kelamin" => $this->jenis_kelamin,
       "provinsi_id" => $this->provinsi_id,
-      "nama_provinsi" => $this->provinsi->nama_privinsi,
+      "nama_provinsi" => $this->provinsi->nama_provinsi,
       "kota_id" => $this->kota_id,
       "nama_kota" => $this->kota->nama_kota,
       "alamat" => $this->alamat,
