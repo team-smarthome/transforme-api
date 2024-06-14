@@ -26,17 +26,25 @@ class PetugasController extends Controller
       $filterableColumns = [
         'petugas_id' => 'id',
         'nrp' => 'nrp',
-        'nama_petugas' => 'nama_petugas',
+        'nama' => 'nama',
         'jabatan' => 'jabatan',
       ];
-      $filters = $request->input('filter', []);
-
+      // $filters = $request->input('filter', []);
 
       foreach ($filterableColumns as $requestKey => $column) {
-        if (isset($filters[$requestKey])) {
-          $query->where($column, 'like', '%' . $filters[$requestKey] . '%');
+        if ($request->has($requestKey)) {
+            $query->where($column, 'like', '%' . $request->input($requestKey) . '%');
         }
-      }
+    }
+
+
+
+
+      // foreach ($filterableColumns as $requestKey => $column) {
+      //   if (isset($filters[$requestKey])) {
+      //     $query->where($column, 'like', '%' . $filters[$requestKey] . '%');
+      //   }
+      // }
       $query->latest();
       $paginatedData = $query->paginate($request->input('pageSize', ApiResponse::$defaultPagination));
 
