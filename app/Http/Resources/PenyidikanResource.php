@@ -29,7 +29,7 @@ class PenyidikanResource extends JsonResource
             'zona_waktu' => $this->zona_waktu,
             'nama_saksi' => $this->saksi->nama_saksi,
             'oditur_penyidikan_id' => $this->oditur_penyidikan_id,
-            'nip_oditur' => $this->oditurPenyidik ->nip,
+            'nip_oditur' => $this->oditurPenyidik ->nip ?? null,
             'nama_oditur' => $this->oditurPenyidik ->nama_oditur,
             'waktu_dimulai_penyidikan' => $this->waktu_dimulai_penyidikan,
             'waktu_selesai_penyidikan' => $this->waktu_selesai_penyidikan,
