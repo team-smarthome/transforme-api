@@ -25,7 +25,7 @@ class PenyidikanController extends Controller
             'dokumen_bap_id' => 'dokumen_bap_id',
             'wbp_profile_id' => 'wbp_profile_id',
             'saksi_id' => 'saksi_id',
-            'oditur_penyidikan_id' => 'oditur_penyidikan_id',
+            'oditur_penyidik_id' => 'oditur_penyidikan_id',
             'zona_waktu' => 'zona_waktu'
         ];
         $filters = $request->input('filter', []);
@@ -72,7 +72,7 @@ class PenyidikanController extends Controller
                 'dokumen_bap_id' => $request->dokumen_bap_id,
                 'wbp_profile_id' => $request->wbp_profile_id,
                 'saksi_id' => $request->saksi_id,
-                'oditur_penyidikan_id' => $request->oditur_penyidikan_id,
+                'oditur_penyidikan_id' => $request->oditur_penyidik_id,
                 'zona_waktu' => $request->zona_waktu
             ]);
 
@@ -133,7 +133,7 @@ class PenyidikanController extends Controller
             $penyidikan->dokumen_bap_id = $request->dokumen_bap_id;
             $penyidikan->wbp_profile_id = $request->wbp_profile_id;
             $penyidikan->saksi_id = $request->saksi_id;
-            $penyidikan->oditur_penyidikan_id = $request->oditur_penyidikan_id;
+            $penyidikan->oditur_penyidikan_id = $request->oditur_penyidik_id;
             $penyidikan->zona_waktu = $request->zona_waktu;
 
             if ($penyidikan->save()) {
