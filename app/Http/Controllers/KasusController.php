@@ -19,7 +19,7 @@ class KasusController extends Controller
     public function index(Request $request)
     {
         try {
-            $query = Kasus::with(['wbpProfilePivot', 'saksiPivot', 'oditurPenyidik', 'jenisPerkara.kategoriPerkara.jenisPidana']);
+            $query = Kasus::with(['wbpProfilePivot', 'saksiPivot', 'oditurPenyidik', 'jenisPerkara.kategoriPerkara.jenisPidana', 'penyidikan']);
             
             $filterableColumns = [
                 'kasus_id' => 'id',
