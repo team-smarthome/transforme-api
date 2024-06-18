@@ -25,24 +25,30 @@ class PengadilanMiliterController extends Controller
                 'nama_kota' => 'kota.nama_kota',
             ];
 
-            $filters = $request->input('filter', []);
+            // $filters = $request->input('filter', []);
 
-            foreach ($filterData as $key => $column) {
-                if (isset($filters[$key])) {
-                    if ($key === 'nama_provinsi') {
-                        $query->whereHas('provinsi', function ($q) use ($filters, $key) {
-                            $q->where('nama_provinsi', 'LIKE', '%' . $filters[$key] . '%');
-                        });
-                    }
-                    if ($key === 'nama_kota') {
-                        $query->whereHas('kota', function ($q) use ($filters, $key) {
-                            $q->where('nama_kota', 'LIKE', '%' . $filters[$key] . '%');
-                        });
-                    } else {
-                        $query->where($column, 'LIKE', '%' . $filters[$key] . '%');
-                    }
+            foreach ($filterData as $requestKey => $column) {
+                if ($request->has($requestKey)) {
+                    $query->where($column, 'like', '%' . $request->input($requestKey) . '%');
                 }
             }
+
+            // foreach ($filterData as $key => $column) {
+            //     if (isset($filters[$key])) {
+            //         if ($key === 'nama_provinsi') {
+            //             $query->whereHas('provinsi', function ($q) use ($filters, $key) {
+            //                 $q->where('nama_provinsi', 'LIKE', '%' . $filters[$key] . '%');
+            //             });
+            //         }
+            //         if ($key === 'nama_kota') {
+            //             $query->whereHas('kota', function ($q) use ($filters, $key) {
+            //                 $q->where('nama_kota', 'LIKE', '%' . $filters[$key] . '%');
+            //             });
+            //         } else {
+            //             $query->where($column, 'LIKE', '%' . $filters[$key] . '%');
+            //         }
+            //     }
+            // }
             $query->latest();
             $paginatedData = $query->paginate($request->input('pageSize', ApiResponse::$defaultPagination));
 

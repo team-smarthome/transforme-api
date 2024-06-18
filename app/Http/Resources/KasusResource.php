@@ -24,7 +24,7 @@ class KasusResource extends JsonResource
             // 'tanggal_pelaporan_kasus' => $this->tanggal_pelaporan_kasus, //
             'tanggal_pelimpahan_kasus' => $this->tanggal_pelimpahan_kasus, //
             'jenis_perkara_id' => $this->jenis_perkara_id, //
-            'waktu_pelaporan_kasus' => $this->tanggal_pelaporan_kasus, //
+            'waktu_pelaporan_kasus' => $this->waktu_pelaporan_kasus, //
             'zona_waktu' => $this->zona_waktu, //
             'nama_jenis_perkara' => $this->jenisPerkara->nama_jenis_perkara, // JP
             'kategori_perkara_id' => $this->kategori_perkara_id, //
@@ -63,6 +63,13 @@ class KasusResource extends JsonResource
                         'no_kontak' => $item->no_kontak,
                         'alamat' => $item->alamat,
                         'keterangan' => $item->pivot->keterangan,
+                    ];
+                });
+            }),
+            'penyidikan' => $this->whenLoaded('penyidikan', function() {
+                return $this->penyidikan->map(function ($item) {
+                    return [
+                        'penyidikan_id' => $item->id,
                     ];
                 });
             }),
