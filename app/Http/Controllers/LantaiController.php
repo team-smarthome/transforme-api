@@ -16,9 +16,9 @@ class LantaiController extends Controller
             $pageSize = $request->input('pageSize', ApiResponse::$defaultPagination);
 
             $getData = LantaiOtmil::with(['lokasiOtmil', 'gedungOtmil'])->where('nama_lantai', 'LIKE', '%' . $keyword . '%')
-            ->orWhereHas('gedungOtmil', function ($q) use ($keyword){
+            ->whereHas('gedungOtmil', function ($q) use ($keyword){
                 $q ->where('nama_gedung_otmil', 'LIKE', '%' . $keyword . '%');
-            })->orWhereHas('lokasiOtmil', function ($r) use ($keyword){
+            })->whereHas('lokasiOtmil', function ($r) use ($keyword){
                 $r ->where('nama_lokasi_otmil', 'LIKE', '%' . $keyword . '%');
             })->latest()->paginate($pageSize);
 
