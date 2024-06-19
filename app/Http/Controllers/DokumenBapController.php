@@ -16,57 +16,17 @@ class DokumenBapController extends Controller
     public function index(Request $request)
     {
         try {
-            $query = DokumenBap::with(['penyidikan.kasus', 'wbpProfile.hunianWbpOtmil.lokasiOtmil', 'wbpProfile.hunianWbpLemasmil.lokasiLemasmil', 'saksi']);
-            $filterableColumns = [
-                'dokumen_bap_id' => 'id',
-                'nama_dokumen_bap' => 'nama_dokumen_bap',
-                'nomor_penyidikan' => 'penyidikan.nomor_penyidikan',
-                'nomor_kasus' => 'penyidikan.kasus.nomor_kasus',
-                'nrp_wbp' => 'wbpProfile.nrp',
-                'nama' => 'wbpProfile.nama',
-                'nama_saksi' => 'saksi.nama_saksi',
-                'lokasi_otmil' => 'wbpProfile.hunianWbpOtmil.lokasiOtmil.nama_lokasi_otmil',
-                'lokasi_lemasmil' => 'wbpProfile.hunianWbpLemasmil.lokasiLemasmil.nama_lokasi_lemasmil'
-            ];
-
-            $filters = $request->input('filter', []);
-
-            foreach ($filterableColumns as $requestKey => $column) {
-                if (isset($filters[$requestKey])) {
-                    if ($requestKey === 'nomor_penyidikan') {
-                        // Handle the relationship filter
-                        $query->whereHas('penyidikan', function ($q) use ($filters, $requestKey) {
-                            $q->where('nomor_penyidikan', 'LIKE', '%' . $filters[$requestKey] . '%');
-                        });
-                    } else if ($requestKey === 'nomor_kasus') {
-                        $query->whereHas('penyidikan.kasus', function($q) use($filters, $requestKey){
-                            $q->where('nomor_kasus', 'LIKE', '%' . $filters[$requestKey] . '%');
-                        });
-                    } else if($requestKey === 'nrp_wbp'){
-                        $query->whereHas('wbpProfile', function($q) use($filters, $requestKey){
-                            $q->where('nrp', 'LIKE', '%' . $filters[$requestKey] . '%');
-                        });
-                    } else if($requestKey === 'nama'){
-                        $query->whereHas('wbpProfile', function($q) use($filters, $requestKey){
-                            $q->where('nama', 'LIKE', '%' . $filters[$requestKey] . '%');
-                        });
-                    } else if($requestKey === 'nama_saksi'){
-                        $query->whereHas('saksi', function($q) use($filters, $requestKey){
-                            $q->where('nama_saksi', 'LIKE', '%' . $filters[$requestKey] . '%');
-                        });
-                    } else if($requestKey === 'lokasi_otmil'){
-                        $query->whereHas('wbpProfile.hunianWbpOtmil.lokasiOtmil', function($q) use($filters, $requestKey){
-                            $q->where('nama_lokasi_otmil', 'LIKE', '%' . $filters[$requestKey] . '%');
-                        });
-                    } else if($requestKey === 'lokasi_lemasmil'){
-                        $query->whereHas('wbpProfile.hunianWbpLemasmil.lokasiLemasmil', function($q) use($filters, $requestKey){
-                            $q->where('nama_lokasi_lemasmil', 'LIKE', '%' . $filters[$requestKey] . '%');
-                        });
-                    } else {
-                        $query->where($column, 'LIKE', '%' . $filters[$requestKey] . '%');
-                    }
-            }
-        }
+            $namaDokumen = $request->input('namaDokumen');
+            $nomorPenyidikan = $request->input('nomorPenyidikan');
+            $namaKasus = $request->input('namaKasus');
+            $query = DokumenBap::with(['penyidikan.kasus', 'wbpProfile.hunianWbpOtmil.lokasiOtmil', 'wbpProfile.hunianWbpLemasmil.lokasiLemasmil', 'saksi'])
+            ->where('nama_dokumen_bap', "LIKE", "%" . $namaDokumen . "%")
+            ->whereHas('penyidikan', function ($q) use ($nomorPenyidikan){
+                $q -> where('nomor_penyidikan', 'LIKE', '%' . $nomorPenyidikan. '%');
+            })
+            ->whereHas('penyidikan.kasus', function ($r) use ($namaKasus){
+                $r -> where('nama_kasus', 'LIKE', '%' . $namaKasus. '%');
+            });
 
             $query->latest();
             $paginatedData = $query->paginate($request->input('pageSize', ApiResponse::$defaultPagination));
@@ -132,12 +92,13 @@ class DokumenBapController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(DokumenBapRequest $request)
+    public function update(Request $request)
     {
         try {
+            // return $request;
+            // exit();
             $id = $request->input('dokumen_bap_id');
-            $dokumenBap = DokumenBap::findOrFail($id);
-
+            $dokumenBap = DokumenBap::where('id', $id)->firstOrFail();
             $dokumenBap->penyidikan_id = $request->penyidikan_id;
             $dokumenBap->nama_dokumen_bap = $request->nama_dokumen_bap;
             $dokumenBap->wbp_profile_id = $request->wbp_profile_id;
@@ -163,13 +124,11 @@ class DokumenBapController extends Controller
     {
         try {
             $id = $request->input('dokumen_bap_id');
-            $dokumenBap = DokumenBap::findOrFail($id);
-            if ($dokumenBap) {
-                return ApiResponse::error('Dokumen BAP not found.', 404);
-            }
-            if ($dokumenBap->delete()) {
-                return ApiResponse::deleted();
-            }
+            $dokumenBap = DokumenBap::find($id);
+            $dokumenBap->delete();
+
+            return ApiResponse::deleted();
+            
         } catch (\Exception $e) {
             return ApiResponse::error('Failed to delete Dokumen BAP.', $e-> getMessage(), 500);
         }
