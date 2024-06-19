@@ -23,7 +23,8 @@ class KameraTersimpanController extends Controller
 
       // Base query
       $query = GrupKameraTersimpan::with(['KameraTersimpan.kamera'])
-        ->where('user_id', $user->id);
+        ->where('user_id', $user->id)
+        ->latest();
 
       // Apply grup_id filter if provided
       if ($grup_id) {

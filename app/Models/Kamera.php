@@ -45,6 +45,6 @@ class Kamera extends Model
 
   public function KameraTersimpan(): BelongsTo
   {
-      return $this->belongsTo(KameraTersimpan::class, "kamera_id", "id");
+    return $this->belongsTo(KameraTersimpan::class, "kamera_id", "id");
   }
 }

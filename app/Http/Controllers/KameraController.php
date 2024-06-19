@@ -15,28 +15,36 @@ class KameraController extends Controller
   public function index(Request $request)
   {
     try {
-      $query = Kamera::query();
-      $filterableColumns = [
-        'kamera_id' => 'id',
-        'nama_kamera' => 'nama_kamera',
-        'url_rtsp' => 'url_rtsp',
-        'ip_address' => 'ip_address',
-        'ruangan_otmil_id' => 'ruangan_otmil_id',
-        'ruangan_lemasmil_id' => 'ruangan_lemasmil_id',
-        'merk' => 'merk',
-        'model' => 'model',
-        'status_kamera' => 'status_kamera',
-      ];
-      $filters = $request->input('filter', []);
-      foreach ($filterableColumns as $requestKey => $column) {
-        if (isset($filters[$requestKey])) {
-          $query->where($column, 'like', '%' . $filters[$requestKey] . '%');
-        }
-      }
-      $query->latest();
-      $paginatedData = $query->paginate($request->input('pageSize', ApiResponse::$defaultPagination));
 
-      $resourceCollection = KameraResource::collection($paginatedData);
+      // $filterableColumns = [
+      //   'kamera_id' => 'id',
+      //   'nama_kamera' => 'nama_kamera',
+      //   'url_rtsp' => 'url_rtsp',
+      //   'ip_address' => 'ip_address',
+      //   'ruangan_otmil_id' => 'ruangan_otmil_id',
+      //   'ruangan_lemasmil_id' => 'ruangan_lemasmil_id',
+      //   'merk' => 'merk',
+      //   'model' => 'model',
+      //   'status_kamera' => 'status_kamera',
+      // ];
+      // $filters = $request->input('filter', []);
+      // foreach ($filterableColumns as $requestKey => $column) {
+      //   if (isset($filters[$requestKey])) {
+      //     $query->where($column, 'like', '%' . $filters[$requestKey] . '%');
+      //   }
+      // }
+
+      $search = $request->input('search');
+      $status_kamera = $request->input('status_kamera');
+      $pageSize = $request->input('pageSize', ApiResponse::$defaultPagination);
+
+      $query = Kamera::with(['ruanganOtmil', 'ruanganLemasmil'])
+        ->where('nama_kamera', 'LIKE', '%' . $search . '%')
+        ->where('status_kamera', 'LIKE', '%' . $status_kamera . '%')
+        ->latest()->paginate($pageSize);
+
+
+      $resourceCollection = KameraResource::collection($query);
       return ApiResponse::pagination($resourceCollection, 'Successfully get Data');
     } catch (\Exception $e) {
       return ApiResponse::error('Failed to get Data.', $e->getMessage());
@@ -60,7 +68,7 @@ class KameraController extends Controller
 
   public function update(KameraRequest $request)
   {
-    $id = $request->input('id');
+    $id = $request->input('kamera_id');
     $kamera = Kamera::findOrFail($id);
 
 
@@ -78,7 +86,7 @@ class KameraController extends Controller
   public function destroy(Request $request)
   {
     try {
-      $id = $request->input('id');
+      $id = $request->input('kamera_id');
       $kamera = Kamera::findOrFail($id);
       $kamera->delete();
 
