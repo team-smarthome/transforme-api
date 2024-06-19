@@ -14,7 +14,39 @@ class GatewayController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+
+     public function index(Request $request)
+     {
+         try {
+             $query = Gateway::query();
+             $filterableColumns = [
+                 'gateway_id' => 'id',
+                 'dmac' => 'dmac',
+                 'nama_gateway' => 'nama_gateway',
+                 'ruangan_otmil_id' => 'ruangan_otmil_id',
+                 'ruangan_lemasmil_id' => 'ruangan_lemasmil_id',
+                 'status_gateway' => 'status_gateway'
+             ];
+             $filters = $request->input('filter', []);
+
+             foreach ($filterableColumns as $requestKey => $column) {
+                 if (isset($filters[$requestKey])) {
+                     $query->where($column, 'like', '%' . $filters[$requestKey] . '%');
+                 }
+             }
+
+             $query->latest();
+             $paginatedData = $query->paginate($request->input('pageSize', ApiResponse::$defaultPagination));
+
+             $resourceCollection = GatewayResource::collection($paginatedData);
+
+             return ApiResponse::pagination($resourceCollection, 'Successfully get Data');
+         } catch (\Exception $e) {
+             return ApiResponse::error('Failed to get data.', $e->getMessage());
+         }
+     }
+
+    public function dashboardGateway(Request $request)
     {
         try {
             $query = Gateway::with(['ruanganOtmil.zona', 'ruanganLemasmil.zona', 'ruanganOtmil.lokasiOtmil', 'ruanganLemasmil.lokasiLemasmil']);
@@ -28,7 +60,8 @@ class GatewayController extends Controller
                 'nama_ruangan_otmil' => 'ruanganOtmil.nama_ruangan_otmil',
                 'nama_ruangan_lemasmil' => 'ruanganLemasmil.nama_ruangan_lemasmil',
                 'jenis_ruangan_otmil' => 'ruanganOtmil.jenis_ruangan_otmil',
-                'jenis_ruangan_lemasmil' => 'ruanganLemasmil.jenis_ruangan_lemasmil'
+                'jenis_ruangan_lemasmil' => 'ruanganLemasmil.jenis_ruangan_lemasmil',
+                'status_gateway' => 'status_gateway'
             ];
 
             $filters = $request->input('filter', []);
