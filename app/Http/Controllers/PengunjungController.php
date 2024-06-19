@@ -112,7 +112,7 @@ class PengunjungController extends Controller
     public function update(PengunjungRequest $request)
     {
         try {
-            $id = $request->input('id');
+            $id = $request->input('pengunjung_id');
             $pengunjung = Pengunjung::findOrfail($id);
             if (!$pengunjung) {
                 return ApiResponse::error('Data not found.', 'Data not found.', 404);

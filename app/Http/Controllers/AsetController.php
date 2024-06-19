@@ -28,20 +28,27 @@ class AsetController extends Controller
                 'model' => 'model',
                 'merek' => 'merek',
             ];
-            $filters = $request->input('filter', []);
 
             foreach ($filterableColumns as $requestKey => $column) {
-                if (isset($filters[$requestKey])) {
-                    if($requestKey === 'nama_tipe'){
-                        $query->whereHas('tipeAset', function($q) use($filters, $requestKey){
-                            $q->where('nama_tipe', 'LIKE', '%' . $filters[$requestKey] . '%');
-                        });
-                    }
-                    else{
-                        $query->where($column, 'LIKE', '%' . $filters[$requestKey] . '%');
-                    }
+                if ($request->has($requestKey)) {
+                    $query->where($column, 'like', '%' . $request->input($requestKey) . '%');
                 }
-             }
+            }
+            
+            // $filters = $request->input('filter', []);
+
+            // foreach ($filterableColumns as $requestKey => $column) {
+            //     if (isset($filters[$requestKey])) {
+            //         if($requestKey === 'nama_tipe'){
+            //             $query->whereHas('tipeAset', function($q) use($filters, $requestKey){
+            //                 $q->where('nama_tipe', 'LIKE', '%' . $filters[$requestKey] . '%');
+            //             });
+            //         }
+            //         else{
+            //             $query->where($column, 'LIKE', '%' . $filters[$requestKey] . '%');
+            //         }
+            //     }
+            //  }
 
             $query->latest();
             $paginatedData = $query->paginate($request->input('pageSize', ApiResponse::$defaultPagination));
