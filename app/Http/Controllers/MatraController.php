@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Helpers\ApiResponse;
 use App\Models\Matra;
 use Illuminate\Http\Request;
+use App\Http\Resources\MatraResource;
 use PhpParser\Node\Stmt\TryCatch;
 
 class MatraController extends Controller
@@ -14,21 +15,24 @@ class MatraController extends Controller
         try {
             $query = Matra::query();
             $filterableColumns = [
+                'matra_id' => 'id',
                 'nama_matra' => 'nama_matra'
             ];
 
-            $filter = $request->input('filter', []);
+            $filters = $request->input('filter', []);
 
-            foreach ($filterableColumns as $key => $column) {
-                if (isset($filter[$key])) {
-                    $query->where($column, 'like', '%' . $filter[$key] . '%');
+            foreach ($filterableColumns as $requestKey => $column) {
+                if (isset($filters[$requestKey])) {
+                    $query->where($column, 'like', '%' . $filters[$requestKey] . '%');
                 }
             }
 
             $query->latest();
             $paginateData = $query->paginate($request->input('pageSize', ApiResponse::$defaultPagination));
 
-            return ApiResponse::pagination($paginateData, 'Successfully get Data');
+            $resourceCollection = MatraResource::collection($paginateData);
+
+            return ApiResponse::pagination($resourceCollection, 'Successfully get Data');
         } catch (\Exception $e) {
             return ApiResponse::error('Failed to get Data.', $e->getMessage());
         }
