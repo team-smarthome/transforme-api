@@ -18,6 +18,11 @@ class AktivitasPengunjungController extends Controller
     public function index(Request $request)
     {
         try {
+            $user = $request->get('user');
+            $nama_pengunjung = $request->input('nama_pengunjung');
+            $nama_wbp = $request->input('nama_wbp');
+            $pageSize = $request->input('pageSize', ApiResponse::$defaultPagination);
+            
             $query = AktivitasPengunjung::with([
                 'ruanganLemasmil.lokasiLemasmil',
                 'ruanganOtmil.lokasiOtmil',
@@ -25,82 +30,21 @@ class AktivitasPengunjungController extends Controller
                 'ruanganOtmil.zona',
                 'petugas',
                 'pengunjung',
-                'wbpProfile'
-            ]);
-            $filterableColumns = [
-                'lokasi_otmil_id' => 'ruanganOtmil.lokasi_otmil_id',
-                'nama_lokasi_otmil' => 'ruanganOtmil.lokasiOtmil.nama_lokasi_otmil',
-                'lokasi_lemasmil_id' => 'ruanganLemasmil.lokasi_lemasmil_id',
-                'nama_lokasi_lemasmil' => 'ruanganLemasmil.lokasiLemasmil.nama_lokasi_lemasmil',
-                'ruangan_otmil_id' => 'ruangan_otmil_id',
-                'ruangan_lemasmil_id' => 'ruangan_lemasmil_id',
-                'nama_ruangan_otmil' => 'ruanganOtmil.nama_ruangan_otmil',
-                'nama_ruangan_lemasmil' => 'ruanganLemasmil.nama_ruangan_lemasmil',
-                'nama_aktivitas_pengunjung' => 'nama_aktivitas_pengunjung',
-                'waktu_mulai_kunjungan' => 'waktu_mulai_kunjungan',
-                'waktu_selesai_kunjungan' => 'waktu_selesai_kunjungan',
-                'tujuan_kunjungan' => 'tujuan_kunjungan',
-                'petugas_id' => 'petugas.petugas_id',
-                'nama_petugas' => 'petugas.nama',
-                'pengunjung_id' => 'pengunjung_id',
-                'nama_pengunjung' => 'pengunjung.nama',
-                'wbp_profile_id' => 'wbp_profile_id',
-                'nama_wbp' => 'wbpProfile.nama',
-                'zona_waktu' => 'zona_waktu'
-            ];
-
-            $filters = $request->input('filter', []);
-            foreach ($filterableColumns as $requestKey => $column) {
-                if (isset($filters[$requestKey])) {
-                    if ($requestKey === 'lokasi_otmil_id') {
-                        $query->whereHas('ruanganOtmil', function ($q) use ($filters, $requestKey) {
-                            $q->where('lokasi_otmil_id', 'LIKE', '%' . $filters[$requestKey] . '%');
-                        });
-                    }
-                    if ($requestKey === 'nama_lokasi_otmil') {
-                        $query->whereHas('ruanganOtmil.lokasiOtmil', function ($q) use ($filters, $requestKey) {
-                            $q->where('nama_lokasi_otmil', 'LIKE', '%' . $filters[$requestKey] . '%');
-                        });
-                    }
-                    if ($requestKey === 'lokasi_lemasmil_id') {
-                        $query->whereHas('ruanganLemasmil', function ($q) use ($filters, $requestKey) {
-                            $q->where('lokasi_lemasmil_id', 'LIKE', '%' . $filters[$requestKey] . '%');
-                        });
-                    }
-                    if ($requestKey === 'nama_lokasi_lemasmil') {
-                        $query->whereHas('ruanganLemasmil.lokasiLemasmil', function ($q) use ($filters, $requestKey) {
-                            $q->where('nama_lokasi_lemasmil', 'LIKE', '%' . $filters[$requestKey] . '%');
-                        });
-                    }
-                    if ($requestKey === 'nama_ruangan_otmil') {
-                        $query->whereHas('ruanganOtmil', function ($q) use ($filters, $requestKey) {
-                            $q->where('nama_ruangan_otmil', 'LIKE', '%' . $filters[$requestKey] . '%');
-                        });
-                    }
-                    if ($requestKey === 'nama_ruangan_lemasmil') {
-                        $query->whereHas('ruanganLemasmil', function ($q) use ($filters, $requestKey) {
-                            $q->where('nama_ruangan_lemasmil', 'LIKE', '%' . $filters[$requestKey] . '%');
-                        });
-                    }
-                    if ($requestKey === 'nama_petugas') {
-                        $query->whereHas('petugas', function ($q) use ($filters, $requestKey) {
-                            $q->where('nama', 'LIKE', '%' . $filters[$requestKey] . '%');
-                        });
-                    }
-                    if ($requestKey === 'nama_wbp') {
-                        $query->whereHas('wbpProfile', function ($q) use ($filters, $requestKey) {
-                            $q->where('nama', 'LIKE', '%' . $filters[$requestKey] . '%');
-                        });
-                    }
-                    else {
-                        $query->where($column, 'LIKE', '%' . $filters[$requestKey] . '%');
-                    }
+                'wbpProfile',
+            ])->where(function ($q) use ($nama_pengunjung, $nama_wbp) {
+                if ($nama_pengunjung) {
+                    $q->orWhereHas('pengunjung', function ($q) use ($nama_pengunjung) {
+                        $q->where('nama', 'LIKE', '%' . $nama_pengunjung . '%');
+                    });
                 }
-            }
-
-            $query->latest();
-            $paginateData = $query->paginate($request->input('pageSize', ApiResponse::$defaultPagination));
-            $resourceCollection = AktivitasPengunjungResource::collection($paginateData);
+                if ($nama_wbp) {
+                    $q->orWhereHas('wbpProfile', function ($q) use ($nama_wbp) {
+                        $q->where('nama', 'LIKE', '%' . $nama_wbp . '%');
+                    });
+                }
+            })->latest()->paginate($pageSize);
+    
+            $resourceCollection = AktivitasPengunjungResource::collection($query);
 
             return ApiResponse::pagination($resourceCollection, 'Successfully get data');
         } catch (\Exception $e) {
