@@ -24,7 +24,7 @@ class AsetRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'nama_aset' => 'required|string|max:255',
+            'nama_aset' => 'nullable|string|max:255',
             'tipe_aset_id' => 'nullable|uuid|exists:tipe_aset,id',
             'ruangan_otmil_id' => 'nullable|uuid|exists:ruangan_otmil,id',
             'ruangan_lemasmil_id' => 'nullable|uuid|exists:ruangan_lemasmil,id',
@@ -33,7 +33,8 @@ class AsetRequest extends FormRequest
             'tanggal_masuk' => 'nullable|date',
             'serial_number' => 'nullable|string|max:255',
             'model' => 'nullable|string|max:255',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:10240',
+            // 'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:10240',
+            'image' => 'nullable',
             'merek' => 'nullable|string|max:255',
             'garansi' => 'nullable|string|max:255'
         ];
