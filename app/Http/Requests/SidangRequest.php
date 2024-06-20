@@ -42,6 +42,8 @@ class SidangRequest extends FormRequest
             'zona_waktu' => 'nullable|string',
             'oditur_penuntut_id' => 'nullable|array',
             'role_ketua' => 'nullable|array',
+            'nama_dokumen_persidangan' => 'nullable',
+            'link_dokumen_persidangan' => 'nullable'
         ];
     }
 
@@ -77,7 +79,9 @@ class SidangRequest extends FormRequest
             'zona_waktu.string' => 'Zona Waktu harus berupa string',
             'oditur_penuntut_id.array' => 'Oditur Penuntut harus berupa array',
             'role_ketua.array' => 'Role Ketua harus berupa array',
+            'nama_dokumen_persidangan.string' => 'Nama Dokumen harus diisi',
+            'link_dokumen_persidangan.string' => 'Dokumen harus diisi',
         ];
     }
-    
+
 }

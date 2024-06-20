@@ -30,11 +30,16 @@ class GelangController extends Controller
                 'nama_ruangan_lemasmil' => 'nama_ruangan_lemasmil',
                 'baterai' => 'baterai'
             ];
-            $filters = $request->input('filter', []);
+            // $filters = $request->input('filter', []);
 
+            // foreach ($filterableColumns as $requestKey => $column) {
+            //     if (isset($filters[$requestKey])) {
+            //         $query->where($column, 'like', '%' . $filters[$requestKey] . '%');
+            //     }
+            // }
             foreach ($filterableColumns as $requestKey => $column) {
-                if (isset($filters[$requestKey])) {
-                    $query->where($column, 'like', '%' . $filters[$requestKey] . '%');
+                if ($request->has($requestKey)) {
+                    $query->where($column, 'like', '%' . $request->input($requestKey) . '%');
                 }
             }
 
