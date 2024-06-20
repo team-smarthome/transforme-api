@@ -18,20 +18,17 @@ class PenugasanController extends Controller
   public function index(Request $request)
   {
     try {
-      $query = Penugasan::query();
-      $filterableColumns = [
-        'penugasan_id' => 'id',
-        'nama_penugasan' => 'nama_penugasan',
-      ];
-      $filters = $request->input('filter', []);
-      foreach ($filterableColumns as $requestKey => $column) {
-        if (isset($filters[$requestKey])) {
-          $query->where($column, 'like', '%' . $filters[$requestKey] . '%');
-        }
-      }
-      $query->latest();
-      $paginatedData = $query->paginate($request->input('pageSize', ApiResponse::$defaultPagination));
-      $resourceCollection = PenugasanResource::collection($paginatedData);
+
+      $nama_penugasan = $request->input('nama_penugasan');
+      $penugasan_id = $request->input('penugasan_id');
+      $pageSize = $request->input('pageSize', ApiResponse::$defaultPagination);
+      $query = Penugasan::with(['petugas_shift'])
+        ->where('id', 'like', '%' . $penugasan_id . '%')
+        ->where('nama_penugasan', 'like', '%' . $nama_penugasan . '%')
+        ->latest()->paginate($pageSize);
+
+
+      $resourceCollection = PenugasanResource::collection($query);
       return ApiResponse::pagination($resourceCollection, 'Successfully get Data');
     } catch (\Exception $e) {
       return ApiResponse::error('Failed to get Data.', $e->getMessage());
@@ -73,8 +70,8 @@ class PenugasanController extends Controller
   public function edit(PenugasanRequest $request)
   {
     try {
-      $id = $request->input('id');
-      $penugasan = Penugasan::findOrFail($id);
+      $penugasan_id = $request->input('penugasan_id');
+      $penugasan = Penugasan::findOrFail($penugasan_id);
       $data = $request->validated();
       $penugasan->update($data);
       return ApiResponse::success('Data updated successfully', $penugasan);
@@ -98,8 +95,8 @@ class PenugasanController extends Controller
   public function destroy(Request $request)
   {
     try {
-      $id = $request->input('id');
-      $penugasan = Penugasan::findOrFail($id);
+      $penugasan_id = $request->input('penugasan_id');
+      $penugasan = Penugasan::findOrFail($penugasan_id);
       $penugasan->delete();
       return ApiResponse::deleted();
     } catch (QueryException $e) {

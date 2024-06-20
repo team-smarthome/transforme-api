@@ -192,14 +192,22 @@ class petugasShiftController extends Controller
           DB::raw('GROUP_CONCAT(DISTINCT CASE WHEN petugas_shift.status_kehadiran = 0 AND petugas_shift.status_izin LIKE "Cuti" THEN petugas.id ELSE NULL END) AS petugas_cuti')
         );
 
-      $filters = $request->input('filter', []);
-      if (!empty($filters['bulan'])) {
-        $query->where('schedule.bulan', $filters['bulan']);
+      // $filters = $request->input('filter', []);
+      // if (!empty($filters['bulan'])) {
+      //   $query->where('schedule.bulan', $filters['bulan']);
+      // }
+      // if (!empty($filters['tahun'])) {
+      //   $query->where('schedule.tahun', $filters['tahun']);
+      // }
+      $filterableColumns = [
+        'bulan' => 'schedule.bulan',
+        'tahun' => 'schedule.tahun'
+      ];
+      foreach ($filterableColumns as $requestKey => $column) {
+        if ($request->has($requestKey)) {
+          $query->where($column, 'like', '%' . $request->input($requestKey) . '%');
+        }
       }
-      if (!empty($filters['tahun'])) {
-        $query->where('schedule.tahun', $filters['tahun']);
-      }
-
       $query->orderBy('schedule.tahun', 'desc')->orderBy('schedule.bulan', 'desc');
 
       $result = $query->groupBy('schedule.bulan', 'schedule.tahun')->get();
