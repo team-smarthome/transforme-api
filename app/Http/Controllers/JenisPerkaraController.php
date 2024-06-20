@@ -86,7 +86,7 @@ class JenisPerkaraController extends Controller
 
         $jenisPerkara = JenisPerkara::create($request->all());
 
-        return ApiResponse::success(['data' => new JenisPerkaraResource($jenisPerkara)]);
+        return ApiResponse::created();
     }
 
     /**
@@ -108,16 +108,33 @@ class JenisPerkaraController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request)
     {
-        //
+        try {
+            $jenisPerkara = $request->input('jenis_perkara_id');
+            
+            $jenisPerkara = JenisPerkara::findOrFail($jenisPerkara);
+            $jenisPerkara->update($request->all());
+
+            return ApiResponse::updated();
+        
+        } catch (\Exception $e) {
+            return ApiResponse::error('Failed update data.', $e->getMessage());
+        }
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Request $request)
     {
-        //
+        try {
+            $jenisPerkara = JenisPerkara::findOrFail($request->input('jenis_perkara_id'));
+            $jenisPerkara->delete();
+
+            return ApiResponse::deleted();
+        } catch (\Exception $e) {
+            return ApiResponse::error('Failed delete data.', $e->getMessage());
+        }   
     }
 }
