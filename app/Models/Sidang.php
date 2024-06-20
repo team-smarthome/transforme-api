@@ -70,7 +70,7 @@ class Sidang extends Model
   {
     return $this->belongsTo(WbpProfile::class, 'wbp_profile_id', 'id');
   }
-  
+
   public function kasus(): BelongsTo
   {
     return $this->belongsTo(Kasus::class, 'kasus_id', 'id');
@@ -96,7 +96,7 @@ class Sidang extends Model
       return $this->belongsTo(HistoriVonis::class, 'histori_vonis_id', 'id');
     }
 
-    public function DokumenPersidangan(): BelongsTo
+    public function dokumenPersidangan(): BelongsTo
     {
       return $this->belongsTo(DokumenPersidangan::class, 'dokumen_persidangan_id', 'id');
     }

@@ -19,12 +19,6 @@ class SidangController extends Controller
   public function index(Request $request)
   {
     try {
-      // $sidang = Sidang::with('oditurPenuntut')->get();
-      // return [
-      //     'status' => 'OK',
-      //     'message' => 'Data sidang berhasil diambil',
-      //     'data' => $sidang
-      // ];
       $query = Sidang::with(['oditurPenuntut', 'hakim', 'ahli', 'saksi', 'kasus', 'pengadilanMiliter', 'jenisPersidangan', 'wbpProfile']);
 
       $filterableColumns = [
@@ -146,12 +140,30 @@ class SidangController extends Controller
 
         DB::table('pivot_sidang_saksi')->insert($pivotSaksiData);
       }
+
+      if ($request->hasFile('link_dokumen_persidangan')) {
+        $dokumenPersidangan = [];
+        foreach ($request->file('link_dokumen_persidangan') as $index => $file) {
+            $dokumenPath = $file->store('public/dokumen_persidangan');
+            $dokumenPersidangan[] = [
+                'id' => \Illuminate\Support\Str::uuid(),
+                'nama_dokumen_persidangan' => $request->nama_dokumen_persidangan[$index],
+                'link_dokumen_persidangan' => str_replace('public/', '', $dokumenPath),
+                'sidang_id' => $sidang->id,
+                'created_at' => now(),
+                'updated_at' => now()
+            ];
+        }
+        DB::table('dokumen_persidangan')->insert($dokumenPersidangan);
+    }
+
       DB::commit();
       //buat response gabungin $sidang dan $pivotData
       $sidang->oditurPenuntut = $pivotOditurData;
       $sidang->hakim = $pivotHakimData;
       $sidang->ahli = $pivotAhliData;
       $sidang->saksi = $pivotSaksiData;
+    //   $sidang->dokumenPersidangan = $dokumenPersidangan;
       return ApiResponse::created($sidang);
     } catch (\Exception $e) {
       DB::rollBack();
