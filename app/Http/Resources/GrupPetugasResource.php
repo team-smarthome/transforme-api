@@ -17,7 +17,7 @@ class GrupPetugasResource extends JsonResource
     return [
       "grup_petugas_id" => $this->id,
       "nama_grup_petugas" => $this->nama_grup_petugas,
-      "ketua_grup" => $this->ketua_grup,
+      "nama_ketua_grup" => $this->ketua_grup,
       'created_at' => $this->created_at,
       'updated_at' => $this->updated_at
     ];
