@@ -14,6 +14,11 @@ class ShiftResource extends JsonResource
    */
   public function toArray(Request $request): array
   {
-    return parent::toArray($request);
+    return [
+      'shift_id' => $this->id,
+      'nama_shift' => $this->nama_shift,
+      'waktu_mulai' => $this->waktu_mulai,
+      'waktu_selesai' => $this->waktu_selesai
+    ];
   }
 }
