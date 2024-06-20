@@ -145,7 +145,7 @@ class UserController extends Controller
       $userLog->nama_user_log = 'gagal nrp';
       $userLog->timestamp = now();
       $userLog->user_id = $user ? $user->id : null;
-      echo "e" . $userLog;
+      // echo "e" . $userLog;
       $userLog->save();
       throw new HttpResponseException(response([
         'status' => 'error',
@@ -159,7 +159,7 @@ class UserController extends Controller
       $userLog->timestamp = now();
       $userLog->user_id = $user->id;
       $userLog->save();
-      echo "e2" . $userLog;
+      // echo "e2" . $userLog;
       throw new HttpResponseException(response([
         'status' => 'error',
         'message' => 'Password not match',
@@ -268,17 +268,24 @@ class UserController extends Controller
   {
     try {
 
-      $query = User::query();
+      $query = User::with(['role', 'petugas', 'lokasiLemasmil', 'lokasiOtmil']);
       $filterableColumns = [
         'user_id' => 'id',
-        'nama' => 'nama',
+        'user_role_id' => 'user_role_id',
+        'username' => 'username',
+        'lokasi_otmil_id' => 'lokasi_otmil_id',
     ];
-    $filters = $request->input('filter', []);
     foreach ($filterableColumns as $requestKey => $column) {
-      if (isset($filters[$requestKey])) {
-          $query->where($column, 'like', '%' . $filters[$requestKey] . '%');
+      if ($request->has($requestKey)) {
+          $query->where($column, 'like', '%' . $request->input($requestKey) . '%');
       }
-  }
+    }
+
+    if ($request->has('nama')) {
+      $query->whereHas('petugas', function ($q) use ($request) {
+          $q->where('nama', 'like', '%' . $request->input('nama') . '%');
+      });
+    };
 
   $query->latest();
   $paginatedData = $query->paginate($request->input('pageSize', ApiResponse::$defaultPagination));
@@ -325,7 +332,7 @@ class UserController extends Controller
   public function edit(UserRequest $request)
   {
     try {
-      $id = $request->input('id');
+      $id = $request->input('user_id');
       $user = User::findOrFail($id);
       $data = $request->validated();
 
