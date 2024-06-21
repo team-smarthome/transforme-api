@@ -90,13 +90,13 @@ class GrupPetugasController extends Controller
    */
   public function update(GrupPetugasRequest $request)
   {
-    $id = $request->input('id');
-    $grup_petugas = GrupPetugas::findOrFail($id);
+    $grup_petugas_id = $request->input('grup_petugas_id');
+    $grup_petugas = GrupPetugas::findOrFail($grup_petugas_id);
 
     $namaEditGrupPetugas = $request->input('nama_grup_petugas');
     $existingGrupPetugas = GrupPetugas::where('nama_grup_petugas', $grup_petugas->nama_grup_petugas)->first();
 
-    if ($existingGrupPetugas && $existingGrupPetugas->id !== $id) {
+    if ($existingGrupPetugas && $existingGrupPetugas->id !== $grup_petugas_id) {
       return ApiResponse::error('Nama grup petugas sudah ada.', null, 422);
     }
 
@@ -110,7 +110,7 @@ class GrupPetugasController extends Controller
    */
   public function destroy(Request $request)
   {
-    $id = $request->input('id');
+    $id = $request->input('grup_petugas_id');
     $grup_petugas = GrupPetugas::findOrFail($id);
     $grup_petugas->delete();
 
