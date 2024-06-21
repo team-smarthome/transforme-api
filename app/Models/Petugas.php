@@ -94,6 +94,10 @@ class Petugas extends Model
   {
     return $this->belongsTo(GrupPetugas::class, 'grup_petugas_id', 'id');
   }
+  public function ketua(): HasMany
+  {
+    return $this->hasMany(GrupPetugas::class, 'ketua_grup', 'id');
+  }
   public function matra(): BelongsTo
   {
     return $this->belongsTo(Matra::class, 'matra_id', 'id');
