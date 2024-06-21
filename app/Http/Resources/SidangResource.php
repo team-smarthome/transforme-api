@@ -140,7 +140,8 @@ class SidangResource extends JsonResource
                         'nama_saksi' => $saksis->nama_saksi
                     ];
                 });
-            })->flatten(1),
+            }
+            )->flatten(1),
             "sidang_ahli" => $ahli->map(function($ahlis){
                 return $ahlis->sidang->map(function($pivot) use ($ahlis) {
                     return [
@@ -155,13 +156,13 @@ class SidangResource extends JsonResource
                 return [
                     'pivot_kasus_wbp_id' => $wbp->id,
                     'wbp_profile_id' => $wbp->wbp_profile_id,
-                    'nama_wbp' => $this->wbpProfile->nama
+                    'nama_wbp' => $this->wbpProfile->nama ?? null
                 ];
             }),
-            "hasil_vonis" => $this->historiVonis->hasil_vonis ?? null,
-            "masa_tahanan_tahun" => $this->historiVonis->masa_tahanan_tahun ?? null,
-            "masa_tahanan_bulan" => $this->historiVonis->masa_tahanan_bulan ?? null,
-            "masa_tahanan_hari" => $this->historiVonis->masa_tahanan_hari ?? null,
+            'hasil_vonis' => $this->historiVonis->pluck('hasil_vonis')->toArray(),
+            'masa_tahanan_tahun' => $this->historiVonis->pluck('masa_tahanan_tahun')->toArray(),
+            'masa_tahanan_bulan' => $this->historiVonis->pluck('masa_tahanan_bulan')->toArray(),
+            'masa_tahanan_hari' => $this->historiVonis->pluck('masa_tahanan_hari')->toArray(),
             "nama_dokumen_persidangan" => $this->dokumenPersidangan->nama_dokumen_persidangan ?? null,
             "link_dokumen_persidangan" => $this->dokumenPersidangan->link_dokumen_persidangan ?? null,
             "sidang_id_dokumen" => $this->dokumenPersidangan->sidang_id ?? null

@@ -20,12 +20,23 @@ class DokumenPersidangan extends Model
     public $timestamps = true;
 
     protected $fillable = [
+        'id',
         'nama_dokumen_persidangan',
         'link_dokumen_persidangan',
         'sidang_id'
     ];
 
-    public function sidang(): BelongsTo
+    protected static function boot()
+    {
+        parent::boot();
+        static::creating(function ($model) {
+            if (empty($model->id)) {
+                $model->id = (string) Str::uuid();
+            }
+        });
+    }
+
+    public function sidang()
     {
         return $this->belongsTo(Sidang::class, 'sidang_id', 'id');
     }
