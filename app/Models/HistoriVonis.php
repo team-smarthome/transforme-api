@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Support\Str;
 
 class HistoriVonis extends Model
 {
@@ -15,6 +16,7 @@ class HistoriVonis extends Model
     protected $table = 'histori_vonis';
 
     protected $fillable = [
+        'id',
         'sidang_id',
         'hasil_vonis',
         'masa_tahanan_tahun',
@@ -26,15 +28,17 @@ class HistoriVonis extends Model
     public $incrementing = false;
     public $timestamps = true;
 
-    // public function toArray()
-    // {
-    //     $array = parent::toArray();
-    //     $array['histori_vonis_id'] = $array['id'];
-    //     unset($array['id']);
-    //     return $array;
-    // }
+    protected static function boot()
+    {
+        parent::boot();
+        static::creating(function ($model) {
+            if (empty($model->id)) {
+                $model->id = (string) Str::uuid();
+            }
+        });
+    }
 
-    public function sidang(): BelongsTo
+    public function sidang()
     {
         return $this->belongsTo(Sidang::class, 'sidang_id', 'id');
     }

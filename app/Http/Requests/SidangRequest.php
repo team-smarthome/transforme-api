@@ -43,11 +43,16 @@ class SidangRequest extends FormRequest
             'oditur_penuntut_id' => 'nullable|array',
             'role_ketua' => 'nullable|array',
             'nama_dokumen_persidangan' => 'nullable',
-            'link_dokumen_persidangan' => 'nullable'
+            'link_dokumen_persidangan' => 'nullable',
+            'hasil_vonis' => 'required|string',
+            'masa_tahanan_tahun' => 'nullable|integer',
+            'masa_tahanan_bulan' => 'nullable|integer',
+            'masa_tahanan_hari' => 'nullable|integer'
         ];
     }
 
-    public function failedValidation(Validator $validator) {
+    public function failedValidation(Validator $validator)
+    {
         throw new HttpResponseException(response([
             "status" => "NO",
             "message" => "Validation Error",
@@ -55,7 +60,8 @@ class SidangRequest extends FormRequest
         ], 422));
     }
 
-    public function messages(): array {
+    public function messages(): array
+    {
         return [
             'nama_sidang.required' => 'Nama Sidang harus diisi',
             'nama_sidang.string' => 'Nama Sidang harus berupa string',
@@ -83,5 +89,4 @@ class SidangRequest extends FormRequest
             'link_dokumen_persidangan.string' => 'Dokumen harus diisi',
         ];
     }
-
 }

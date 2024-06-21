@@ -63,7 +63,7 @@ class Sidang extends Model
   }
   public function saksi(): BelongsToMany
   {
-    return $this->belongsToMany(Saksi::class, 'pivot_sidang_saksi', 'sidang_id', 'saksi_id');
+      return $this->belongsToMany(Saksi::class, 'pivot_sidang_saksi', 'sidang_id', 'saksi_id');
   }
 
   public function wbpProfile(): BelongsTo
@@ -91,14 +91,14 @@ class Sidang extends Model
         return $this->belongsToMany(WbpProfile::class, 'pivot_kasus_wbp', 'kasus_id', 'wbp_profile_id')->withPivot('keterangan');
     }
 
-    public function historiVonis(): BelongsTo
+    public function historiVonis()
     {
-      return $this->belongsTo(HistoriVonis::class, 'histori_vonis_id', 'id');
+      return $this->hasMany(HistoriVonis::class, 'sidang_id', 'id');
     }
 
-    public function dokumenPersidangan(): BelongsTo
+    public function dokumenPersidangan()
     {
-      return $this->belongsTo(DokumenPersidangan::class, 'dokumen_persidangan_id', 'id');
+      return $this->hasMany(DokumenPersidangan::class, 'sidang_id', 'id');
     }
 
   // public function kategoriPerkara(): BelongsTo
