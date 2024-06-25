@@ -31,6 +31,7 @@ class SidangRequest extends FormRequest
             'kasus_id' => 'nullable|uuid|exists:kasus,id',
             'tanggal_sidang' => 'nullable|date',
             'waktu_mulai_sidang' => 'nullable',
+            'waktu_selesai_sidang' => 'nullable',
             'pengadilan_militer_id' => 'nullable|uuid|exists:pengadilan_militer,id',
             'agenda_sidang' => 'nullable|string',
             'hasil_keputusan_sidang' => 'nullable|string',
@@ -38,16 +39,8 @@ class SidangRequest extends FormRequest
             'juru_sita' => 'nullable|string',
             'juru_pengacara_sidang' => 'nullable|string',
             'pengawas_peradilan_militer' => 'nullable|string',
-            'wbp_profile_id' => 'nullable|string|exists:wbp_profile,id',
+            'wbp_profile_id' => 'nullable',
             'zona_waktu' => 'nullable|string',
-            'oditur_penuntut_id' => 'nullable|array',
-            'role_ketua' => 'nullable|array',
-            'nama_dokumen_persidangan' => 'nullable',
-            'link_dokumen_persidangan' => 'nullable',
-            'hasil_vonis' => 'required|string',
-            'masa_tahanan_tahun' => 'nullable|integer',
-            'masa_tahanan_bulan' => 'nullable|integer',
-            'masa_tahanan_hari' => 'nullable|integer'
         ];
     }
 
