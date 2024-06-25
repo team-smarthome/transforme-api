@@ -348,7 +348,7 @@ class WbpProfileController extends Controller
                 //     'keterangan' => "Tersangka",
                 // ]);
 
-                $oditur_penyidik_ids = $request['oditur_penyidik_id'];
+                $oditur_penyidik_ids = $request['oditur_penyidikan_id'];
                 $role_ketua_oditur_ids = $request['role_ketua_oditur_ids'];
                 foreach ($oditur_penyidik_ids as $oditur_penyidik_id) {
                     $role = ($oditur_penyidik_id == $role_ketua_oditur_ids) ? 1 : 0;
@@ -358,6 +358,9 @@ class WbpProfileController extends Controller
                         'oditur_penyidikan_id' => $oditur_penyidik_id
                     ]);
                 };
+
+                // var_dump($oditur_penyidik_id);
+                // exit;
 
                 $saksi_ids = $request['saksi_id'];
                 $keteranganSaksis = $request['keteranganSaksis'];
@@ -496,7 +499,7 @@ class WbpProfileController extends Controller
                         'keterangan' => $keterangan,
                     ]);
 
-                    $oditur_penyidik_ids = $request['oditur_penyidik_id'];
+                    $oditur_penyidik_ids = $request['oditur_penyidikan_id'];
                     $role_ketua_oditur_ids = $request['role_ketua_oditur_ids'];
                     foreach ($oditur_penyidik_ids as $oditur_penyidik_id) {
                         $role = ($oditur_penyidik_id == $role_ketua_oditur_ids) ? 1 : 0;
