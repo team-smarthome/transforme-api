@@ -27,6 +27,7 @@ class PetugasController extends Controller
 
       $filterableColumns = [
         'petugas_id' => 'id',
+        'grup_petugas_id' => 'grup_petugas_id',
         'nrp' => 'nrp',
         'nama' => 'nama',
         'jabatan' => 'jabatan',
@@ -35,9 +36,9 @@ class PetugasController extends Controller
 
       foreach ($filterableColumns as $requestKey => $column) {
         if ($request->has($requestKey)) {
-            $query->where($column, 'like', '%' . $request->input($requestKey) . '%');
+          $query->where($column, 'like', '%' . $request->input($requestKey) . '%');
         }
-    }
+      }
 
 
 
@@ -77,56 +78,56 @@ class PetugasController extends Controller
     $base64Image = $request['foto_wajah'];
     $image = Helpers::HandleImageToBase64($base64Image, 'petugas-images');
     try {
-        DB::beginTransaction();
+      DB::beginTransaction();
 
-        $validationExistPetugas = Petugas::where('nrp', $request['nrp'])->first();
-        if ($validationExistPetugas) {
-            return response()->json([
-                'status' => 'Failed',
-                'message' => 'Petugas with this NRP already exists.',
-            ], 409);
-        }
-        
-        $dataPetugas = Petugas::create([
-            'id' => $uuid,
-            'nama' => $request['nama'],
-            'pangkat_id' => $request['pangkat_id'],
-            'kesatuan_id' => $request['kesatuan_id'],
-            'tempat_lahir' => $request['tempat_lahir'],
-            'tanggal_lahir' => $request['tanggal_lahir'],
-            'jenis_kelamin' => $request['jenis_kelamin'],
-            'provinsi_id' => $request['provinsi_id'],
-            'kota_id' => $request['kota_id'],
-            'alamat' => $request['alamat'],
-            'agama_id' => $request['agama_id'],
-            'status_kawin_id' => $request['status_kawin_id'],
-            'pendidikan_id' => $request['pendidikan_id'],
-            'bidang_keahlian_id' => $request['bidang_keahlian_id'],
-            'foto_wajah' => $image, 
-            'jabatan' => $request['jabatan'],
-            'nomor_petugas' => $request['nomor_petugas'],
-            'lokasi_otmil_id' => $request['lokasi_otmil_id'],
-            'lokasi_lemasmil_id' => $request['lokasi_lemasmil_id'],
-            'grup_petugas_id' => $request['grup_petugas_id'],
-            'lokasi_kesatuan_id' => $request['lokasi_kesatuan_id'],
-            'divisi' => $request['divisi'],
-            'foto_wajah_fr' => $base64Image,
-            'matra_id' => $request['matra_id'],
-            'nrp' => $request['nrp'],
-        ]);
-        DB::commit();
+      $validationExistPetugas = Petugas::where('nrp', $request['nrp'])->first();
+      if ($validationExistPetugas) {
         return response()->json([
-            'status' => 'OK',
-            'message' => 'Successfully created data.',
-        ], 201);
-    } catch (\Exception $e) {
-        DB::rollBack();
-        return response()->json([
-            'status' => 'Failed',
-            'message' => 'Failed to create data.',
-            'error' => $e->getMessage(),
-        ], 500);
+          'status' => 'Failed',
+          'message' => 'Petugas with this NRP already exists.',
+        ], 409);
       }
+
+      $dataPetugas = Petugas::create([
+        'id' => $uuid,
+        'nama' => $request['nama'],
+        'pangkat_id' => $request['pangkat_id'],
+        'kesatuan_id' => $request['kesatuan_id'],
+        'tempat_lahir' => $request['tempat_lahir'],
+        'tanggal_lahir' => $request['tanggal_lahir'],
+        'jenis_kelamin' => $request['jenis_kelamin'],
+        'provinsi_id' => $request['provinsi_id'],
+        'kota_id' => $request['kota_id'],
+        'alamat' => $request['alamat'],
+        'agama_id' => $request['agama_id'],
+        'status_kawin_id' => $request['status_kawin_id'],
+        'pendidikan_id' => $request['pendidikan_id'],
+        'bidang_keahlian_id' => $request['bidang_keahlian_id'],
+        'foto_wajah' => $image,
+        'jabatan' => $request['jabatan'],
+        'nomor_petugas' => $request['nomor_petugas'],
+        'lokasi_otmil_id' => $request['lokasi_otmil_id'],
+        'lokasi_lemasmil_id' => $request['lokasi_lemasmil_id'],
+        'grup_petugas_id' => $request['grup_petugas_id'],
+        'lokasi_kesatuan_id' => $request['lokasi_kesatuan_id'],
+        'divisi' => $request['divisi'],
+        'foto_wajah_fr' => $base64Image,
+        'matra_id' => $request['matra_id'],
+        'nrp' => $request['nrp'],
+      ]);
+      DB::commit();
+      return response()->json([
+        'status' => 'OK',
+        'message' => 'Successfully created data.',
+      ], 201);
+    } catch (\Exception $e) {
+      DB::rollBack();
+      return response()->json([
+        'status' => 'Failed',
+        'message' => 'Failed to create data.',
+        'error' => $e->getMessage(),
+      ], 500);
+    }
   }
 
 
@@ -145,55 +146,55 @@ class PetugasController extends Controller
   public function edit(PetugasRequest $request)
   {
     try {
-        DB::beginTransaction();
-        $findPetugas = Petugas::where('id', $request['petugas_id'])->first();
-        $image = $request['foto_wajah'];
-        if (strpos($image, 'data:image/') === 0 && $image != $findPetugas->foto_wajah) {
-            $image = Helpers::HandleImageToBase64($image, 'petugas-images');
-        }
-        $data_foto_wajah_fr = $request['foto_wajah'] == $findPetugas->foto_wajah_fr ? $findPetugas->foto_wajah_fr : $request['foto_wajah'];
-        $updatePetugas = Petugas::where('id', $request['petugas_id'])
-            ->update([
-              'nama' => $request['nama'],
-              'pangkat_id' => $request['pangkat_id'],
-              'kesatuan_id' => $request['kesatuan_id'],
-              'tempat_lahir' => $request['tempat_lahir'],
-              'tanggal_lahir' => $request['tanggal_lahir'],
-              'jenis_kelamin' => $request['jenis_kelamin'],
-              'provinsi_id' => $request['provinsi_id'],
-              'kota_id' => $request['kota_id'],
-              'alamat' => $request['alamat'],
-              'agama_id' => $request['agama_id'],
-              'status_kawin_id' => $request['status_kawin_id'],
-              'pendidikan_id' => $request['pendidikan_id'],
-              'bidang_keahlian_id' => $request['bidang_keahlian_id'],
-              'jabatan' => $request['jabatan'],
-              // 'nomor_petugas' => $request['nomor_petugas'],
-              'lokasi_otmil_id' => $request['lokasi_otmil_id'],
-              'lokasi_lemasmil_id' => $request['lokasi_lemasmil_id'],
-              'grup_petugas_id' => $request['grup_petugas_id'],
-              'lokasi_kesatuan_id' => $request['lokasi_kesatuan_id'],
-              'divisi' => $request['divisi'],
-              'matra_id' => $request['matra_id'],
-              'nrp' => $request['nrp'],
-              'foto_wajah' => $image,
-              'foto_wajah_fr' => $data_foto_wajah_fr,
-            ]);
-        DB::commit();
+      DB::beginTransaction();
+      $findPetugas = Petugas::where('id', $request['petugas_id'])->first();
+      $image = $request['foto_wajah'];
+      if (strpos($image, 'data:image/') === 0 && $image != $findPetugas->foto_wajah) {
+        $image = Helpers::HandleImageToBase64($image, 'petugas-images');
+      }
+      $data_foto_wajah_fr = $request['foto_wajah'] == $findPetugas->foto_wajah_fr ? $findPetugas->foto_wajah_fr : $request['foto_wajah'];
+      $updatePetugas = Petugas::where('id', $request['petugas_id'])
+        ->update([
+          'nama' => $request['nama'],
+          'pangkat_id' => $request['pangkat_id'],
+          'kesatuan_id' => $request['kesatuan_id'],
+          'tempat_lahir' => $request['tempat_lahir'],
+          'tanggal_lahir' => $request['tanggal_lahir'],
+          'jenis_kelamin' => $request['jenis_kelamin'],
+          'provinsi_id' => $request['provinsi_id'],
+          'kota_id' => $request['kota_id'],
+          'alamat' => $request['alamat'],
+          'agama_id' => $request['agama_id'],
+          'status_kawin_id' => $request['status_kawin_id'],
+          'pendidikan_id' => $request['pendidikan_id'],
+          'bidang_keahlian_id' => $request['bidang_keahlian_id'],
+          'jabatan' => $request['jabatan'],
+          // 'nomor_petugas' => $request['nomor_petugas'],
+          'lokasi_otmil_id' => $request['lokasi_otmil_id'],
+          'lokasi_lemasmil_id' => $request['lokasi_lemasmil_id'],
+          'grup_petugas_id' => $request['grup_petugas_id'],
+          'lokasi_kesatuan_id' => $request['lokasi_kesatuan_id'],
+          'divisi' => $request['divisi'],
+          'matra_id' => $request['matra_id'],
+          'nrp' => $request['nrp'],
+          'foto_wajah' => $image,
+          'foto_wajah_fr' => $data_foto_wajah_fr,
+        ]);
+      DB::commit();
 
-        return response()->json([
-            'status' => 'OK',
-            'message' => 'Successfully updated data.',
-        ], 201);
+      return response()->json([
+        'status' => 'OK',
+        'message' => 'Successfully updated data.',
+      ], 201);
     } catch (\Exception $e) {
-        DB::rollBack();
-        return response()->json([
-            'status' => 'Failed',
-            'message' => 'Failed to create data.',
-            'error' => $e->getMessage(),
-        ], 500);
+      DB::rollBack();
+      return response()->json([
+        'status' => 'Failed',
+        'message' => 'Failed to create data.',
+        'error' => $e->getMessage(),
+      ], 500);
     }
-}
+  }
 
 
   public function destroy(Request $request)

@@ -30,36 +30,22 @@ class ScheduleController extends Controller
         'nama_shift' => 'shift.nama_shift'
       ];
 
-      $filters = $request->input('filter', []);
-      
       // Apply filters
       foreach ($filterableColumns as $requestKey => $column) {
-        if (isset($filters[$requestKey])) {
-          if ($requestKey == 'nama_shift') {
-            $query->whereHas('shift', function ($q) use ($filters, $requestKey) {
-              $q->where('nama_shift', 'like', '%' . $filters[$requestKey] . '%');
-            });
+        if ($request->has($requestKey)) {
+          if ($requestKey == 'tanggal') {
+            $tanggal = $request->input('tanggal');
+            if (strpos($tanggal, '-') !== false) {
+              // Handle date range
+              [$startDate, $endDate] = explode('-', $tanggal);
+              $query->whereBetween($column, [trim($startDate), trim($endDate)]);
+            } else {
+              // Handle single date
+              $query->where($column, 'like', '%' . $tanggal . '%');
+            }
           } else {
-            $query->where($column, 'like', '%' . $filters[$requestKey] . '%');
+            $query->where($column, 'like', '%' . $request->input($requestKey) . '%');
           }
-        }
-      }
-
-      // Apply date range filter
-      if (!empty($filters['tanggal'])) {
-        $dateFilter = explode('-', $filters['tanggal']);
-        if (count($dateFilter) == 2) {
-          $startDate = (int)$dateFilter[0];
-          $endDate = (int)$dateFilter[1];
-
-          if ($startDate > $endDate) {
-            [$startDate, $endDate] = [$endDate, $startDate];
-          }
-
-          $query->whereBetween('tanggal', [$startDate, $endDate]);
-        } elseif (count($dateFilter) == 1) {
-          $specificDate = (int)$dateFilter[0];
-          $query->where('tanggal', $specificDate);
         }
       }
 
@@ -80,6 +66,7 @@ class ScheduleController extends Controller
       return ApiResponse::error('Failed to retrieve data.', $e->getMessage());
     }
   }
+
 
 
   /**

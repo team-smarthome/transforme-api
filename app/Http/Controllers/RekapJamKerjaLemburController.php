@@ -17,21 +17,26 @@ class RekapJamKerjaLemburController extends Controller
     try {
       $query = PetugasShift::query()
         ->selectRaw('
-                 petugas_shift.petugas_id,
-                petugas.nrp,
-                petugas.nama,
-                GROUP_CONCAT(DISTINCT petugas_shift.schedule_id) AS total_jadwal,
-                SUM(CASE WHEN petugas_shift.status_kehadiran = 1 THEN 1 ELSE 0 END) AS hadir,
-                GROUP_CONCAT(DISTINCT petugas_shift.status_pengganti) AS lembur,
-                SUM((CASE WHEN petugas_shift.status_kehadiran = 1 THEN 1 ELSE 0 END + petugas_shift.status_pengganti) * HOUR(TIMEDIFF(ABS(shift.waktu_selesai), ABS(shift.waktu_mulai)))) AS total_jamKerja,
-                MIN(schedule.tanggal) AS tanggal,
-                schedule.bulan,
-                MIN(schedule.tahun) AS tahun
-            ')
+          petugas_shift.petugas_id,
+          petugas.nrp,
+          petugas.nama,
+          GROUP_CONCAT(DISTINCT petugas_shift.schedule_id) AS total_jadwal,
+          SUM(CASE WHEN petugas_shift.status_kehadiran = 1 THEN 1 ELSE 0 END) AS hadir,
+          GROUP_CONCAT(DISTINCT COALESCE(petugas_shift.status_pengganti, 0)) AS lembur,
+          SUM(
+              (CASE 
+                  WHEN petugas_shift.status_kehadiran = 1 THEN 1 ELSE 0 
+              END + COALESCE(petugas_shift.status_pengganti, 0)) 
+              * HOUR(TIMEDIFF(shift.waktu_selesai, shift.waktu_mulai))
+          ) AS total_jamKerja,
+          MIN(schedule.tanggal) AS tanggal,
+          schedule.bulan,
+          MIN(schedule.tahun) AS tahun
+      ')
         ->leftJoin('petugas', 'petugas_shift.petugas_id', '=', 'petugas.id')
         ->leftJoin('shift', 'petugas_shift.shift_id', '=', 'shift.id')
         ->leftJoin('schedule', 'petugas_shift.schedule_id', '=', 'schedule.id')
-        ->groupBy('petugas_shift.petugas_id', 'schedule.bulan')
+        ->groupBy('petugas_shift.petugas_id', 'petugas.nrp', 'petugas.nama', 'schedule.bulan')
         ->orderBy('schedule.bulan');
       $filterableColumns = [
         'nama' => 'petugas.nama',
