@@ -19,7 +19,7 @@ class SidangController extends Controller
   public function index(Request $request)
   {
     try {
-      $query = Sidang::with(['oditurPenuntut', 'hakim', 'ahli', 'saksi', 'kasus', 'pengadilanMiliter', 'jenisPersidangan', 'wbpProfile']);
+      $query = Sidang::with(['oditurPenuntut', 'hakim', 'ahli', 'saksi', 'kasus','kasus', 'pengadilanMiliter', 'jenisPersidangan', 'wbpProfile']);
 
       $filterableColumns = [
         "sidang_id" => "id",
