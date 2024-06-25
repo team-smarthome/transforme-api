@@ -119,7 +119,7 @@ class SidangResource extends JsonResource
                     ];
                 });
             }),
-            'pivot_kasus_wbp' => $pivot_kasus_wbp_array,
+            'sidang_kasus_wbp' => $pivot_kasus_wbp_array,
             // 'sidang_kasus_wbp' => $this->whenLoaded('kasus', function () {
             //     return $this->kasus->flatMap(function ($kasus) {
             //         return $kasus->wbpProfiles->map(function ($wbpProfile) use ($kasus) {
