@@ -111,11 +111,29 @@ class petugasShiftController extends Controller
 
 
 
+  // public function store(petugasShiftRequest $request)
+  // {
+  //   try {
+  //     $petugasShift = PetugasShift::create($request->validated());
+  //     return ApiResponse::created($petugasShift);
+  //   } catch (QueryException $e) {
+  //     return ApiResponse::error('Database error', $e->getMessage(), 500);
+  //   } catch (Exception $e) {
+  //     return ApiResponse::error('An unexpected error occurred', $e->getMessage(), 500);
+  //   }
+  // }
   public function store(petugasShiftRequest $request)
   {
     try {
-      $petugasShift = PetugasShift::create($request->validated());
-      return ApiResponse::created($petugasShift);
+      $data = $request->validated();
+      $petugasShifts = [];
+
+      foreach ($data as $item) {
+        $petugasShift = PetugasShift::create($item);
+        $petugasShifts[] = $petugasShift;
+      }
+
+      return ApiResponse::created($petugasShifts);
     } catch (QueryException $e) {
       return ApiResponse::error('Database error', $e->getMessage(), 500);
     } catch (Exception $e) {

@@ -23,19 +23,35 @@ class petugasShiftRequest extends FormRequest
    */
   public function rules(): array
   {
+    // return [
+    //   "shift_id" => "required|uuid|exists:shift,id",
+    //   "petugas_id" => "required|uuid|exists:petugas,id",
+    //   "schedule_id" => "required|uuid|exists:schedule,id",
+    //   "status_kehadiran" => "nullable|integer|in:0,1",
+    //   "jam_kehadiran" => "nullable|date",
+    //   "status_izin" => "nullable|string|max:100",
+    //   "penugasan_id" => "required|uuid|exists:penugasan,id",
+    //   "lokasi_otmil_id" => "nullable|uuid|exists:lokasi_otmil,id",
+    //   "lokasi_lemasmil_id" => "nullable|uuid|exists:lokasi_lemasmil,id",
+    //   "status_pengganti" => "nullable|string|max:36",
+    //   "lembur" => "nullable|integer|in:0,1",
+    //   "keterangan_lembur" => "nullable|string|max:100"
+    // ];
+
     return [
-      "shift_id" => "required|uuid|exists:shift,id",
-      "petugas_id" => "required|uuid|exists:petugas,id",
-      "schedule_id" => "required|uuid|exists:schedule,id",
-      "status_kehadiran" => "nullable|integer|in:0,1",
-      "jam_kehadiran" => "nullable|date",
-      "status_izin" => "nullable|string|max:100",
-      "penugasan_id" => "required|uuid|exists:penugasan,id",
-      "lokasi_otmil_id" => "nullable|uuid|exists:lokasi_otmil,id",
-      "lokasi_lemasmil_id" => "nullable|uuid|exists:lokasi_lemasmil,id",
-      "status_pengganti" => "nullable|string|max:36",
-      "lembur" => "nullable|integer|in:0,1",
-      "keterangan_lembur" => "nullable|string|max:100"
+      '*.shift_id' => 'required|uuid|exists:shift,id',
+      '*.petugas_id' => 'required|uuid|exists:petugas,id',
+      '*.schedule_id' => 'required|uuid|exists:schedule,id',
+      '*.status_kehadiran' => 'nullable|integer|in:0,1',
+      '*.jam_kehadiran' => 'nullable|date',
+      '*.status_izin' => 'nullable|string|max:100',
+      '*.penugasan_id' => 'required|uuid|exists:penugasan,id',
+      '*.lokasi_otmil_id' => 'nullable|uuid|exists:lokasi_otmil,id',
+      '*.lokasi_lemasmil_id' => 'nullable|uuid|exists:lokasi_lemasmil,id',
+      '*.status_pengganti' => 'nullable|string|max:36',
+      '*.lembur' => 'nullable|integer|in:0,1',
+      '*.keterangan_lembur' => 'nullable|string|max:100'
+
     ];
   }
   protected function failedValidation(Validator $validator)
