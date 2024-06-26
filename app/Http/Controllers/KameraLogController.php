@@ -2,13 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Helpers\ApiResponse;
-use App\Http\Resources\KameraLogResource;
-use App\Models\KameraLog;
 use Exception;
-use Illuminate\Database\QueryException;
+use App\Models\KameraLog;
+use App\Models\LokasiOtmil;
+use App\Helpers\ApiResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Database\QueryException;
+use App\Http\Resources\KameraLogResource;
+use App\Http\Resources\LokasiOtmilResource;
+
 
 class KameraLogController extends Controller
 {
@@ -108,5 +111,34 @@ class KameraLogController extends Controller
     } catch (Exception $e) {
       return ApiResponse::error('Failed to get Data.', $e->getMessage());
     }
+  }
+
+  public function getAllLokasi(Request $request)
+  {
+      try {
+          $lokasiRecords = LokasiOtmil::with('ruanganOtmil.kamera')->get(); 
+
+          $dataWithRelations = [];
+          foreach ($lokasiRecords as $lokasi) {
+              $kameraList = [];
+              foreach ($lokasi->ruanganOtmil as $ruangan) {
+                  foreach ($ruangan->kamera as $kamera) {
+                      $kameraList[] = $kamera;
+                  }
+              }
+
+              $dataWithRelations[] = [
+                  'nama_lokasi_otmil' => $lokasi->nama_lokasi_otmil,
+                  'latitude' => $lokasi->latitude,
+                  'longitude' => $lokasi->longitude,
+                  'kamera' => $kameraList,
+                  'lokasi_otmil_id' => $lokasi->id,
+              ];
+          }
+
+          return ApiResponse::success($dataWithRelations, 'Successfully got data');
+      } catch (\Exception $e) {
+          return ApiResponse::error('Failed to get data.', $e->getMessage());
+      }
   }
 }
