@@ -19,7 +19,7 @@ class SidangController extends Controller
   public function index(Request $request)
   {
     try {
-      $query = Sidang::with(['oditurPenuntut', 'hakim', 'ahli', 'saksi', 'kasus','kasus', 'pengadilanMiliter', 'jenisPersidangan', 'wbpProfile']);
+      $query = Sidang::with(['oditurPenuntut', 'hakim', 'ahli', 'saksi', 'kasus','kasus', 'pengadilanMiliter', 'jenisPersidangan', 'wbpProfile', 'pengacara']);
 
       $filterableColumns = [
         "sidang_id" => "id",
@@ -29,7 +29,7 @@ class SidangController extends Controller
         'nomor_kasus' => 'kasus.nomor_kasus',
         'nama_kasus' => 'kasus.nama_kasus'
       ];
-      
+
       foreach ($filterableColumns as $requestKey => $column) {
         if ($request->has($requestKey)) {
             $query->where($column, 'like', '%' . $request->input($requestKey) . '%');
@@ -64,21 +64,21 @@ class SidangController extends Controller
               'jenis_pengacara'
           ]);
           $sidang = Sidang::create($sidangData);
-  
+
           $pivotSidangOditur = [];
           $pivotHakimData = [];
           $pivotAhliData = [];
           $pivotSaksiData = [];
           $pivotPengacaraData = [];
           $pivotVonisData = [];
-  
+
           if ($request->has('oditur_penuntut_id')) {
               foreach ($request->oditur_penuntut_id as $index => $oditurId) {
                   $roleKetua = $request->role_ketua; // Ambil nilai role_ketua dari request
-          
+
                   // Tentukan nilai role_ketua berdasarkan perbandingan dengan $oditurId
                   $isKetua = ($roleKetua === $oditurId) ? 1 : 0;
-          
+
                   $pivotoditurData[] = [
                       'id' => \Illuminate\Support\Str::uuid(),
                       'sidang_id' => $sidang->id,
@@ -90,14 +90,14 @@ class SidangController extends Controller
               }
               DB::table('pivot_sidang_oditur')->insert($pivotoditurData);
           }
-  
+
           if ($request->has('hakim_id')) {
               foreach ($request->hakim_id as $index => $hakimId) {
                   $roleKetuaHakim = $request->role_ketua_hakim; // Ambil nilai role_ketua_hakim dari request
-          
+
                   // Tentukan nilai role_ketua_hakim berdasarkan perbandingan dengan $hakimId
                   $isKetuaHakim = ($roleKetuaHakim === $hakimId) ? 1 : 0;
-          
+
                   $pivotHakimData[] = [
                       'id' => \Illuminate\Support\Str::uuid(),
                       'sidang_id' => $sidang->id,
@@ -109,7 +109,7 @@ class SidangController extends Controller
               }
               DB::table('pivot_sidang_hakim')->insert($pivotHakimData);
           }
-  
+
           if ($request->has('ahli_id')) {
               foreach ($request->ahli_id as $ahliId) {
                   $pivotAhliData[] = [
@@ -122,7 +122,7 @@ class SidangController extends Controller
               }
               DB::table('pivot_sidang_ahli')->insert($pivotAhliData);
           }
-  
+
           if ($request->has('saksi_id')) {
               foreach ($request->saksi_id as $saksiId) {
                   $pivotSaksiData[] = [
@@ -135,22 +135,22 @@ class SidangController extends Controller
               }
               DB::table('pivot_sidang_saksi')->insert($pivotSaksiData);
           }
-  
+
           //pivot sidangn pengacara mengirim nama_pengacara dan jenis_pengacara
           if ($request->has('nama_pengacara')) {
               foreach ($request->nama_pengacara as $index => $namaPengacara) {
                   $pivotPengacaraData[] = [
                       'id' => \Illuminate\Support\Str::uuid(),
                       'sidang_id' => $sidang->id,
-                      'nama_pengacara' => $namaPengacara,
-                      'jenis_pengacara' => $request->jenis_pengacara[$index],
+                    //   'nama_pengacara' => $namaPengacara,
+                    //   'jenis_pengacara' => $request->jenis_pengacara[$index],
                       'created_at' => now(),
                       'updated_at' => now()
                   ];
               }
               DB::table('pivot_sidang_pengacara')->insert($pivotPengacaraData);
           }
-  
+
           //historiVonis
           if ($request->has('hasil_vonis')) {
               foreach ($request->hasil_vonis as $index => $historiVonis) {
@@ -184,9 +184,9 @@ class SidangController extends Controller
             ];
             DB::table('dokumen_persidangan')->insert($pivotDokumenPersidangan);
         }
-  
+
           DB::commit();
-  
+
           // Inisialisasi objek $kasus sebagai array atau objek baru
           $kasus = new \stdClass();
           $kasus->oditurPenuntut = $pivotoditurData ?? [];
@@ -195,22 +195,22 @@ class SidangController extends Controller
           $kasus->saksi = $pivotSaksiData ?? [];
           $kasus->pengacara = $pivotPengacaraData ?? [];
           $kasus->hasil_vonis = $pivotVonisData ?? [];
-  
+
           return ApiResponse::created();
-  
+
       } catch (Exception $e) {
           DB::rollBack();
           return ApiResponse::error($e->getMessage(), 'Data sidang gagal disimpan');
       }
   }
-  
+
   public function update(SidangRequest $request)
   {
       DB::beginTransaction();
       try {
           $id = $request->input('sidang_id');
           $sidang = Sidang::findOrFail($id);
-  
+
           // Update data sidang
           $sidangData = $request->except([
               'oditur_penuntut_id',
@@ -228,7 +228,7 @@ class SidangController extends Controller
               'link_dokumen_persidangan'
           ]);
           $sidang->update($sidangData);
-  
+
           // Update pivot tabel untuk oditur_penuntut_id
           if ($request->has('oditur_penuntut_id')) {
               $createdAtPivot = DB::table('pivot_sidang_oditur')
@@ -238,10 +238,10 @@ class SidangController extends Controller
               $pivotOditurData = [];
               foreach ($request->oditur_penuntut_id as $index => $oditurId) {
                   $roleKetua = $request->role_ketua; // Ambil nilai role_ketua dari request
-  
+
                   // Tentukan nilai role_ketua berdasarkan perbandingan dengan $oditurId
                   $isKetua = ($roleKetua === $oditurId) ? 1 : 0;
-  
+
                   $pivotOditurData[] = [
                       'id' => \Illuminate\Support\Str::uuid(),
                       'sidang_id' => $sidang->id,
@@ -254,7 +254,7 @@ class SidangController extends Controller
               DB::table('pivot_sidang_oditur')->where('sidang_id', $sidang->id)->delete();
               DB::table('pivot_sidang_oditur')->insert($pivotOditurData);
           }
-  
+
           // Update pivot tabel untuk hakim_id
           if ($request->has('hakim_id')) {
               $createdAtPivot = DB::table('pivot_sidang_hakim')
@@ -264,10 +264,10 @@ class SidangController extends Controller
               $pivotHakimData = [];
               foreach ($request->hakim_id as $index => $hakimId) {
                   $roleKetuaHakim = $request->role_ketua_hakim; // Ambil nilai role_ketua_hakim dari request
-  
+
                   // Tentukan nilai role_ketua_hakim berdasarkan perbandingan dengan $hakimId
                   $isKetuaHakim = ($roleKetuaHakim === $hakimId) ? 1 : 0;
-  
+
                   $pivotHakimData[] = [
                       'id' => \Illuminate\Support\Str::uuid(),
                       'sidang_id' => $sidang->id,
@@ -280,7 +280,7 @@ class SidangController extends Controller
               DB::table('pivot_sidang_hakim')->where('sidang_id', $sidang->id)->delete();
               DB::table('pivot_sidang_hakim')->insert($pivotHakimData);
           }
-  
+
           // Update pivot tabel untuk ahli_id
           if ($request->has('ahli_id')) {
               $createdAtPivot = DB::table('pivot_sidang_ahli')
@@ -300,7 +300,7 @@ class SidangController extends Controller
               DB::table('pivot_sidang_ahli')->where('sidang_id', $sidang->id)->delete();
               DB::table('pivot_sidang_ahli')->insert($pivotAhliData);
           }
-  
+
           // Update pivot tabel untuk saksi_id
           if ($request->has('saksi_id')) {
               $createdAtPivot = DB::table('pivot_sidang_saksi')
@@ -320,7 +320,7 @@ class SidangController extends Controller
               DB::table('pivot_sidang_saksi')->where('sidang_id', $sidang->id)->delete();
               DB::table('pivot_sidang_saksi')->insert($pivotSaksiData);
           }
-  
+
           // Update pivot tabel untuk pengacara
           if ($request->has('nama_pengacara')) {
               $createdAtPivot = DB::table('pivot_sidang_pengacara')
@@ -341,7 +341,7 @@ class SidangController extends Controller
               DB::table('pivot_sidang_pengacara')->where('sidang_id', $sidang->id)->delete();
               DB::table('pivot_sidang_pengacara')->insert($pivotPengacaraData);
           }
-  
+
           // Update histori vonis
           if ($request->has('hasil_vonis')) {
               $createdAtPivot = DB::table('histori_vonis')
@@ -364,7 +364,7 @@ class SidangController extends Controller
               DB::table('histori_vonis')->where('sidang_id', $sidang->id)->delete();
               DB::table('histori_vonis')->insert($pivotVonisData);
           }
-  
+
           // Update dokumen persidangan
           if ($request->hasFile('link_dokumen_persidangan')) {
               $createdAtPivot = DB::table('dokumen_persidangan')
@@ -373,7 +373,7 @@ class SidangController extends Controller
                   ->toArray();
               $dokumenPath = $request->file('link_dokumen_persidangan')->store('public/dokumen_persidangan');
               $dokumenPath = str_replace('public/', '', $dokumenPath);
-  
+
               // Update dokumen persidangan jika sudah ada, atau tambahkan jika belum ada
               $pivotDokumenPersidangan = [
                   'sidang_id' => $sidang->id,
@@ -387,17 +387,17 @@ class SidangController extends Controller
                   $pivotDokumenPersidangan
               );
           }
-  
+
           DB::commit();
-  
+
           return ApiResponse::updated();
       } catch (Exception $e) {
           DB::rollBack();
           return ApiResponse::error($e->getMessage(), 'Data sidang gagal diperbarui');
       }
   }
-  
-  
+
+
 
   // public function update(SidangRequest $request)
   // {

@@ -51,7 +51,7 @@ class Sidang extends Model
   }
   public function pengacara(): BelongsToMany
   {
-    return $this->belongsToMany(Pengacara::class, 'sidang_pengacara', 'sidang_id', 'pengacara_id');
+    return $this->belongsToMany(Pengacara::class, 'pivot_sidang_pengacara', 'sidang_id', 'pengacara_id');
   }
   public function hakim(): BelongsToMany
   {
