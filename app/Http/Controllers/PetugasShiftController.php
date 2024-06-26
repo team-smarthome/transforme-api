@@ -19,6 +19,96 @@ class petugasShiftController extends Controller
    * Display a listing of the resource.
    */
 
+  // public function index(Request $request)
+  // {
+  //   try {
+  //     $query = PetugasShift::query()
+  //       ->join('shift', 'shift.id', '=', 'petugas_shift.shift_id')
+  //       ->join('petugas', 'petugas.id', '=', 'petugas_shift.petugas_id')
+  //       ->leftJoin('schedule', 'schedule.id', '=', 'petugas_shift.schedule_id')
+  //       ->leftJoin('penugasan', 'penugasan.id', '=', 'petugas_shift.penugasan_id')
+  //       ->leftJoin('ruangan_otmil', 'ruangan_otmil.id', '=', 'petugas_shift.ruangan_otmil_id')
+  //       ->leftJoin('ruangan_lemasmil', 'ruangan_lemasmil.id', '=', 'petugas_shift.ruangan_lemasmil_id')
+  //       ->leftJoin('lokasi_otmil', 'lokasi_otmil.id', '=', 'petugas.lokasi_otmil_id')
+  //       ->leftJoin('lokasi_lemasmil', 'lokasi_lemasmil.id', '=', 'petugas.lokasi_lemasmil_id')
+  //       ->leftJoin('pangkat', 'petugas.pangkat_id', '=', 'pangkat.id')
+  //       ->leftJoin('kesatuan', 'petugas.kesatuan_id', '=', 'kesatuan.id')
+  //       ->leftJoin('lokasi_kesatuan', 'kesatuan.lokasi_kesatuan_id', '=', 'lokasi_kesatuan.id')
+  //       ->leftJoin('zona as zona_otmil', 'zona_otmil.id', '=', 'ruangan_otmil.zona_id')
+  //       ->leftJoin('zona as zona_lemasmil', 'zona_lemasmil.id', '=', 'ruangan_lemasmil.zona_id')
+  //       ->leftJoin('grup_petugas', 'petugas.grup_petugas_id', '=', 'grup_petugas.id')
+  //       ->select(
+  //         'petugas_shift.*',
+  //         'shift.nama_shift',
+  //         'shift.waktu_mulai',
+  //         'shift.waktu_selesai',
+  //         'petugas.nama',
+  //         'pangkat.nama_pangkat',
+  //         'kesatuan.nama_kesatuan',
+  //         'lokasi_kesatuan.nama_lokasi_kesatuan',
+  //         'petugas.jabatan',
+  //         'petugas.divisi',
+  //         'petugas.nomor_petugas',
+  //         'lokasi_otmil.nama_lokasi_otmil',
+  //         'lokasi_lemasmil.nama_lokasi_lemasmil',
+  //         'schedule.tanggal',
+  //         'schedule.bulan',
+  //         'schedule.tahun',
+  //         'penugasan.nama_penugasan',
+  //         'ruangan_otmil.nama_ruangan_otmil',
+  //         'ruangan_otmil.jenis_ruangan_otmil',
+  //         'ruangan_lemasmil.nama_ruangan_lemasmil',
+  //         'ruangan_lemasmil.jenis_ruangan_lemasmil',
+  //         'zona_otmil.nama_zona as status_zona_otmil',
+  //         'zona_lemasmil.nama_zona as status_zona_lemasmil',
+  //         'grup_petugas.nama_grup_petugas'
+  //       )
+  //       ->where('petugas_shift.deleted_at', NULL);
+
+  //     $filters = $request->input('filter', []);
+  //     $allowedFilters = [
+  //       'nama_shift', 'waktu_mulai', 'waktu_selesai', 'nama', 'nama_pangkat', 'nama_kesatuan', 'nama_lokasi_kesatuan', 'jabatan', 'divisi',
+  //       'nomor_petugas', 'nama_lokasi_otmil', 'nama_lokasi_lemasmil', 'tanggal', 'bulan', 'tahun', 'status_kehadiran', 'status_izin', 'nama_penugasan', 'ruangan_otmil_id', 'ruangan_lemasmil_id',
+  //       'nama_ruangan_otmil', 'jenis_ruangan_otmil', 'nama_ruangan_lemasmil', 'jenis_ruangan_lemasmil', 'grup_petugas_id', 'nama_grup_petugas', 'schedule_id',
+  //     ];
+
+  //     foreach ($filters as $key => $value) {
+  //       if (in_array($key, $allowedFilters) && !empty($value)) {
+  //         $query->where($key, 'like', "%$value%");
+  //       }
+  //     }
+
+  //     if (!empty($filters['tanggal'])) {
+  //       $dateFilter = explode('-', $filters['tanggal']);
+  //       if (count($dateFilter) == 2) {
+  //         $query->whereBetween('schedule.tanggal', [(int)$dateFilter[0], (int)$dateFilter[1]]);
+  //       } else {
+  //         $query->where('schedule.tanggal', (int)$dateFilter[0]);
+  //       }
+  //     }
+
+
+  //     $sortField = $request->input('sortBy', 'tanggal');
+
+
+  //     $allowedSortFields = [
+  //       'nama_shift', 'waktu_mulai', 'waktu_selesai', 'nama', 'nama_pangkat', 'nama_kesatuan', 'nama_lokasi_kesatuan', 'jabatan', 'divisi',
+  //       'nomor_petugas', 'nama_lokasi_otmil', 'nama_lokasi_lemasmil', 'tanggal', 'bulan', 'tahun', 'status_kehadiran', 'status_izin', 'nama_penugasan',
+  //       'nama_ruangan_otmil', 'jenis_ruangan_otmil', 'nama_ruangan_lemasmil', 'jenis_ruangan_otmil', 'status_pengganti', 'status_zona_otmil', 'status_zona_lemasmil',
+  //       'nama_grup_petugas'
+  //     ];
+  //     if (!in_array($sortField, $allowedSortFields)) {
+  //       $sortField = 'tanggal';
+  //     }
+
+  //     $paginatedData = $query->paginate($request->input('pageSize', ApiResponse::$defaultPagination));
+  //     $resourceCollection = PetugasShiftResource::collection($paginatedData);
+  //     return ApiResponse::pagination($resourceCollection, 'Successfully get Data');
+  //   } catch (Exception $e) {
+  //     return ApiResponse::error('An unexpected error occurred', $e->getMessage(), 500);
+  //   }
+  // }
+
   public function index(Request $request)
   {
     try {
@@ -63,43 +153,40 @@ class petugasShiftController extends Controller
           'zona_lemasmil.nama_zona as status_zona_lemasmil',
           'grup_petugas.nama_grup_petugas'
         )
-        ->where('petugas_shift.deleted_at', NULL);
+        ->whereNull('petugas_shift.deleted_at'); // Using whereNull instead of where('petugas_shift.deleted_at', NULL)
 
-      $filters = $request->input('filter', []);
-      $allowedFilters = [
-        'nama_shift', 'waktu_mulai', 'waktu_selesai', 'nama', 'nama_pangkat', 'nama_kesatuan', 'nama_lokasi_kesatuan', 'jabatan', 'divisi',
-        'nomor_petugas', 'nama_lokasi_otmil', 'nama_lokasi_lemasmil', 'tanggal', 'bulan', 'tahun', 'status_kehadiran', 'status_izin', 'nama_penugasan', 'ruangan_otmil_id', 'ruangan_lemasmil_id',
-        'nama_ruangan_otmil', 'jenis_ruangan_otmil', 'nama_ruangan_lemasmil', 'jenis_ruangan_lemasmil', 'grup_petugas_id', 'nama_grup_petugas', 'schedule_id',
+      $filterableColumns = [
+        'petugas_shift_id' => 'petugas_shift.id',
+        'schedule_id' => 'petugas_shift.schedule_id',
+        'grup_petugas_id' => 'petugas.grup_petugas_id',
+        'nama_shift' => 'shift.nama_shift',
+        'waktu_mulai' => 'shift.waktu_mulai',
+        'waktu_selesai' => 'shift.waktu_selesai',
+        'nama' => 'petugas.nama',
+        'nama_pangkat' => 'pangkat.nama_pangkat',
+        'nama_kesatuan' => 'kesatuan.nama_kesatuan',
+        'nama_lokasi_kesatuan' => 'lokasi_kesatuan.nama_lokasi_kesatuan',
+        'jabatan' => 'petugas.jabatan',
+        'divisi' => 'petugas.divisi',
+        'tanggal' => 'schedule.tanggal'
       ];
 
-      foreach ($filters as $key => $value) {
-        if (in_array($key, $allowedFilters) && !empty($value)) {
-          $query->where($key, 'like', "%$value%");
+      foreach ($filterableColumns as $requestKey => $column) {
+        if ($request->has($requestKey)) {
+          if ($requestKey == 'tanggal') {
+            $dateFilter = explode('-', $request->input($requestKey));
+            if (count($dateFilter) == 2) {
+              $query->whereBetween('schedule.tanggal', [(int)$dateFilter[0], (int)$dateFilter[1]]);
+            } else {
+              $query->where('schedule.tanggal', (int)$dateFilter[0]);
+            }
+          } else {
+            $query->where($column, 'like', '%' . $request->input($requestKey) . '%');
+          }
         }
       }
-
-      if (!empty($filters['tanggal'])) {
-        $dateFilter = explode('-', $filters['tanggal']);
-        if (count($dateFilter) == 2) {
-          $query->whereBetween('schedule.tanggal', [(int)$dateFilter[0], (int)$dateFilter[1]]);
-        } else {
-          $query->where('schedule.tanggal', (int)$dateFilter[0]);
-        }
-      }
-
 
       $sortField = $request->input('sortBy', 'tanggal');
-
-
-      $allowedSortFields = [
-        'nama_shift', 'waktu_mulai', 'waktu_selesai', 'nama', 'nama_pangkat', 'nama_kesatuan', 'nama_lokasi_kesatuan', 'jabatan', 'divisi',
-        'nomor_petugas', 'nama_lokasi_otmil', 'nama_lokasi_lemasmil', 'tanggal', 'bulan', 'tahun', 'status_kehadiran', 'status_izin', 'nama_penugasan',
-        'nama_ruangan_otmil', 'jenis_ruangan_otmil', 'nama_ruangan_lemasmil', 'jenis_ruangan_otmil', 'status_pengganti', 'status_zona_otmil', 'status_zona_lemasmil',
-        'nama_grup_petugas'
-      ];
-      if (!in_array($sortField, $allowedSortFields)) {
-        $sortField = 'tanggal';
-      }
 
       $paginatedData = $query->paginate($request->input('pageSize', ApiResponse::$defaultPagination));
       $resourceCollection = PetugasShiftResource::collection($paginatedData);
@@ -108,7 +195,6 @@ class petugasShiftController extends Controller
       return ApiResponse::error('An unexpected error occurred', $e->getMessage(), 500);
     }
   }
-
 
 
   // public function store(petugasShiftRequest $request)
@@ -154,22 +240,70 @@ class petugasShiftController extends Controller
   /**
    * Show the form for editing the specified resource.
    */
-  public function edit(petugasShiftRequest $request)
+  // public function edit(petugasShiftRequest $request)
+  // {
+  //   try {
+  //     $id = $request->input('petugas_shift_id');
+  //     $petugas_shift = PetugasShift::findOrFail($id);
+  //     $data = $request->validated();
+
+  //     $petugas_shift->update($data);
+  //     return ApiResponse::success('Data updated successfully', $petugas_shift);
+  //     return ApiResponse::updated($petugas_shift);
+  //   } catch (QueryException $e) {
+  //     return ApiResponse::error('Database error', $e->getMessage(), 500);
+  //   } catch (Exception $e) {
+  //     return ApiResponse::error('An unexpected error occurred', $e->getMessage(), 500);
+  //   }
+  // }
+  // public function edit(Request $request)
+  // {
+  //   try {
+  //     $shiftDataArray = $request->input('petugas_shift');
+  //     $updatedShifts = [];
+
+  //     foreach ($shiftDataArray as $shiftData) {
+  //       $petugas_shift = PetugasShift::findOrFail($shiftData['petugas_shift_id']);
+  //       $validatedData = (new petugasShiftRequest())->merge($shiftData)->validateResolved();
+
+  //       $petugas_shift->update($validatedData);
+  //       $updatedShifts[] = $petugas_shift;
+  //     }
+
+  //     return ApiResponse::success('Data updated successfully', $updatedShifts);
+  //   } catch (QueryException $e) {
+  //     return ApiResponse::error('Database error', $e->getMessage(), 500);
+  //   } catch (Exception $e) {
+  //     return ApiResponse::error('An unexpected error occurred', $e->getMessage(), 500);
+  //   }
+  // }
+
+  public function edit(Request $request)
   {
     try {
-      $id = $request->input('petugas_shift_id');
-      $petugas_shift = PetugasShift::findOrFail($id);
-      $data = $request->validated();
+      $shiftDataArray = $request->input('petugas_shifts');
 
-      $petugas_shift->update($data);
-      return ApiResponse::success('Data updated successfully', $petugas_shift);
-      return ApiResponse::updated($petugas_shift);
+      // Pastikan shiftDataArray adalah array
+      if (!is_array($shiftDataArray)) {
+        return ApiResponse::error('Invalid input format', 'Expected an array of petugas_shifts', 400);
+      }
+
+      $updatedShifts = [];
+
+      foreach ($shiftDataArray as $shiftData) {
+        $petugas_shift = PetugasShift::findOrFail($shiftData['petugas_shift_id']);
+        $petugas_shift->update($shiftData);
+        $updatedShifts[] = $petugas_shift;
+      }
+
+      return ApiResponse::success('Data updated successfully', $updatedShifts);
     } catch (QueryException $e) {
       return ApiResponse::error('Database error', $e->getMessage(), 500);
     } catch (Exception $e) {
       return ApiResponse::error('An unexpected error occurred', $e->getMessage(), 500);
     }
   }
+
 
   /**
    * Update the specified resource in storage.
@@ -182,15 +316,31 @@ class petugasShiftController extends Controller
   /**
    * Remove the specified resource from storage.
    */
+  // public function destroy(Request $request)
+  // {
+  //   try {
+  //     $id = $request->input('petugas_shift_id');
+  //     $petugas_shift = PetugasShift::findOrFail($id);
+
+  //     $petugas_shift->delete();
+  //     return ApiResponse::success('Data delete successfully', $petugas_shift);
+  //     // return ApiResponse::updated($petugas_shift);
+  //   } catch (QueryException $e) {
+  //     return ApiResponse::error('Database error', $e->getMessage(), 500);
+  //   } catch (Exception $e) {
+  //     return ApiResponse::error('An unexpected error occurred', $e->getMessage(), 500);
+  //   }
+  // }
   public function destroy(Request $request)
   {
     try {
-      $id = $request->input('petugas_shift_id');
-      $petugas_shift = PetugasShift::findOrFail($id);
-
-      $petugas_shift->delete();
-      return ApiResponse::success('Data delete successfully', $petugas_shift);
-      // return ApiResponse::updated($petugas_shift);
+      $ids = $request->input('petugas_shift_id');
+      if (is_array($ids)) {
+        PetugasShift::whereIn('id', $ids)->delete();
+        return ApiResponse::success('Data deleted successfully');
+      } else {
+        return ApiResponse::error('Invalid input format', 'petugas_shift_id should be an array', 400);
+      }
     } catch (QueryException $e) {
       return ApiResponse::error('Database error', $e->getMessage(), 500);
     } catch (Exception $e) {
