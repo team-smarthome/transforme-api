@@ -16,7 +16,7 @@ class DokumenPersidangan extends Model
     use HasFactory, SoftDeletes, HasUuids;
 
     protected $keyType = 'uuid';
-    protected $table = 'saksi';
+    protected $table = 'dokumen_persidangan';
     public $incrementing = false;
     public $timestamps = true;
 
