@@ -39,7 +39,7 @@ class SidangRequest extends FormRequest
             'juru_sita' => 'nullable|string',
             'juru_pengacara_sidang' => 'nullable|string',
             'pengawas_peradilan_militer' => 'nullable|string',
-            'wbp_profile_id' => 'nullable',
+            // 'wbp_profile_id' => 'nullable',
             'zona_waktu' => 'nullable|string',
         ];
     }
@@ -73,8 +73,8 @@ class SidangRequest extends FormRequest
             'juru_sita.string' => 'Juru Sita harus berupa string',
             'juru_pengacara_sidang.string' => 'Juru Pengacara Sidang harus berupa string',
             'pengawas_peradilan_militer.string' => 'Pengawas Peradilan Militer harus berupa string',
-            'wbp_profile_id.uuid' => 'WBP Profile ID harus berupa UUID',
-            'wbp_profile_id.exists' => 'WBP Profile ID tidak ditemukan',
+            // 'wbp_profile_id.uuid' => 'WBP Profile ID harus berupa UUID',
+            // 'wbp_profile_id.exists' => 'WBP Profile ID tidak ditemukan',
             'zona_waktu.string' => 'Zona Waktu harus berupa string',
             'oditur_penuntut_id.array' => 'Oditur Penuntut harus berupa array',
             'role_ketua.array' => 'Role Ketua harus berupa array',

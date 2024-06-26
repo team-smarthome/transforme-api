@@ -22,7 +22,7 @@ class JenisPerkaraResource extends JsonResource
             'jenis_pidana_id' => $this->kategoriPerkara->jenis_pidana_id,
             'pasal' => $this->pasal,
             'vonis_tahun_perkara' => (string)$this->vonis_tahun_perkara,
-            'vonis_bulan_perkra' => (string)$this->vonis_bulan_perkara,
+            'vonis_bulan_perkara' => (string)$this->vonis_bulan_perkara,
             'vonis_hari_perkara' => (string)$this->vonis_hari_perkara,
             'nama_jenis_pidana' => $this->kategoriPerkara->jenisPidana->nama_jenis_pidana,
         ];
