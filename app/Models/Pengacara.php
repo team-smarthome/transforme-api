@@ -29,6 +29,6 @@ class Pengacara extends Model
 
     public function sidang(): BelongsToMany
     {
-        return $this->belongsToMany(Sidang::class, 'sidang_pengacara', 'pengacara_id', 'sidang_id'); 
+        return $this->belongsToMany(Sidang::class, 'pivot_sidang_pengacara', 'pengacara_id', 'sidang_id');
     }
 }

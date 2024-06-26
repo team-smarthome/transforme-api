@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Sidang;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\DB; // Import DB facade here
@@ -27,9 +28,12 @@ class SidangResource extends JsonResource
             return [
                 'pivot_kasus_wbp_id' => $item->id,
                 'kasus_id' => $item->kasus_id,
-                'wbp_profile_id' => $item->wbp_profile_id, 
+                'wbp_profile_id' => $item->wbp_profile_id,
             ];
         })->toArray();
+
+        $sidang_id = DB::table('dokumen_persidangan')->where('id', $this->id)->value('sidang_id');
+
 
         // Returning the resource array
         return [
@@ -65,18 +69,20 @@ class SidangResource extends JsonResource
             'jenis_perkara_id' => $this->kasus->jenis_perkara_id,
             'nama_jenis_perkara' => $this->kasus->jenisPerkara->nama_jenis_perkara,
             'pasal' => $this->kasus->jenisPerkara->nama_jenis_perkara,
-            'vonis_tahun_perkara' => $this->kasus->jenisPerkara->vonis_tahun_perkara,
-            'vonis_bulan_perkara' => $this->kasus->jenisPerkara->vonis_bulan_perkara,
-            'vonis_hari_perkara' => $this->kasus->jenisPerkara->vonis_hari_perkara,
+            'vonis_tahun_perkara' => (string) $this->kasus->jenisPerkara->vonis_tahun_perkara,
+            'vonis_bulan_perkara' => (string) $this->kasus->jenisPerkara->vonis_bulan_perkara,
+            'vonis_hari_perkara' => (string) $this->kasus->jenisPerkara->vonis_hari_perkara,
             'nama_pengadilan_militer' => $this->pengadilanMiliter->nama_pengadilan_militer,
             'provinsi_id' => $this->pengadilanMiliter->provinsi_id,
             'nama_provinsi' => $this->pengadilanMiliter->provinsi->nama_provinsi,
             'nama_jenis_persidangan' => $this->jenisPersidangan->nama_jenis_persidangan,
             'sidang_oditur' => $this->whenLoaded('oditurPenuntut', function () {
                 return $this->oditurPenuntut->map(function ($item) {
+                    // $role_ketua_string = '';
                     return [
                         'pivot_sidang_oditur_id' => $item->id,
-                        'role_ketua' => $item->pivot->role_ketua,
+                        // 'role_ketua' => $item->pivot->role_ketua,
+                        'role_ketua' => (string) $item->pivot->role_ketua,
                         'oditur_penuntut_id' => $item->pivot->oditur_penuntut_id,
                         'nip' => $item->nip,
                         'nama_oditur' => $item->nama_oditur,
@@ -84,19 +90,28 @@ class SidangResource extends JsonResource
                     ];
                 });
             }),
-            // 'sidang_pengacara' => $this->whenLoaded('pengacara', function () {
-            //     return $this->pengacara->map(function ($item) {
-            //         return [
-            //             'nama_pengacara' => $item->pivot->nama_pengacara
-            //         ];
-            //     });
-            // }),
+            'sidang_pengacara' => $this->whenLoaded('pengacara', function () {
+                return $this->pengacara->map(function ($item) {
+                    return [
+                        // 'pengacara_id' => $item->pivot->pengacara_id,
+                        'nama_pengacara' => $item->nama_pengacara
+                    ];
+                });
+            }),
             'sidang_saksi' => $this->whenLoaded('saksi', function () {
                 return $this->saksi->map(function ($item) {
                     return [
                         'pivot_sidang_saksi_id' => $item->id,
                         'saksi_id' => $item->pivot->saksi_id,
                         'nama_saksi' => $item->nama_saksi
+                    ];
+                });
+            }),
+            'sidang_hakim' => $this->whenLoaded('hakim', function () {
+                return $this->hakim->map(function ($item) {
+                    return [
+                        'hakim_id' => $item->pivot->hakim_id,
+                        'nama_hakim' => $item->nama_hakim
                     ];
                 });
             }),
@@ -120,6 +135,8 @@ class SidangResource extends JsonResource
                 });
             }),
             'sidang_kasus_wbp' => $pivot_kasus_wbp_array,
+            'dokumen_sidang_id' => $sidang_id,
+            // 'dokumen_persidangan' => $dokumenPersidanganString,
             // 'sidang_kasus_wbp' => $this->whenLoaded('kasus', function () {
             //     return $this->kasus->flatMap(function ($kasus) {
             //         return $kasus->wbpProfiles->map(function ($wbpProfile) use ($kasus) {
@@ -134,10 +151,20 @@ class SidangResource extends JsonResource
 
 
 
-            // 'masa_tahanan_tahun' => $this->historiVonis->masa_tahanan_tahun,
-            // 'masa_tahanan_bulan' => $this->historiVonis->masa_tahanan_bulan,
-            // 'masa_tahanan_hari' => $this->historiVonis->masa_tahanan_hari,
-            // 'nama_dokumen_persidangan' => $this->dokumenPersidangan->nama_dokumen_persidangan,
+            'hasil_vonis' => (string) $this->historiVonis->pluck('hasil_vonis')->first(),
+            'masa_tahanan_tahun' => (string) $this->historiVonis->pluck('masa_tahanan_tahun')->first(),
+            'masa_tahanan_bulan' => (string) $this->historiVonis->pluck('masa_tahanan_bulan')->first(),
+            'masa_tahanan_hari' => (string) $this->historiVonis->pluck('masa_tahanan_hari')->first(),
+            'nama_dokumen_persidangan' => $this->whenLoaded('dokumenPersidangan', function () {
+                return (string) $this->dokumenPersidangan->pluck('nama_dokumen_persidangan')->first();
+            }),
+            // 'link_dokumen_persidangan' => $this->whenLoaded('dokumenPersidangan', function () {
+            //     return (string) $this->dokumenPersidangan->pluck('link_dokumen_persidangan')->first();
+            // }),
+
+            //
+            // 'dokumen_persidangan' => ResouceDokumenPersidangan::collection($this->whenLoaded('dokumenPersidangan')),
+
             // 'link_dokumen_persidangan' => $this->dokumenPersidangan->link_dokumen_persidangan,
             // 'sidang_id_dokumen' => $this->dokumenPersidangan->sidang_id,
         ];
