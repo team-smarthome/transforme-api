@@ -217,7 +217,7 @@ class SidangController extends Controller
             // Update data sidang
             $sidangData = $request->except([
                 'oditur_penuntut_id',
-                'role_ketua',
+                'role_ketua_oditur',
                 'hakim_id',
                 'role_ketua_hakim',
                 'ahli_id',
@@ -240,7 +240,7 @@ class SidangController extends Controller
                     ->toArray();
                 $pivotOditurData = [];
                 foreach ($request->oditur_penuntut_id as $index => $oditurId) {
-                    $roleKetua = $request->role_ketua; // Ambil nilai role_ketua dari request
+                    $roleKetua = $request->role_ketua_oditur; // Ambil nilai role_ketua dari request
 
                     // Tentukan nilai role_ketua berdasarkan perbandingan dengan $oditurId
                     $isKetua = ($roleKetua === $oditurId) ? 1 : 0;
@@ -249,7 +249,7 @@ class SidangController extends Controller
                         'id' => \Illuminate\Support\Str::uuid(),
                         'sidang_id' => $sidang->id,
                         'oditur_penuntut_id' => $oditurId,
-                        'role_ketua' => $isKetua,
+                        'role_ketua_oditur' => $isKetua,
                         'created_at' => $createdAtPivot[$oditurId] ?? now(),
                         'updated_at' => now()
                     ];
