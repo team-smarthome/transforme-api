@@ -77,7 +77,7 @@ class SidangRequest extends FormRequest
             // 'wbp_profile_id.exists' => 'WBP Profile ID tidak ditemukan',
             'zona_waktu.string' => 'Zona Waktu harus berupa string',
             'oditur_penuntut_id.array' => 'Oditur Penuntut harus berupa array',
-            'role_ketua.array' => 'Role Ketua harus berupa array',
+            'role_ketua_oditur.array' => 'Role Ketua harus berupa array',
             'nama_dokumen_persidangan.string' => 'Nama Dokumen harus diisi',
             'link_dokumen_persidangan.string' => 'Dokumen harus diisi',
         ];

@@ -47,7 +47,7 @@ class Sidang extends Model
 
   public function oditurPenuntut(): BelongsToMany
   {
-    return $this->belongsToMany(OditurPenuntut::class, 'pivot_sidang_oditur', 'sidang_id', 'oditur_penuntut_id')->withPivot('role_ketua');
+    return $this->belongsToMany(OditurPenuntut::class, 'pivot_sidang_oditur', 'sidang_id', 'oditur_penuntut_id')->withPivot('role_ketua_oditur');
   }
   public function pengacara(): BelongsToMany
   {

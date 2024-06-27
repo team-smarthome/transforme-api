@@ -135,7 +135,7 @@ class SidangResource extends JsonResource
                     return [
                         'pivot_sidang_oditur_id' => $item->id,
                         // 'role_ketua' => $item->pivot->role_ketua,
-                        'role_ketua' => (string) $item->pivot->role_ketua,
+                        'role_ketua_oditur' => (string) $item->pivot->role_ketua_oditur,
                         'oditur_penuntut_id' => $item->pivot->oditur_penuntut_id,
                         'nip' => $item->nip,
                         'nama_oditur' => $item->nama_oditur,
