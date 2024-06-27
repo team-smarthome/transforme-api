@@ -18,7 +18,7 @@ class PivotSidangOditur extends Pivot
     public $incrementing = false;
     public $timestamps = true;
 
-    protected $fillable = ['sidang_id', 'role_ketua', 'oditur_penuntut_id'];
+    protected $fillable = ['sidang_id', 'role_ketua_oditur', 'oditur_penuntut_id'];
 
     public function sidang(): BelongsTo
     {
