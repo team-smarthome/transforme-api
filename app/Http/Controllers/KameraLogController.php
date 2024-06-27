@@ -19,7 +19,8 @@ class KameraLogController extends Controller
   public function index(Request $request)
   {
     // Set default values for pagination
-
+    $kameraId = $request->input('kameraId');
+    $lokasiId = $request->input('lokasiId');
 
     // Set default values for sorting
     $sortField = $request->input('sortBy', 'timestamp');
@@ -37,46 +38,57 @@ class KameraLogController extends Controller
       'petugas',
       'pengunjung'
     ]);
-
+    if(isset($kameraId))
+    {
+    $query->whereHas('kamera', function ($q) use ($kameraId){
+      $q->where('id', $kameraId);
+    });
+    };
+    if(isset($lokasiId))
+    {
+    $query->whereHas('kamera.ruanganOtmil.lokasiOtmil', function ($q) use ($lokasiId){
+      $q->where('id', $lokasiId);
+    });
+    };
 
     // Apply filters
-    $filters = $request->input('filter', []);
-    foreach ($filters as $field => $value) {
-      if (!empty($value)) {
-        switch ($field) {
-          case 'nama_kamera':
-            $query->whereHas('kamera', function ($query) use ($value) {
-              $query->where('nama_kamera', 'LIKE', "%$value%");
-            });
-            break;
-          case 'tipe_lokasi':
-            $query->where(function ($query) use ($value) {
-              $query->whereHas('kamera.ruanganOtmil', function ($query) use ($value) {
-                $query->where('tipe_lokasi', $value);
-              })->orWhereHas('kamera.ruanganLemasmil', function ($query) use ($value) {
-                $query->where('tipe_lokasi', $value);
-              });
-            });
-            break;
-          case 'nama_lokasi':
-            $query->where(function ($query) use ($value) {
-              $query->whereHas('kamera.ruanganOtmil.lokasiOtmil', function ($query) use ($value) {
-                $query->where('nama_lokasi_otmil', 'LIKE', "%$value%");
-              })->orWhereHas('kamera.ruanganLemasmil.lokasiLemasMil', function ($query) use ($value) {
-                $query->where('nama_lokasi_lemasmil', 'LIKE', "%$value%");
-              });
-            });
-            break;
-          default:
-            $query->where($field, 'LIKE', "%$value%");
-            break;
-        }
-      }
-    }
+    // $filters = $request->input('filter', []);
+    // foreach ($filters as $field => $value) {
+    //   if (!empty($value)) {
+    //     switch ($field) {
+    //       case 'nama_kamera':
+    //         $query->whereHas('kamera', function ($query) use ($value) {
+    //           $query->where('nama_kamera', 'LIKE', "%$value%");
+    //         });
+    //         break;
+    //       case 'tipe_lokasi':
+    //         $query->where(function ($query) use ($value) {
+    //           $query->whereHas('kamera.ruanganOtmil', function ($query) use ($value) {
+    //             $query->where('tipe_lokasi', $value);
+    //           })->orWhereHas('kamera.ruanganLemasmil', function ($query) use ($value) {
+    //             $query->where('tipe_lokasi', $value);
+    //           });
+    //         });
+    //         break;
+    //       case 'nama_lokasi':
+    //         $query->where(function ($query) use ($value) {
+    //           $query->whereHas('kamera.ruanganOtmil.lokasiOtmil', function ($query) use ($value) {
+    //             $query->where('nama_lokasi_otmil', 'LIKE', "%$value%");
+    //           })->orWhereHas('kamera.ruanganLemasmil.lokasiLemasMil', function ($query) use ($value) {
+    //             $query->where('nama_lokasi_lemasmil', 'LIKE', "%$value%");
+    //           });
+    //         });
+    //         break;
+    //       default:
+    //         $query->where($field, 'LIKE', "%$value%");
+    //         break;
+    //     }
+    //   }
+    // }
 
     // Get total records for pagination
 
-
+    $query->limit(100);
     // Apply sorting and pagination
     $query->latest();
     // Execute the query and get the results
@@ -128,6 +140,7 @@ class KameraLogController extends Controller
               }
 
               $dataWithRelations[] = [
+                  'lokasi_otmil_id' => $lokasi->id,
                   'nama_lokasi_otmil' => $lokasi->nama_lokasi_otmil,
                   'latitude' => $lokasi->latitude,
                   'longitude' => $lokasi->longitude,
