@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Models\DokumenPersidangan;
 use App\Models\Sidang;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -18,21 +19,73 @@ class SidangResource extends JsonResource
     public function toArray($request)
     {
         // Fetching kasus_id
+        // $kasus_id = DB::table('sidang')->where('id', $this->id)->value('kasus_id');
+
+        // // Fetching data from pivot_kasus_wbp
+        // $pivot_kasus_wbp = DB::table('pivot_kasus_wbp')->where('kasus_id', $kasus_id)->get();
+
+        // // Transforming pivot_kasus_wbp into array format
+        // $pivot_kasus_wbp_array = $pivot_kasus_wbp->map(function ($item) {
+        //     return [
+        //         'pivot_kasus_wbp_id' => $item->id,
+        //         'kasus_id' => $item->kasus_id,
+        //         'wbp_profile_id' => $item->wbp_profile_id,
+        //     ];
+        // })->toArray();
+
         $kasus_id = DB::table('sidang')->where('id', $this->id)->value('kasus_id');
 
-        // Fetching data from pivot_kasus_wbp
-        $pivot_kasus_wbp = DB::table('pivot_kasus_wbp')->where('kasus_id', $kasus_id)->get();
+        $pivot_kasus_wbp = DB::table('pivot_kasus_wbp')
+            ->join('wbp_profile', 'pivot_kasus_wbp.wbp_profile_id', '=', 'wbp_profile.id')
+            ->where('pivot_kasus_wbp.kasus_id', $kasus_id)
+            ->select('pivot_kasus_wbp.*', 'wbp_profile.nama as nama')
+            ->get();
 
-        // Transforming pivot_kasus_wbp into array format
         $pivot_kasus_wbp_array = $pivot_kasus_wbp->map(function ($item) {
             return [
                 'pivot_kasus_wbp_id' => $item->id,
                 'kasus_id' => $item->kasus_id,
                 'wbp_profile_id' => $item->wbp_profile_id,
+                'nama' => $item->nama,
             ];
         })->toArray();
 
-        $sidang_id = DB::table('dokumen_persidangan')->where('id', $this->id)->value('sidang_id');
+        // baru
+        // $sidang_id = DB::table('dokumen_persidangan')->where('id', $this->id)->value('sidang_id');
+        // $sidang_id = DB::table('dokumen_persidangan')->where('id', $this->id)->value('sidang_id');
+        // Debug: Pastikan nilai sidang_id tidak null
+        // if (!$sidang_id) {
+        //     var_dump("Sidang ID tidak ditemukan untuk dokumen_persidangan dengan ID: " . $this->id);
+        // }
+        // // Fetching nama_dokumen_persidangan
+        // $dokumen_persidangan = DB::table('dokumen_persidangan')
+        //     ->where('sidang_id', $sidang_id)
+        //     ->select('nama_dokumen_persidangan')
+        //     ->get();
+
+        // // Debug: Pastikan nilai nama_dokumen_persidangan tidak kosong
+        // if ($dokumen_persidangan->isEmpty()) {
+        //     var_dump("Tidak ada dokumen_persidangan ditemukan untuk sidang_id: " . $sidang_id);
+        // }
+
+
+        // $sidang_id = DB::table('dokumen_persidangan')->where('id', $this->id)->value('sidang_id');
+        // var_dump("Sidang ID sebelum query dokumen_persidangan: " . $sidang_id);
+
+        // $dokumen_persidangan = DB::table('dokumen_persidangan')
+        //     ->where('sidang_id', $sidang_id)
+        //     ->select('nama_dokumen_persidangan')
+        //     ->get();
+
+        // var_dump("Hasil query dokumen_persidangan: ", $dokumen_persidangan);
+
+        // $sidang = DokumenPersidangan::select('nama_dokumen_persidangan')->where('sidang_id');
+
+
+
+
+        // lama
+        // $sidang_id = DB::table('dokumen_persidangan')->where('id', $this->id)->value('sidang_id');
 
 
         // Returning the resource array
@@ -134,39 +187,15 @@ class SidangResource extends JsonResource
                     ];
                 });
             }),
+
             'sidang_kasus_wbp' => $pivot_kasus_wbp_array,
-            'dokumen_sidang_id' => $sidang_id,
-            // 'dokumen_persidangan' => $dokumenPersidanganString,
-            // 'sidang_kasus_wbp' => $this->whenLoaded('kasus', function () {
-            //     return $this->kasus->flatMap(function ($kasus) {
-            //         return $kasus->wbpProfiles->map(function ($wbpProfile) use ($kasus) {
-            //             return [
-            //                 // 'pivot_kasus_wbp_id' => $kasus->pivot->kasus_id,
-            //                 'wbp_profile_id' => $wbpProfile->pivot->wbp_profile_id,
-            //                 'keterangan' => $wbpProfile->pivot->keterangan
-            //             ];
-            //         });
-            //     });
-            // }),
-
-
-
             'hasil_vonis' => (string) $this->historiVonis->pluck('hasil_vonis')->first(),
             'masa_tahanan_tahun' => (string) $this->historiVonis->pluck('masa_tahanan_tahun')->first(),
             'masa_tahanan_bulan' => (string) $this->historiVonis->pluck('masa_tahanan_bulan')->first(),
             'masa_tahanan_hari' => (string) $this->historiVonis->pluck('masa_tahanan_hari')->first(),
-            'nama_dokumen_persidangan' => $this->whenLoaded('dokumenPersidangan', function () {
-                return (string) $this->dokumenPersidangan->pluck('nama_dokumen_persidangan')->first();
-            }),
-            // 'link_dokumen_persidangan' => $this->whenLoaded('dokumenPersidangan', function () {
-            //     return (string) $this->dokumenPersidangan->pluck('link_dokumen_persidangan')->first();
-            // }),
-
-            //
-            // 'dokumen_persidangan' => ResouceDokumenPersidangan::collection($this->whenLoaded('dokumenPersidangan')),
-
-            // 'link_dokumen_persidangan' => $this->dokumenPersidangan->link_dokumen_persidangan,
-            // 'sidang_id_dokumen' => $this->dokumenPersidangan->sidang_id,
+            'nama_dokumen_persidangan' => (string) $this->dokumenPersidangan->pluck('nama_dokumen_persidangan')->first(),
+            'link_dokumen_persidangan' => (string) $this->dokumenPersidangan->pluck('link_dokumen_persidangan')->first(),
+            'sidang_id_dokumen' => (string) $this->dokumenPersidangan->pluck('sidang_id')->first(),
         ];
     }
 }
