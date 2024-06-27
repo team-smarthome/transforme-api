@@ -161,18 +161,34 @@ class ScheduleController extends Controller
   }
 
 
-  /**
-   * Remove the specified resource from storage.
-   */
+
+
   public function destroy(Request $request)
   {
     try {
-      $schedule_id = $request->input('schedule_id');
-      $schedule = Schedule::find($schedule_id);
-      if (!$schedule) {
-        return ApiResponse::error('Schedule not found', 404);
+      $scheduleIds = $request->input();
+
+      // Check if scheduleIds is an array
+      if (!is_array($scheduleIds)) {
+        return ApiResponse::error('Invalid input format', 400);
       }
-      $schedule->delete();
+
+      // Extract the schedule IDs from the input array
+      $ids = array_map(function ($item) {
+        return $item['schedule_id'];
+      }, $scheduleIds);
+
+      // Find and delete the schedules
+      $schedules = Schedule::whereIn('id', $ids)->get();
+
+      if ($schedules->isEmpty()) {
+        return ApiResponse::error('Schedules not found', 404);
+      }
+
+      foreach ($schedules as $schedule) {
+        $schedule->delete();
+      }
+
       return ApiResponse::deleted();
     } catch (QueryException $e) {
       return ApiResponse::error('Database error', $e->getMessage(), 500);

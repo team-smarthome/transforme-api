@@ -240,69 +240,39 @@ class petugasShiftController extends Controller
   /**
    * Show the form for editing the specified resource.
    */
-  // public function edit(petugasShiftRequest $request)
-  // {
-  //   try {
-  //     $id = $request->input('petugas_shift_id');
-  //     $petugas_shift = PetugasShift::findOrFail($id);
-  //     $data = $request->validated();
-
-  //     $petugas_shift->update($data);
-  //     return ApiResponse::success('Data updated successfully', $petugas_shift);
-  //     return ApiResponse::updated($petugas_shift);
-  //   } catch (QueryException $e) {
-  //     return ApiResponse::error('Database error', $e->getMessage(), 500);
-  //   } catch (Exception $e) {
-  //     return ApiResponse::error('An unexpected error occurred', $e->getMessage(), 500);
-  //   }
-  // }
-  // public function edit(Request $request)
-  // {
-  //   try {
-  //     $shiftDataArray = $request->input('petugas_shift');
-  //     $updatedShifts = [];
-
-  //     foreach ($shiftDataArray as $shiftData) {
-  //       $petugas_shift = PetugasShift::findOrFail($shiftData['petugas_shift_id']);
-  //       $validatedData = (new petugasShiftRequest())->merge($shiftData)->validateResolved();
-
-  //       $petugas_shift->update($validatedData);
-  //       $updatedShifts[] = $petugas_shift;
-  //     }
-
-  //     return ApiResponse::success('Data updated successfully', $updatedShifts);
-  //   } catch (QueryException $e) {
-  //     return ApiResponse::error('Database error', $e->getMessage(), 500);
-  //   } catch (Exception $e) {
-  //     return ApiResponse::error('An unexpected error occurred', $e->getMessage(), 500);
-  //   }
-  // }
-
   public function edit(Request $request)
   {
     try {
-      $shiftDataArray = $request->input('petugas_shifts');
+      $input = $request->input('petugas_shifts');
 
-      // Pastikan shiftDataArray adalah array
-      if (!is_array($shiftDataArray)) {
-        return ApiResponse::error('Invalid input format', 'Expected an array of petugas_shifts', 400);
+      // Jika input adalah array, lakukan pembaruan grup
+      if (is_array($input)) {
+        $updatedShifts = [];
+
+        foreach ($input as $shiftData) {
+          $petugas_shift = PetugasShift::findOrFail($shiftData['petugas_shift_id']);
+          $petugas_shift->update($shiftData);
+          $updatedShifts[] = $petugas_shift;
+        }
+
+        return ApiResponse::success('Data updated successfully', $updatedShifts);
       }
+      // Jika input bukan array, anggap sebagai pembaruan perorangan
+      $id = $request->input('petugas_shift_id');
+      $petugas_shift = PetugasShift::findOrFail($id);
 
-      $updatedShifts = [];
 
-      foreach ($shiftDataArray as $shiftData) {
-        $petugas_shift = PetugasShift::findOrFail($shiftData['petugas_shift_id']);
-        $petugas_shift->update($shiftData);
-        $updatedShifts[] = $petugas_shift;
-      }
-
-      return ApiResponse::success('Data updated successfully', $updatedShifts);
+      return ApiResponse::success('Data updated successfully', $petugas_shift);
+      return ApiResponse::updated($petugas_shift);
     } catch (QueryException $e) {
       return ApiResponse::error('Database error', $e->getMessage(), 500);
     } catch (Exception $e) {
       return ApiResponse::error('An unexpected error occurred', $e->getMessage(), 500);
     }
   }
+
+
+
 
 
   /**
@@ -337,7 +307,7 @@ class petugasShiftController extends Controller
       $ids = $request->input('petugas_shift_id');
       if (is_array($ids)) {
         PetugasShift::whereIn('id', $ids)->delete();
-        return ApiResponse::success('Data deleted successfully');
+        return ApiResponse::deleted();
       } else {
         return ApiResponse::error('Invalid input format', 'petugas_shift_id should be an array', 400);
       }
