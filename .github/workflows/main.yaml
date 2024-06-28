@@ -3,7 +3,7 @@ name: CI/CD
 on:
   push:
     branches:
-      - development-stagging-v2
+      - main
 
 jobs:
   deploy:
@@ -23,5 +23,5 @@ jobs:
           script: |
             cd /var/www/dev-siram-workstation.transforme.co.id
             git stash
-            git checkout development-stagging-v2
-            git pull origin development-stagging-v2
+            git checkout main
+            git pull origin main
