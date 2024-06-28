@@ -18,15 +18,15 @@ class PivotSidangPengacara extends Pivot
     public $incrementing = false;
     public $timestamps = true;
 
-    protected $fillable = ['sidang_id', 'pengacara_id'];
+    protected $fillable = ['sidang_id', 'nama_pengacara', 'jenis_pengacara'];
 
     public function sidang(): BelongsTo
     {
       return $this->belongsTo(Sidang::class, 'sidang_id', 'id');
     }
 
-    public function pengacara(): BelongsTo
-    {
-      return $this->belongsTo(Pengacara::class, 'pengacara_id', 'id');
-    }
+    // public function pengacara(): BelongsTo
+    // {
+    //   return $this->belongsTo(Pengacara::class, 'pengacara_id', 'id');
+    // }
 }

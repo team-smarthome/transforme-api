@@ -81,7 +81,18 @@ class SidangResource extends JsonResource
 
         // $sidang = DokumenPersidangan::select('nama_dokumen_persidangan')->where('sidang_id');
 
+        $pengacara = DB::table('pivot_sidang_pengacara')
+            ->where('sidang_id', $this->id)
+            ->select('nama_pengacara', 'jenis_pengacara')
+            ->get();
 
+        // Transforming pengacara into array format
+        $pengacara_array = $pengacara->map(function ($item) {
+            return [
+                'nama_pengacara' => $item->nama_pengacara,
+                'jenis_pengacara' => $item->jenis_pengacara,
+            ];
+        })->toArray();
 
 
         // lama
@@ -143,14 +154,14 @@ class SidangResource extends JsonResource
                     ];
                 });
             }),
-            'sidang_pengacara' => $this->whenLoaded('pengacara', function () {
-                return $this->pengacara->map(function ($item) {
-                    return [
-                        // 'pengacara_id' => $item->pivot->pengacara_id,
-                        'nama_pengacara' => $item->nama_pengacara
-                    ];
-                });
-            }),
+            'sidang_pengacara' => $pengacara_array,
+            // 'sidang_pengacara' => $this->whenLoaded('pengacara', function () {
+            //     return $this->pengacara->map(function ($item) {
+            //         return [
+            //             'nama_pengacara' => $item->nama_pengacara
+            //         ];
+            //     });
+            // }),
             'sidang_saksi' => $this->whenLoaded('saksi', function () {
                 return $this->saksi->map(function ($item) {
                     return [

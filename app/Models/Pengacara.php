@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Pengacara extends Model
@@ -27,8 +28,8 @@ class Pengacara extends Model
         return $array;
     }
 
-    public function sidang(): BelongsToMany
+    public function sidang(): BelongsTo
     {
-        return $this->belongsToMany(Sidang::class, 'pivot_sidang_pengacara', 'pengacara_id', 'sidang_id');
+        return $this->belongsTo(Sidang::class, 'sidang_id', 'id');
     }
 }
