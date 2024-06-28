@@ -33,12 +33,14 @@ class KameraController extends Controller
       //     $query->where($column, 'like', '%' . $filters[$requestKey] . '%');
       //   }
       // }
-
+      $kamera_id = $request->input('kamera_id');
       $search = $request->input('search');
       $status_kamera = $request->input('status_kamera');
       $pageSize = $request->input('pageSize', ApiResponse::$defaultPagination);
 
+
       $query = Kamera::with(['ruanganOtmil', 'ruanganLemasmil'])
+        ->where('id', 'LIKE', '%' . $kamera_id . '%')
         ->where('nama_kamera', 'LIKE', '%' . $search . '%')
         ->where('status_kamera', 'LIKE', '%' . $status_kamera . '%')
         ->latest()->paginate($pageSize);
