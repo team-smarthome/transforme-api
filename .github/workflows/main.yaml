@@ -23,5 +23,5 @@ jobs:
           script: |
             cd /var/www/dev-siram-workstation.transforme.co.id
             git stash
-            git checkout developmetn-stagging-v2
-            git pull origin developmetn-stagging-v2
+            git checkout development-stagging-v2
+            git pull origin development-stagging-v2
