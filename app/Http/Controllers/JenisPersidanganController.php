@@ -19,29 +19,15 @@ class JenisPersidanganController extends Controller
     public function index(Request $request)
     {
         try {
-            // if ($request->has('jenis_persidangan_id')) {
-            //     $jenis_persidangan = JenisPersidangan::findOrFail($request->jenis_persidangan_id);
-            //     return response()->json($jenis_persidangan, 200);
-            // }
-
-            // if($request->has('nama_jenis_persidangan')) {
-            //     $query = JenisPersidangan::where('nama_jenis_persidangan','like','%'. $request->nama_jenis_persidangan .'%')->latest();
-            // } else {
-            //     $query = JenisPersidangan::latest();
-            // }
-
-            // return ApiResponse::paginate($query);
             $query = JenisPersidangan::query();
             $filterableColumns = [
                 'jenis_persidangan_id' => 'id',
                 'nama_jenis_persidangan' => 'nama_jenis_persidangan'
             ];
-
-            $filters = $request->input('filter', []);
-
+            
             foreach ($filterableColumns as $requestKey => $column) {
-                if (isset($filters[$requestKey])) {
-                    $query->where($column, 'like', '%' . $filters[$requestKey] . '%');
+                if ($request->has($requestKey)) {
+                    $query->where($column, 'like', '%' . $request->input($requestKey) . '%');
                 }
             }
 
@@ -104,7 +90,7 @@ class JenisPersidanganController extends Controller
      */
     public function update(JenisPersidanganRequest $request)
     {
-        $id = $request->input('id');
+        $id = $request->input('jenis_persidangan_id');
         $jenis_persidangan = JenisPersidangan::findOrFail($id);
 
         $namaEditingJenisPersidangan = $request->input('nama_jenis_persidangan');
@@ -124,7 +110,7 @@ class JenisPersidanganController extends Controller
      */
     public function destroy(Request $request)
     {
-        $id = $request->input('id');
+        $id = $request->input('jenis_persidangan_id');
         $jenisPersidangan = JenisPersidangan::findOrFail($id);
         $jenisPersidangan->delete();
 

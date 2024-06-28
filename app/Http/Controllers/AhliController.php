@@ -32,7 +32,6 @@ class AhliController extends Controller
             // return ApiResponse::paginate($query);
             $query = Ahli::query();
             $filterableColumns = [
-                'ahli_id' => 'id',
                 'nama_ahli' => 'nama_ahli',
                 'bidang_ahli' => 'bidang_ahli',
                 'bukti_keahlian' => 'bukti_keahlian'
@@ -104,12 +103,12 @@ class AhliController extends Controller
      */
     public function update(AhliRequest $request)
     {
-        $id = $request->input('id');
+        $id = $request->input('ahli_id');
         $ahli = Ahli::findOrFail($id);
 
         // Check if the updated name already exists
         $existingAhli = Ahli::where('nama_ahli', $ahli->nama_ahli)->first();
-        
+
         if ($existingAhli && $existingAhli->id !== $id) {
             return ApiResponse::error('Nama ahli sudah ada.', null, 422);
         }
@@ -124,7 +123,7 @@ class AhliController extends Controller
      */
     public function destroy(Request $request)
     {
-        $id = $request->input('id');
+        $id = $request->input('ahli_id');
         $ahli = Ahli::findOrFail($id);
         $ahli->delete();
 

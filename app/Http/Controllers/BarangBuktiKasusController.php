@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\BarangBuktiKasus;
 use App\Http\Requests\BarangBuktiKasusRequest;
 use App\Helpers\ApiResponse;
+use App\Http\Resources\BarangBuktiKasusResource;
 use Exception;
 
 class BarangBuktiKasusController extends Controller
@@ -13,60 +14,35 @@ class BarangBuktiKasusController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         try {
-            if (request('barang_bukti_kasus_id')) {
-                $query = BarangBuktiKasus::with(['kasus', 'jenisPerkara'])
-                    ->where('id', request('barang_bukti_kasus_id'));
-                if (request('kasus_id') && $query->exists()) {
-                    $query->where('kasus_id', 'like', '%' . request('kasus_id') . '%');
-                    if (request('nama_bukti_kasus') && $query->exists()) {
-                        $query->where('nama_bukti_kasus', 'like', '%' . request('nama_bukti_kasus') . '%');
-                        if (request('nomor_barang_bukti') && $query->exists()) {
-                            $query->where('nomor_barang_bukti', 'like', '%' . request('nomor_barang_bukti') . '%');
-                            if (request('jenis_perkara_id') && $query->exists()) {
-                                $query->where('jenis_perkara_id', 'like', '%' . request('jenis_perkara_id') . '%');
-                            }   
-                        }
-                    } 
-                 }
-            } elseif(request('kasus_id')) {
-                $query = BarangBuktiKasus::with(['kasus', 'jenisPerkara'])
-                    ->where('kasus_id', 'like', '%' . request('kasus_id') . '%')->latest();
-                if (request('nama_bukti_kasus') && $query->exists()) {
-                    $query->where('nama_bukti_kasus', 'like', '%' . request('nama_bukti_kasus') . '%');
-                    if (request('nomor_barang_bukti') && $query->exists()) {
-                        $query->where('nomor_barang_bukti', 'like', '%' . request('nomor_barang_bukti') . '%');
-                        if (request('jenis_perkara_id') && $query->exists()) {
-                            $query->where('jenis_perkara_id', 'like', '%' . request('jenis_perkara_id') . '%');
-                        }   
-                    }
-                } 
-            } elseif(request('nama_bukti_kasus')) {
-                $query = BarangBuktiKasus::with(['kasus', 'jenisPerkara'])
-                    ->where('nama_bukti_kasus', 'like', '%' . request('nama_bukti_kasus') . '%')->latest();
-                if (request('nomor_barang_bukti') && $query->exists()) {
-                    $query->where('nomor_barang_bukti', 'like', '%' . request('nomor_barang_bukti') . '%');
-                    if (request('jenis_perkara_id') && $query->exists()) {
-                        $query->where('jenis_perkara_id', 'like', '%' . request('jenis_perkara_id') . '%');
-                    }   
-                }
-            } elseif(request('nomor_barang_bukti')) {
-                $query = BarangBuktiKasus::with(['kasus', 'jenisPerkara'])
-                    ->where('nomor_barang_bukti', 'like', '%' . request('nomor_barang_bukti') . '%')->latest();
-                if (request('jenis_perkara_id') && $query->exists()) {
-                    $query->where('jenis_perkara_id', 'like', '%' . request('jenis_perkara_id') . '%');
-                }   
-            } elseif(request('jenis_perkara_id')) {
-                $query = BarangBuktiKasus::with(['kasus', 'jenisPerkara'])
-                    ->where('jenis_perkara_id', 'like', '%' . request('jenis_perkara_id') . '%')->latest();
+           
 
-            } else {
-                $query = BarangBuktiKasus::with(['kasus', 'jenisPerkara'])->latest();
-            }
+            $nama_barang = $request->input('nama_barang');
+            $nama_kasus = $request->input('nama_kasus');
+            $nama_perkara = $request->input('nama_perkara');
+            $pageSize = $request->input('pageSize', ApiResponse::$defaultPagination);
 
-            return ApiResponse::paginate($query);
+            $query = BarangBuktiKasus::with(['kasus', 'jenisPerkara'])
+            ->when($nama_barang, function ($q) use ($nama_barang) {
+                $q->where('nama_bukti_kasus', 'LIKE', '%' . $nama_barang . '%');
+            })
+            ->when($nama_kasus, function ($q) use ($nama_kasus) {
+                $q->orWhereHas('kasus', function ($q) use ($nama_kasus) {
+                    $q->where('nama_kasus', 'LIKE', '%' . $nama_kasus . '%');
+                });
+            })
+            ->when($nama_perkara, function ($q) use ($nama_perkara) {
+                $q->orWhereHas('jenisPerkara', function ($q) use ($nama_perkara) {
+                    $q->where('nama_jenis_perkara', 'LIKE', '%' . $nama_perkara . '%');
+                });
+            })
+            ->latest()
+            ->paginate($pageSize);
+
+            $resourceCollection = BarangBuktiKasusResource::collection($query);
+            return ApiResponse::pagination($resourceCollection);
 
         } catch (\Exception $e) {
             return ApiResponse::error('Failed to get Data.', $e->getMessage());

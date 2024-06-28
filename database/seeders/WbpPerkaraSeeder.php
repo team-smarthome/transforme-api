@@ -27,7 +27,7 @@ class WbpPerkaraSeeder extends Seeder
                 'lokasi_otmil_id' => "890cc9b1-b01f-4d1f-9075-a6a96e851b25",
                 'lokasi_lemasmil_id' => "48633be0-b005-4029-8bbb-293db9564ba0",
                 'residivis' => 1,
-                'wbp_profile_id' => "12cfa0a1-5ab3-4daa-9292-29397946312w",
+                'wbp_profile_id' => "12cfa0a1-5ab3-4daa-9292-29397946312o",
                 'created_at' => now(),
             ]
         ];

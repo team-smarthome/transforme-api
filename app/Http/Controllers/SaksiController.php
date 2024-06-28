@@ -11,34 +11,26 @@ class SaksiController extends Controller
 {
     public function index(Request $request)
     {
-        $namaSaksi = $request->input('nama_saksi');
-        $kasusId = $request->input('kasus_id');
-        $perPage = $request->input('per_page', 10);
-
         try {
-            $query = Saksi::with('kasus')
-                ->where(function ($query) use ($namaSaksi, $kasusId) {
-                    if (!empty($namaSaksi)) {
-                        $query->where('nama_saksi', 'LIKE', '%' . $namaSaksi . '%');
-                    }
+            $query = Saksi::with('kasus');
+            $filterableColumns = [
+                'nama_saksi' => 'nama_saksi',
+                'kasus_id' => 'kasus_id'
+            ];
 
-                    if (!empty($kasusId)) {
-                        $query->orWhereHas('kasus_id', 'LIKE', '%' . $kasusId . '%');
-                    }
-                });
+            $filter = $request->input('filter', []);
 
-            $paginatedData = $query->paginate($perPage);
-            return ApiResponse::success([
-                'data' => SaksiResource::collection($paginatedData),
-                'pagination' => [
-                    'total' => $paginatedData->total(),
-                    'per_page' => $paginatedData->perPage(),
-                    'current_page' => $paginatedData->currentPage(),
-                    'last_page' => $paginatedData->lastPage(),
-                    'from' => $paginatedData->firstItem(),
-                    'to' => $paginatedData->lastItem(),
-                ]
-            ]);
+            foreach ($filterableColumns as $key => $column) {
+                if (isset($filter[$key])) {
+                    $query->where($column, 'like', '%' . $filter[$key] . '%');
+                }
+            }
+
+            $query->latest();
+            $paginateData = $query->paginate($request->input('pageSize', ApiResponse::$defaultPagination));
+            $resourceCollection = SaksiResource::collection($paginateData);
+
+            return ApiResponse::pagination($resourceCollection);
         } catch (\Exception $e) {
             return ApiResponse::error('Failed to get data.', $e->getMessage());
         }
@@ -51,8 +43,8 @@ class SaksiController extends Controller
             'no_kontak' => 'required|string|max:25',
             'alamat' => 'required|string|max:100',
             'jenis_kelamin' => 'required|nullable',
-            'kasus_id' => 'required|string|max:36',
-            'keterangan' => 'required|string',
+            'kasus_id' => 'nullable|string|max:36',
+            'keterangan' => 'nullable',
         ]);
 
         $dataSaksi = Saksi::create($request->all());
@@ -69,8 +61,8 @@ class SaksiController extends Controller
             'no_kontak' => 'required|string|max:25',
             'alamat' => 'required|string|max:100',
             'jenis_kelamin' => 'required|nullable',
-            'kasus_id' => 'required|string|max:36',
-            'keterangan' => 'required|string',
+            'kasus_id' => 'nullable|string|max:36',
+            'keterangan' => 'nullable|string',
         ]);
 
         $saksiId = $request->input('saksi_id');

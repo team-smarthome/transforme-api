@@ -14,11 +14,87 @@ class AktivitasGelangController extends Controller
      */
     public function index(Request $request)
     {
-        $keyword = $request->input("search");
+        try {
+            $query = AktivitasGelang::with(['wbpProfile']);
+            $filterableColumns = [
+                'aktivitas_gelang_id' => 'id',
+                'wbp_profile_id' => 'wbp_profile_id',
+                'nama_wbp' => 'wbpProfile.nama',
+                'gelang_id' => 'wbpProfile.gelang_id',
+                'nama_gelang' => 'wbpProfile.gelang.nama_gelang',
+                'ruangan_otmil_id' => 'wbpProfile.gelang.ruangan_otmil_id',
+                'nama_ruangan_otmil' => 'wbpProfile.gelang.ruanganOtmil.nama_ruangan_otmil',
+                'lokasi_otmil_id' => 'wbpProfile.gelang.ruanganOtmil.lokasi_otmil_id',
+                'nama_lokasi_otmil' => 'wbpProfile.gelang.ruanganOtmil.lokasiOtmil.nama_lokasi_otmil',
+                'ruangan_lemasmil_id' => 'wbpProfile.gelang.ruangan_lemasmil_id',
+                'nama_ruangan_lemasmil' => 'wbpProfile.gelang.ruanganLemasmil.nama_ruangan_lemasmil',
+                'lokasi_lemasmil_id' => 'wbpProfile.gelang.ruanganLemasmil.lokasi_lemasmil_id',
+                'nama_lokasi_lemasmil' => 'wbpProfile.gelang.ruanganLemasmil.lokasiLemasmil.nama_lokasi_lemasmil'
+            ];
 
-        $findData = AktivitasGelang::with("wbpProfile")->where("gmac","like","%".$keyword. '%')->get();
+            $filters = $request->input('filter', []);
 
-        return ApiResponse::success(['data' => AktivitasGelangResource::collection($findData)]);
+            foreach ($filterableColumns as $requestKey => $column) {
+                if (isset($filters[$requestKey])) {
+                    if($requestKey === 'nama_wbp'){
+                        $query->whereHas('wbpProfile', function($q) use($filters, $requestKey){
+                            $q->where('nama', 'LIKE', '%' . $filters[$requestKey] .'%');
+                        });
+                    } else if($requestKey === 'gelang_id'){
+                        $query->whereHas('wbpProfile', function($q) use($filters, $requestKey){
+                            $q->where('gelang_id', 'LIKE', '%' . $filters[$requestKey] .'%');
+                        });
+                    } else if($requestKey === 'nama_gelang'){
+                        $query->whereHas('wbpProfile.gelang', function($q) use($filters, $requestKey){
+                            $q->where('nama_gelang', 'LIKE', '%' . $filters[$requestKey] .'%');
+                        });
+                    } else if($requestKey === 'ruangan_otmil_id'){
+                        $query->whereHas('wbpProfile.gelang', function($q) use($filters, $requestKey){
+                            $q->where('ruangan_otmil_id', 'LIKE', '%' . $filters[$requestKey] .'%');
+                        });
+                    } else if($requestKey === 'nama_ruangan_otmil'){
+                        $query->whereHas('wbpProfile.gelang.ruanganOtmil', function($q) use($filters, $requestKey){
+                            $q->where('nama_ruangan_otmil', 'LIKE', '%' . $filters[$requestKey] .'%');
+                        });
+                    } else if($requestKey === 'lokasi_otmil_id'){
+                        $query->whereHas('wbpProfile.gelang.ruanganOtmil', function($q) use($filters, $requestKey){
+                            $q->where('lokasi_otmil_id', 'LIKE', '%' . $filters[$requestKey] .'%');
+                        });
+                    } else if($requestKey === 'nama_lokasi_otmil'){
+                        $query->whereHas('wbpProfile.gelang.ruanganOtmil.lokasiOtmil', function($q) use($filters, $requestKey){
+                            $q->where('nama_lokasi_otmil', 'LIKE', '%' . $filters[$requestKey] .'%');
+                        });
+                    } else if($requestKey === 'ruangan_lemasmil_id'){
+                        $query->whereHas('wbpProfile.gelang', function($q) use($filters, $requestKey){
+                            $q->where('ruangan_lemasmil_id', 'LIKE', '%' . $filters[$requestKey] .'%');
+                        });
+                    } else if($requestKey === 'nama_ruangan_lemasmil'){
+                        $query->whereHas('wbpProfile.gelang.ruanganLemasmil', function($q) use($filters, $requestKey){
+                            $q->where('nama_ruangan_lemasmil', 'LIKE', '%' . $filters[$requestKey] .'%');
+                        });
+                    } else if($requestKey === 'lokasi_lemasmil_id'){
+                        $query->whereHas('wbpProfile.gelang.ruanganLemasmil', function($q) use($filters, $requestKey){
+                            $q->where('lokasi_lemasmil_id', 'LIKE', '%' . $filters[$requestKey] .'%');
+                        });
+                    } else if($requestKey === 'nama_lokasi_lemasmil'){
+                        $query->whereHas('wbpProfile.gelang.ruanganLemasmil.lokasiLemasmil', function($q) use($filters, $requestKey){
+                            $q->where('nama_lokasi_lemasmil', 'LIKE', '%' . $filters[$requestKey] .'%');
+                        });
+                    }
+                    else{
+                        $query->where($column, 'like', '%' . $filters[$requestKey] . '%');
+                    }
+                }
+            }
+
+            $query->latest();
+            $paginatedData = $query->paginate($request->input('pageSize', ApiResponse::$defaultPagination));
+            $resourceCollection = AktivitasGelangResource::collection($paginatedData);
+            return ApiResponse::pagination($resourceCollection);
+
+        } catch (\Exception $e) {
+            return ApiResponse::error($e);
+        }
     }
 
     /**

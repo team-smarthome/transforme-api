@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Pengunjung;
 use App\Http\Requests\PengunjungRequest;
 use App\Helpers\ApiResponse;
+use App\Http\Resources\PengunjungResource;
 use Exception;
 
 class PengunjungController extends Controller
@@ -13,32 +14,36 @@ class PengunjungController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         try {
             $query = Pengunjung::with(['provinsi', 'kota', 'wbpProfile']);
             $filterableColumns = [
-                'pengunjung_id' => 'id',
                 'nama' => 'nama',
-                'tempat_lahir' => 'tempat_lahir',
-                'tanggal_lahir' => 'tanggal_lahir',
-                'jenis_kelamin' => 'jenis_kelamin',
-                'provinsi_id' => 'provinsi_id',
-                'kota_id' => 'kota_id',
                 'alamat' => 'alamat',
                 'wbp_profile_id' => 'wbp_profile_id',
-                'hubungan_wbp' => 'hubungan_wbp',
+                'nama_wbp' => 'wbpProfile.nama',
                 'nik' => 'nik'
             ];
-            foreach ($filterableColumns as $requestKey => $column) {
-                if ($value = request($requestKey)) {
-                    $query->where($column, 'like', '%' . $value . '%');
+
+            $filters = $request->input('filter', []);
+            foreach ($filterableColumns as $key => $column) {
+                if (isset($filters[$key])) {
+                    if ($key === 'nama_wbp') {
+                        $query->whereHas('wbpProfile', function ($q) use ($filters, $key) {
+                            $q->where('nama', 'LIKE', '%' . $filters[$key] . '%');
+                        });
+                    } else {
+                        $query->where($column, 'LIKE', '%' . $filters[$key] . '%');
+                    }
                 }
             }
 
             $query->latest();
-            return ApiResponse::paginate($query);
+            $paginatedData = $query->paginate($request->input('pageSize', ApiResponse::$defaultPagination));
+            $resourceCollection = PengunjungResource::collection($paginatedData);
 
+            return ApiResponse::pagination($resourceCollection, 'Successfully get Data');
         } catch (\Exception $e) {
             return ApiResponse::error('Failed to get Data.', $e->getMessage());
         }
@@ -107,7 +112,7 @@ class PengunjungController extends Controller
     public function update(PengunjungRequest $request)
     {
         try {
-            $id = $request->input('id');
+            $id = $request->input('pengunjung_id');
             $pengunjung = Pengunjung::findOrfail($id);
             if (!$pengunjung) {
                 return ApiResponse::error('Data not found.', 'Data not found.', 404);

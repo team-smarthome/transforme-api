@@ -22,7 +22,7 @@ class PenyidikanSeeder extends Seeder
                 'agenda_penyidikan' => 'penyidikan',
                 'waktu_selesai_penyidikan' => '2024-05-28',
                 'dokumen_bap_id' => '9c2417c1-9bd2-496d-4102-8aec799aee90',
-                'wbp_profile_id' => '12cfa0a1-5ab3-4daa-9292-29397946312w',
+                'wbp_profile_id' => '12cfa0a1-5ab3-4daa-9292-29397946312o',
                 'saksi_id' => 'e0408528-fab5-443b-91f5-adcf2a420dcc',
                 'oditur_penyidikan_id' => '42258987-87f5-4d33-8920-5fe4d2694d77',
                 'zona_waktu' => 'WIB',

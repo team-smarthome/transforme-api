@@ -23,11 +23,10 @@ class JenisPidanaController extends Controller
                 'nama_jenis_pidana' => 'nama_jenis_pidana'
             ];
 
-            $filter = $request->input('filter', []);
-
-            foreach ($filterableColumns as $key => $column) {
-                if (isset($filter[$key])) {
-                    $query->where($column, 'like', '%' . $filter[$key] . '%');
+   
+            foreach ($filterableColumns as $requestKey => $column) {
+                if ($request->has($requestKey)) {
+                    $query->where($column, 'like', '%' . $request->input($requestKey) . '%');
                 }
             }
 

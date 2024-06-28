@@ -4,9 +4,11 @@ namespace App\Models;
 
 
 
+use App\Models\KameraTersimpan;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Kamera extends Model
@@ -35,5 +37,14 @@ class Kamera extends Model
   public function ruanganLemasmil(): BelongsTo
   {
     return $this->belongsTo(RuanganLemasmil::class, 'ruangan_lemasmil_id', 'id');
+  }
+  public function kamera_log(): HasMany
+  {
+    return $this->hasMany(KameraLog::class, 'kamera_id', 'id');
+  }
+
+  public function KameraTersimpan(): BelongsTo
+  {
+    return $this->belongsTo(KameraTersimpan::class, "kamera_id", "id");
   }
 }

@@ -15,7 +15,7 @@ class KategoriPerkaraResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id' => $this->id,
+            'kategori_perkara_id' => $this->id,
             'nama_kategori_perkara' => $this->nama_kategori_perkara,
             'jenis_pidana_id' => $this->jenis_pidana_id,
             'created_at' => $this->created_at,

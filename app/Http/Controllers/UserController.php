@@ -14,6 +14,7 @@ use App\Models\Petugas;
 use App\Models\UserLog;
 use App\Models\UserRole;
 use App\Http\Resources\LoginResource;
+use App\Http\Resources\UserResource;
 use Exception;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Hash;
@@ -22,8 +23,83 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
 
+
+/**
+ * @OA\Info(
+ *      version="1.0.0",
+ *      title="Dokumentasi API",
+ *      description="Lorem Ipsum",
+ *      @OA\License(
+ *          name="Apache 2.0",
+ *          url="http://www.apache.org/licenses/LICENSE-2.0.html"
+ *      )
+ * 
+ * )
+ *
+ * @OA\Server(
+ *      url="http://localhost:8000",
+ *      description="Demo API Server"
+ * )
+ */
 class UserController extends Controller
 {
+    /**
+     * @OA\Post(
+     *     path="/api/login",
+     *     tags={"Login"},
+     *     operationId="login",
+     *     summary="Login",
+     *     description="User login",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"nrp", "password"},
+     *             @OA\Property(property="nrp", type="string", example="1234567890"),
+     *             @OA\Property(property="password", type="string", example="test1234")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="User authenticated successfully",
+     *         @OA\JsonContent(
+     *             example={
+     *                 "status": "success",
+     *                 "message": "User authenticated successfully",
+     *                 "user": {
+     *                     "user_id": "f9c91240-d833-4f17-928d-c73c3edcc30b",
+     *                     "role_name": "superadmin",
+     *                     "petugas_id": "873313dd-863a-48f1-a09a-d113e26632b1",
+     *                     "nama_petugas": "Udin",
+     *                     "email": "udin@gmail.com",
+     *                     "phone": "08123123123",
+     *                     "image": "http",
+     *                     "last_login": "2024-06-07 17:38:05",
+     *                     "nama_lokasi_lemasmil": "Jakarta Lemasmil",
+     *                     "nama_lokasi_otmil": "Jakarta Otmil",
+     *                     "lokasi_lemasmil_id": "48633be0-b005-4029-8bbb-293db9564ba0",
+     *                     "lokasi_otmil_id": "890cc9b1-b01f-4d1f-9075-a6a96e851b25",
+     *                     "expiry_date": "2024-06-07"
+     *                 },
+     *                 "auth": {
+     *                     "token": "2|scnpQnj8PgId9HqYC0GqjccF25OiqAzABYrIP5ni979f0656",
+     *                     "token_expiry": "2024-06-11T04:27:57.919289Z",
+     *                     "token_type": "Bearer"
+     *                 }
+     *             }
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Invalid credentials",
+     *         @OA\JsonContent(
+     *             example={
+     *                 "status": "error",
+     *                 "message": "Invalid credentials"
+     *             }
+     *         )
+     *     )
+     * )
+     */
   public function login(UserLoginRequest $request): JsonResponse
   {
     $data = $request->validated();
@@ -69,7 +145,7 @@ class UserController extends Controller
       $userLog->nama_user_log = 'gagal nrp';
       $userLog->timestamp = now();
       $userLog->user_id = $user ? $user->id : null;
-      echo "e" . $userLog;
+      // echo "e" . $userLog;
       $userLog->save();
       throw new HttpResponseException(response([
         'status' => 'error',
@@ -83,7 +159,7 @@ class UserController extends Controller
       $userLog->timestamp = now();
       $userLog->user_id = $user->id;
       $userLog->save();
-      echo "e2" . $userLog;
+      // echo "e2" . $userLog;
       throw new HttpResponseException(response([
         'status' => 'error',
         'message' => 'Password not match',
@@ -121,19 +197,112 @@ class UserController extends Controller
     // if($user->is)
   }
 
+  /**
+ * @OA\Get(
+ *     path="/api/users",
+ *     tags={"User"},
+ *     operationId="User Read Data",
+ *     summary="User Read Data",
+ *     description="Read users Data",
+ *     security={
+ *        {"token": {}}
+ *     },
+ *     @OA\RequestBody(
+ *         required=false,
+ *         @OA\JsonContent(
+ *             required={"user_id", "nama", "page", "pageSize", "filter"},
+ *             @OA\Property(property="user_id", type="string", example="f9c91240-d833-4f17-928d-c73c3edcc30b"),
+ *             @OA\Property(property="nama", type="string", example="Udin"),
+ *             @OA\Property(property="page", type="integer", example=1),
+ *             @OA\Property(property="pageSize", type="integer", example=10),
+ *             @OA\Property(property="filter", type="object", example={"user_id": "f9c91240-d833-4f17-928d-c73c3edcc30b", "nama": "Udin"})
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="User created successfully",
+ *         @OA\JsonContent(
+ *             example={
+ *                 "status": "success",
+ *                 "message": "User created successfully",
+ *                 "records": {
+ *                     "user_id": "f9c91240-d833-4f17-928d-c73c3edcc30b",
+ *                     "nama": "Udin",
+ *                     "expiry_date": "2024-06-07",
+ *                     "username": "udin",
+ *                     "image": "udin.jpg",
+ *                     "phone": "08123123123",
+ *                     "email": "udin@gmail.com",
+ *                     "is_suspended": 0,
+ *                     "petugas_id": "873313dd-863a-48f1-a09a-d113e26632b1",
+ *                     "user_role_id": "f1943be9-e062-4815-9a1c-613b1b2260e2",
+ *                     "role_name": "superadmin",
+ *                     "deskripsi_role": "Insert, Read, Update, Delete, and User Modification Access Rights",
+ *                     "nama_lokasi_otmil": "Jakarta Otmil",
+ *                     "nama_lokasi_lemasmil": "Jakarta Lemasmil",
+ *                     "lokasi_otmil_id": "890cc9b1-b01f-4d1f-9075-a6a96e851b25",
+ *                     "lokasi_lemasmil_id": "48633be0-b005-4029-8bbb-293db9564ba0",
+ *                     "last_login": "2024-06-07 17:38:05",
+ *                     "jabatan": "Jendral",
+ *                     "divisi": "Military",
+ *                     "nama_matra": "Navy",
+ *                     "nrp": "1234567890"
+ *                 }
+ *             }
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=401,
+ *         description="Unauthorized",
+ *         @OA\JsonContent(
+ *             example={
+ *                 "status": "error",
+ *                 "message": "Unauthorized"
+ *             }
+ *         )
+ *     )
+ * )
+ */
+
   public function index(Request $request)
   {
     try {
-      if ($request->has('id')) {
-        $user = User::findOrFail($request->id);
-        return response()->json($user, 200);
+
+      $query = User::with(['role', 'petugas', 'lokasiLemasmil', 'lokasiOtmil']);
+      $filterableColumns = [
+        'user_id' => 'id',
+        'user_role_id' => 'user_role_id',
+        'username' => 'username',
+        'lokasi_otmil_id' => 'lokasi_otmil_id',
+    ];
+    foreach ($filterableColumns as $requestKey => $column) {
+      if ($request->has($requestKey)) {
+          $query->where($column, 'like', '%' . $request->input($requestKey) . '%');
       }
-      if ($request->has('nama')) {
-        $query = User::where('nama', 'like', '%' . $request->nama . '%')->latest();
-      } else {
-        $query = User::latest();
-      }
-      return ApiResponse::paginate($query);
+    }
+
+    if ($request->has('nama')) {
+      $query->whereHas('petugas', function ($q) use ($request) {
+          $q->where('nama', 'like', '%' . $request->input('nama') . '%');
+      });
+    };
+
+  $query->latest();
+  $paginatedData = $query->paginate($request->input('pageSize', ApiResponse::$defaultPagination));
+              
+  $resourceCollection = UserResource::collection($paginatedData);
+
+  return ApiResponse::pagination($resourceCollection);
+      // if ($request->has('id')) {
+      //   $user = User::findOrFail($request->id);
+      //   return response()->json($user, 200);
+      // }
+      // if ($request->has('nama')) {
+      //   $query = User::where('nama', 'like', '%' . $request->nama . '%')->latest();
+      // } else {
+      //   $query = User::latest();
+      // }
+      // return ApiResponse::paginate($query);
     } catch (\Exception $e) {
       return ApiResponse::error('Failed to get Data.', $e->getMessage());
     }
@@ -163,7 +332,7 @@ class UserController extends Controller
   public function edit(UserRequest $request)
   {
     try {
-      $id = $request->input('id');
+      $id = $request->input('user_id');
       $user = User::findOrFail($id);
       $data = $request->validated();
 
@@ -190,11 +359,11 @@ class UserController extends Controller
   public function destroy(Request $request)
   {
     try {
-      $id = $request->input('id');
+      $id = $request->input('user_id');
       $user = User::findOrFail($id);
       $user->delete();
 
-      return ApiResponse::deleted($user);
+      return ApiResponse::deleted();
     } catch (Exception $e) {
       return ApiResponse::error('An unexpected error occurred', $e->getMessage(), 500);
     }

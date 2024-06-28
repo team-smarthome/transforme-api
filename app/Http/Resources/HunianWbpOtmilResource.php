@@ -15,12 +15,10 @@ class HunianWbpOtmilResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id' => $this->id,
-            'lokasi_otmil_id' => $this->lokasi_otmil_id,
-            'nama_lokasi_otmil' => $this->lokasiOtmil->nama_lokasi_otmil,
+            'hunian_wbp_otmil_id' => $this->id,
             'nama_hunian_wbp_otmil' => $this->nama_hunian_wbp_otmil,
-            'created_at' => $this->created_at,
-            'updated_at'=> $this->updated_at
+            'lokasi_otmil_id' => $this->lokasi_otmil_id,
+            'nama_lokasi_otmil' => $this->lokasiOtmil->nama_lokasi_otmil
         ];
     }
 }

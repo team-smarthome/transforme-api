@@ -17,6 +17,14 @@ class Version extends Model
     public $incrementing = false;
     public $timestamps = true;
 
+    public function toArray()
+    {
+        $array = parent::toArray();
+        $array['version_id'] = $array['id'];
+        unset($array['id']);
+        return $array;
+    }
+
     protected $fillable = [
         'link',
         'version_name',

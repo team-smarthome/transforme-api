@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\GatewayLog;
 use App\Http\Requests\GatewayLogRequest;
 use App\Helpers\ApiResponse;
+use App\Http\Resources\GatewayLogResource;
 use Exception;
 
 class GatewayLogController extends Controller
@@ -13,49 +14,121 @@ class GatewayLogController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         try {
-            $query = GatewayLog::with([
-                'gateway' => function ($join_query) {
-                    $join_query->select('id', 'nama_gateway', 'status_gateway', 'gmac', 'ruangan_lemasmil_id', 'ruangan_otmil_id')
-                        ->with([
-                            'ruanganLemasmil' => function($join_query) {
-                                $join_query->select('id', 'nama_ruangan_lemasmil', 'jenis_ruangan_lemasmil', 'zona_id', 'lokasi_lemasmil_id')
-                                    ->with('zona:id,nama_zona')
-                                    ->with('lokasiLemasMil:id,nama_lokasi_lemasmil');
-                            },
-                            'ruanganOtmil' => function ($join_query) {
-                                $join_query->select('id', 'nama_ruangan_otmil', 'jenis_ruangan_otmil', 'zona_id', 'lokasi_otmil_id')
-                                    ->with('zona:id,nama_zona')
-                                    ->with('lokasiOtmil:id,nama_lokasi_otmil');
-                            }
-                        ]);
-                },
-                'wbpProfile:id,nama'
-            ]);
-            // ->select('id', 'image', 'gateway_id', 'wbp_profile_id')
-            // ->get();
-    
-            $filterableColumns = [
-                'gateway_id' => 'gateway_id',
-                'wbp_profile_id' => 'wbp_profile_id'
-            ];
-    
-            foreach ($filterableColumns as $requestKey => $column) {
-                if ($value = request($requestKey)) {
-                    $query->where($column, 'like', '%' . $value . '%');
-                }
+            $query = GatewayLog::with('wbpProfile', 'gateway.ruanganOtmil.lokasiOtmil', 'gateway.ruanganLemasmil.lokasiLemasmil');
+
+            // $filterableColumns = [
+            //     'lokasi_otmil_id' => 'gateway.ruanganOtmil.lokasi_otmil_id',
+            //     'nama_lokasi_otmil' => 'gateway.ruanganOtmil.lokasiOtmil.nama_lokasi_otmil',
+            //     'lokasi_lemasmil_id' => 'gateway.ruanganLemasmil.lokasi_lemasmil_id',
+            //     'nama_lokasi_lemasmil' => 'gateway.ruanganLemasmil.lokasiLemasmil.nama_lokasi_lemasmil',
+            //     'ruangan_otmil_id' => 'gateway.ruangan_otmil_id',
+            //     'ruangan_lemasmil_id' => 'gateway.ruangan_lemasmil_id',
+            //     'wbp_profile_id' => 'wbp_profile_id',
+            //     'nama_wbp' => 'wbpProfile.wbp_profile_id',
+            //     'nama_ruangan_otmil' => 'gateway.ruanganOtmil.nama_ruangan_otmil',
+            //     'nama_ruangan_lemasmil' => 'gateway.ruanganLemasmil.nama_ruangan_lemasmil',
+            //     'jenis_ruangan_otmil' => 'gateway.ruanganOtmil.jenis_ruangan_otmil',
+            //     'jenis_ruangan_lemasmil' => 'gateway.ruanganLemasmil.jenis_ruangan_lemasmil',
+            //     'gmac' => 'gateway.gmac',
+            //     'gateway_log_id' => 'id',
+            //     'nama_gateway' => 'gateway.nama_gateway',
+            //     'status_gateway' => 'gateway.status_gateway',
+            //     'timestamp' => 'created_at',
+            // ];
+
+            $filters = $request->input('filter', []);
+
+            if (isset($filters['nama_gateway'])) {
+                $query->whereHas('gateway', function ($q) use ($filters) {
+                    $q->where('nama_gateway', 'LIKE', '%' . $filters['nama_gateway'] . '%');
+                });
             }
-    
-            // return ApiResponse::success($query);
+            if (isset($filters['nama_wbp'])) {
+                $query->whereHas('wbpProfile', function ($q) use ($filters) {
+                    $q->where('nama', 'LIKE', '%' . $filters['nama_wbp'] . '%');
+                });
+            }
+
+            //
+            if (isset($filters['lokasi_otmil_id'])) {
+                $query->whereHas('gateway.ruanganOtmil', function ($q) use ($filters) {
+                    $q->where('lokasi_otmil_id', 'LIKE', '%' . $filters['lokasi_otmil_id'] . '%');
+                });
+            }
+            if (isset($filters['lokasi_lemasmil_id'])) {
+                $query->whereHas('gateway.ruanganLemasmil', function ($q) use ($filters) {
+                    $q->where('lokasi_lemasmil_id', 'LIKE', '%' . $filters['lokasi_lemasmil_id'] . '%');
+                });
+            }
+            if (isset($filters['nama_lokasi_otmil'])) {
+                $query->whereHas('gateway.ruanganOtmil.lokasiOtmil', function ($q) use ($filters) {
+                    $q->where('nama_lokasi_otmil', 'LIKE', '%' . $filters['nama_lokasi_otmil'] . '%');
+                });
+            }
+            if (isset($filters['nama_lokasi_lemasmil'])) {
+                $query->whereHas('gateway.ruanganLemasmil.lokasiLemasmil', function ($q) use ($filters) {
+                    $q->where('nama_lokasi_lemasmil', 'LIKE', '%' . $filters['nama_lokasi_lemasmil'] . '%');
+                });
+            }
+            if (isset($filters['ruangan_otmil_id'])) {
+                $query->whereHas('gateway.ruanganOtmil', function ($q) use ($filters) {
+                    $q->where('ruangan_otmil_id', 'LIKE', '%' . $filters['ruangan_otmil_id'] . '%');
+                });
+            }
+            if (isset($filters['ruangan_lemasmil_id'])) {
+                $query->whereHas('gateway.ruanganLemasmil', function ($q) use ($filters) {
+                    $q->where('ruangan_lemasmil_id', 'LIKE', '%' . $filters['ruangan_lemasmil_id'] . '%');
+                });
+            }
+            if (isset($filters['nama_ruangan_otmil'])) {
+                $query->whereHas('gateway.ruanganOtmil', function ($q) use ($filters) {
+                    $q->where('nama_ruangan_otmil', 'LIKE', '%' . $filters['nama_ruangan_otmil'] . '%');
+                });
+            }
+            if (isset($filters['nama_ruangan_lemasmil'])) {
+                $query->whereHas('gateway.ruanganLemasmil', function ($q) use ($filters) {
+                    $q->where('nama_ruangan_lemasmil', 'LIKE', '%' . $filters['nama_ruangan_lemasmil'] . '%');
+                });
+            }
+            if (isset($filters['jenis_ruangan_otmil'])) {
+                $query->whereHas('gateway.ruanganOtmil', function ($q) use ($filters) {
+                    $q->where('jenis_ruangan_otmil', 'LIKE', '%' . $filters['jenis_ruangan_otmil'] . '%');
+                });
+            }
+            if (isset($filters['jenis_ruangan_lemasmil'])) {
+                $query->whereHas('gateway.ruanganLemasmil', function ($q) use ($filters) {
+                    $q->where('jenis_ruangan_lemasmil', 'LIKE', '%' . $filters['jenis_ruangan_lemasmil'] . '%');
+                });
+            }
+            if (isset($filters['wbp_profile_id'])) {
+                $query->whereHas('gateway.wbpProfile', function ($q) use ($filters) {
+                    $q->where('wbp_profile_id', 'LIKE', '%' . $filters['wbp_profile_id'] . '%');
+                });
+            }
+            if (isset($filters['gmac'])) {
+                $query->whereHas('gateway', function ($q) use ($filters) {
+                    $q->where('gmac', 'LIKE', '%' . $filters['gmac'] . '%');
+                });
+            }
+            if (isset($filters['status_gateway'])) {
+                $query->whereHas('gateway', function ($q) use ($filters) {
+                    $q->where('status_gateway', 'LIKE', '%' . $filters['status_gateway'] . '%');
+                });
+            }
 
             $query->latest();
-            return ApiResponse::paginate($query);
-        } catch (Exception $e) {
-            return ApiResponse::error($e);
+            $paginatedData = $query->paginate($request->input('pageSize', ApiResponse::$defaultPagination));
+            $resourceCollection = GatewayLogResource::collection($paginatedData);
+
+            return ApiResponse::pagination($resourceCollection, 'Successfully get Data');
+        } catch (\Exception $e) {
+            return ApiResponse::error('Failed to get Data.', $e->getMessage());
         }
     }
+
 
     /**
      * Show the form for creating a new resource.
@@ -83,7 +156,6 @@ class GatewayLogController extends Controller
 
             $gatewayLog->save();
             return ApiResponse::created($gatewayLog);
-
         } catch (Exception $e) {
             return ApiResponse::error($e);
         }
@@ -130,7 +202,6 @@ class GatewayLogController extends Controller
             } else {
                 return ApiResponse::error('Failed to delete Gateway Log.', 'Failed to delete Gateway Log.');
             }
-
         } catch (Exception $e) {
             return ApiResponse::error($e);
         }

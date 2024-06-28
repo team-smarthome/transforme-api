@@ -20,24 +20,19 @@ class GrupPetugasController extends Controller
   public function index(Request $request)
   {
     try {
-      $query = GrupPetugas::query();
-      $filterableColumns = [
-        "grup_petugas_id" => "id",
-        "nama_grup_petugas" => "nama_grup_petugas",
-        "ketua_grup" => "ketua_grup",
-      ];
+      $grup_petugas_id = $request->input('grup_petugas_id');
+      $nama_grup_petugas = $request->input('nama_grup_petugas');
+      $pageSize = $request->input('pageSize', ApiResponse::$defaultPagination);
 
-      $filters = $request->input('filter', []);
 
-      foreach ($filterableColumns as $requestKey => $column) {
-        if (isset($filters[$requestKey])) {
-          $query->where($column, 'like', '%' . $filters[$requestKey] . '%');
-        }
-      }
+      $query = GrupPetugas::with(['petugas'])
+        ->where('id', 'LIKE', '%' . $grup_petugas_id . '%')
+        ->where('nama_grup_petugas', 'LIKE', '%' . $nama_grup_petugas . '%')
+        ->latest()->paginate($pageSize);
 
-      $query->latest();
-      $paginatedData = $query->paginate($request->input('pageSize', ApiResponse::$defaultPagination));
-      $resourceCollection = GrupPetugasResource::collection($paginatedData);
+
+
+      $resourceCollection = GrupPetugasResource::collection($query);
       return ApiResponse::pagination($resourceCollection, 'Successfully get Data');
     } catch (\Exception $e) {
       return ApiResponse::error('Failed to get Data.', $e->getMessage());
@@ -95,13 +90,13 @@ class GrupPetugasController extends Controller
    */
   public function update(GrupPetugasRequest $request)
   {
-    $id = $request->input('id');
-    $grup_petugas = GrupPetugas::findOrFail($id);
+    $grup_petugas_id = $request->input('grup_petugas_id');
+    $grup_petugas = GrupPetugas::findOrFail($grup_petugas_id);
 
     $namaEditGrupPetugas = $request->input('nama_grup_petugas');
     $existingGrupPetugas = GrupPetugas::where('nama_grup_petugas', $grup_petugas->nama_grup_petugas)->first();
 
-    if ($existingGrupPetugas && $existingGrupPetugas->id !== $id) {
+    if ($existingGrupPetugas && $existingGrupPetugas->id !== $grup_petugas_id) {
       return ApiResponse::error('Nama grup petugas sudah ada.', null, 422);
     }
 
@@ -115,7 +110,7 @@ class GrupPetugasController extends Controller
    */
   public function destroy(Request $request)
   {
-    $id = $request->input('id');
+    $id = $request->input('grup_petugas_id');
     $grup_petugas = GrupPetugas::findOrFail($id);
     $grup_petugas->delete();
 

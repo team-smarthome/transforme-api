@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 
 class Gateway extends Model
 {
@@ -46,6 +47,26 @@ class Gateway extends Model
     public function gatewayLog(): HasMany
     {
         return $this->hasMany(GatewayLog::class, 'gateway_id', 'id');
+    }
+
+    public function zonaOtmil(): HasOneThrough
+    {
+        return $this->hasOneThrough(Zona::class, RuanganOtmil::class, 'id', 'id', 'ruangan_otmil_id', 'zona_id');
+    }
+
+    public function zonaLemasmil(): HasOneThrough
+    {
+        return $this->hasOneThrough(Zona::class, RuanganLemasmil::class, 'id', 'id', 'ruangan_lemasmil_id', 'zona_id');
+    }
+
+    public function lokasiOtmil (): HasOneThrough
+    {
+        return $this->hasOneThrough(LokasiOtmil::class, RuanganOtmil::class, 'id', 'id', 'ruangan_otmil_id', 'lokasi_otmil_id');
+    }
+
+    public function lokasiLemasmil (): HasOneThrough
+    {
+        return $this->hasOneThrough(LokasiLemasmil::class, RuanganLemasmil::class, 'id', 'id', 'ruangan_lemasmil_id', 'lokasi_lemasmil_id');
     }
     
 }

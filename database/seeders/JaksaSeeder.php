@@ -16,7 +16,7 @@ class JaksaSeeder extends Seeder
     {
         $jaksa = [
             [
-                'id' => Str::uuid(),
+                'id' => "dc417e30-4309-42d2-96f6-85f46a3ae6d7",
                 'nrp_jaksa' => '001',
                 'nama_jaksa' => 'Rizki',
                 'alamat' => 'Jakarta',

@@ -25,7 +25,7 @@ class TipeAsetRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "nama_tipe" => 'required|string|max:255',
+            "nama_tipe" => 'nullable|string|max:255',
         ];
     }
 }

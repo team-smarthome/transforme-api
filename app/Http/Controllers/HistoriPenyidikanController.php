@@ -15,14 +15,30 @@ class HistoriPenyidikanController extends Controller
     public function index(Request $request)
     {
         try {
-            $query = HistoriPenyidikan::query();
-            $filterableColumns = ['hasil_penyidikan'];
+            $query = HistoriPenyidikan::with('penyidikan.wbpProfile', 'penyidikan.kasus.jenisPerkara');
+            $filterableColumns = [
+                'nama_wbp' => 'penyidikan.wbpProfile.nama', 
+                'nama_jenis_perkara' => 'penyidikan.kasus.jenisPerkara.nama_jenis_perkara', 
+                'hasil_penyidikan' => 'hasil_penyidikan', 
+                'lama_masa_tahanan' => 'lama_masa_tahanan'
+            ];
 
             $filters = $request->input('filter', []);
 
             foreach ($filterableColumns as $requestKey => $column) {
                 if (isset($filters[$requestKey])) {
-                    $query->where($column, 'like', '%' . $filters[$requestKey] .'%');
+                    if ($requestKey === 'nama_wbp') {
+                        // Handle the relationship filter
+                        $query->whereHas('penyidikan.wbpProfile', function ($q) use ($filters, $requestKey) {
+                            $q->where('nama', 'LIKE', '%' . $filters[$requestKey] . '%');
+                        });
+                    } else if($requestKey === 'nama_jenis_perkara'){
+                        $query->whereHas('penyidikan.kasus.jenisPerkara', function ($q) use ($filters, $requestKey) {
+                            $q->where('nama_jenis_perkara', 'LIKE', '%' . $filters[$requestKey] . '%');
+                        });
+                    } else{
+                        $query->where($column, 'like', '%' . $filters[$requestKey] .'%');
+                    }
                 }
             }
 

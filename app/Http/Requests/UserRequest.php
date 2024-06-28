@@ -25,13 +25,13 @@ class UserRequest extends FormRequest
   public function rules(): array
   {
     return [
-      'username' => 'required|string|max:255',
-      'password' => 'required|string|min:8',
+      'username' => 'nullable|string|max:255',
+      'password' => 'nullable|string|min:8',
       'email' => 'required|email|max:255',
       'phone' => 'required|string|max:15',
       'user_role_id' => 'required|uuid|exists:user_role,id',
-      'lokasi_otmil_id' => 'required|uuid|exists:lokasi_otmil,id',
-      'lokasi_lemasmil_id' => 'required|uuid|exists:lokasi_lemasmil,id',
+      'lokasi_otmil_id' => 'nullable|uuid|exists:lokasi_otmil,id',
+      'lokasi_lemasmil_id' => 'nullable|uuid|exists:lokasi_lemasmil,id',
       'is_suspended' => 'required|integer|in:0,1',
       'petugas_id' => 'required|uuid|exists:petugas,id',
       'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',

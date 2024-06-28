@@ -15,15 +15,16 @@ class JenisPerkaraResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id' => $this->id,
+            'jenis_perkara_id' => $this->id,
             'kategori_perkara_id' => $this->kategori_perkara_id,
             'nama_jenis_perkara' => $this->nama_jenis_perkara,
+            'nama_kategori_perkara' => $this->kategoriPerkara->nama_kategori_perkara,
+            'jenis_pidana_id' => $this->kategoriPerkara->jenis_pidana_id,
             'pasal' => $this->pasal,
-            'vonis_tahun_perkara' => $this->vonis_tahun_perkara,
-            'vonis_bulan_perkra' => $this->vonis_bulan_perkara,
-            'vonis_hari_perkara' => $this->vonis_hari_perkara,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at
+            'vonis_tahun_perkara' => (string)$this->vonis_tahun_perkara,
+            'vonis_bulan_perkara' => (string)$this->vonis_bulan_perkara,
+            'vonis_hari_perkara' => (string)$this->vonis_hari_perkara,
+            'nama_jenis_pidana' => $this->kategoriPerkara->jenisPidana->nama_jenis_pidana,
         ];
     }
 }

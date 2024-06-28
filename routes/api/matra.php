@@ -11,6 +11,6 @@ Route::middleware([AuthSanctumMiddleware::class . ':admin,superadmin'])->group(f
     Route::delete('matra', [MatraController::class, 'destroy']);
 });
 
-Route::middleware([AuthSanctumMiddleware::class . ':operator'])->group(function () {
+// Route::middleware([AuthSanctumMiddleware::class . ':operator'])->group(function () {
     Route::get('matra', [MatraController::class, 'index']);
-});
+// });

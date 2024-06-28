@@ -5,22 +5,25 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Helpers\ApiResponse;
 use App\Models\RuanganOtmil;
-class RuanganController extends Controller
+use App\Http\Resources\RuanganOtmilResource;
+
+class RuanganOtmilController extends Controller
 {
     public function index(Request $request)
     {
         try {
-            $keyword = $request->input('search');
+            $search = $request->input('search');
+            $searchType = $request->input('searchType');
+            $pageSize = $request->input('pageSize', ApiResponse::$defaultPagination);
 
-            $getData = RuanganOtmil::with(['lokasiOtmil', 'lantaiOtmil'])
-            ->where('nama_ruangan_otmil', 'LIKE', '%' . $keyword . '%')
-            ->orWhereHas('lantaiOtmil', function ($q) use ($keyword){
-                $q ->where('nama_lantai', 'LIKE', '%' . $keyword . '%');
-            })->orWhereHas('lokasiOtmil', function ($r) use ($keyword){
-                $r ->where('nama_lokasi_otmil', 'LIKE', '%' . $keyword . '%');
-            })->get();
+            $query = RuanganOtmil::with(['lokasiOtmil', 'lantaiOtmil', 'zona'])
+            ->where('nama_ruangan_otmil', 'LIKE', '%'. $search . '%')
+            ->where('jenis_ruangan_otmil', 'LIKE', '%'. $searchType . '%')
+            ->latest()->paginate($pageSize);
 
-            return ApiResponse::success($getData);
+            $resourceCollection = RuanganOtmilResource::collection($query);
+
+            return ApiResponse::pagination($resourceCollection);
         } catch (\Exception $e) {
             return ApiResponse::error('An error occurred while fetching data.', $e->getMessage());
         }
@@ -72,7 +75,7 @@ class RuanganController extends Controller
             'posisi_X' => 'nullable',
             'posisi_Y' => 'nullable'
          ]);
-         $ruangan_otmil_id = $request->input('id');
+         $ruangan_otmil_id = $request->input('ruangan_otmil_id');
          $findLantai = RuanganOtmil::where('id', $ruangan_otmil_id)->firstOrFail();
          $findLantai->nama_ruangan_otmil = $request->input('nama_ruangan_otmil');
          $findLantai->lokasi_otmil_id = $request->input('lokasi_otmil_id');
@@ -90,7 +93,7 @@ class RuanganController extends Controller
 
     public function destroy(Request $request)
     {
-        $ruangan_otmil_id = $request->input('id');
+        $ruangan_otmil_id = $request->input('ruangan_otmil_id');
         $ruangan_otmil = RuanganOtmil::findOrFail($ruangan_otmil_id);
         $ruangan_otmil->delete();
 

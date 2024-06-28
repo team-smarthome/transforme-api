@@ -15,14 +15,16 @@ class SaksiResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id' => $this->id,
+            'saksi_id' => $this->id,
             'nama_saksi' => $this->nama_saksi,
             'no_kontak' => $this->no_kontak,
             'alamat' => $this->alamat,
-            'jenis_kelamin' => $this->jenis_kelamin,
+            'jenis_kelamin' => (string)$this->jenis_kelamin,
             'kasus_id' => $this->kasus_id,
-            // 'nama_kasus' => $this->kasus->nama_kasus,
-            'keterangan' => $this->keterangan
+            // 'nama_kasus' => $this->kasus->nama_kasus
+            'nama_kasus' => $this->whenLoaded('kasus', function () {
+                return $this->kasus ? $this->kasus->nama_kasus : null;
+            }),
         ];
     }
 }

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\AktivitasPengunjung;
 use App\Http\Requests\AktivitasPengunjungRequest;
 use App\Helpers\ApiResponse;
+use App\Http\Resources\AktivitasPengunjungResource;
 use Exception;
 
 
@@ -14,31 +15,38 @@ class AktivitasPengunjungController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         try {
-            $query = AktivitasPengunjung::with(['ruanganOtmil', 'ruanganLemasmil', 'petugas', 'pengunjung', 'wbpProfile']);
-            $filterableColumns = [
-                'aktivitas_pengunjung_id' => 'id',
-                'nama_aktivitas_pengunjung' => 'nama_aktivitas_pengunjung',
-                'waktu_mulai_kunjungan' => 'waktu_mulai_kunjungan',
-                'waktu_selesai_kunjungan' => 'waktu_selesai_kunjungan',
-                'tujuan_kunjungan' => 'tujuan_kunjungan',
-                'ruangan_otmil_id' => 'ruangan_otmil_id',
-                'ruangan_lemasmil_id' => 'ruangan_lemasmil_id',
-                'petugas_id' => 'petugas_id',
-                'pengunjung_id' => 'pengunjung_id',
-                'wbp_profile_id' => 'wbp_profile_id',
-                'zona_waktu' => 'zona_waktu'
-            ];
-            foreach ($filterableColumns as $requestKey => $column) {
-                if ($value = request($requestKey)) {
-                    $query->where($column, 'like', '%' . $value . '%');
+            $user = $request->get('user');
+            $nama_pengunjung = $request->input('nama_pengunjung');
+            $nama_wbp = $request->input('nama_wbp');
+            $pageSize = $request->input('pageSize', ApiResponse::$defaultPagination);
+            
+            $query = AktivitasPengunjung::with([
+                'ruanganLemasmil.lokasiLemasmil',
+                'ruanganOtmil.lokasiOtmil',
+                'ruanganLemasmil.zona',
+                'ruanganOtmil.zona',
+                'petugas',
+                'pengunjung',
+                'wbpProfile',
+            ])->where(function ($q) use ($nama_pengunjung, $nama_wbp) {
+                if ($nama_pengunjung) {
+                    $q->orWhereHas('pengunjung', function ($q) use ($nama_pengunjung) {
+                        $q->where('nama', 'LIKE', '%' . $nama_pengunjung . '%');
+                    });
                 }
-            }
+                if ($nama_wbp) {
+                    $q->orWhereHas('wbpProfile', function ($q) use ($nama_wbp) {
+                        $q->where('nama', 'LIKE', '%' . $nama_wbp . '%');
+                    });
+                }
+            })->latest()->paginate($pageSize);
+    
+            $resourceCollection = AktivitasPengunjungResource::collection($query);
 
-            $query->latest();
-            return ApiResponse::paginate($query);
+            return ApiResponse::pagination($resourceCollection, 'Successfully get data');
         } catch (\Exception $e) {
             return ApiResponse::error('Failed to get Data.', $e->getMessage());
         }
@@ -59,6 +67,7 @@ class AktivitasPengunjungController extends Controller
     {
         try {
             $aktivitasPengunjung =  new AktivitasPengunjung([
+                'aktivitas_pengunjung_id' => $request->aktivitas_pengunjung_id,
                 'nama_aktivitas_pengunjung' => $request->nama_aktivitas_pengunjung,
                 'waktu_mulai_kunjungan' => $request->waktu_mulai_kunjungan,
                 'waktu_selesai_kunjungan' => $request->waktu_selesai_kunjungan,
@@ -105,7 +114,7 @@ class AktivitasPengunjungController extends Controller
      */
     public function update(AktivitasPengunjungRequest $request)
     {
-       try {
+        try {
             $id = $request->input('aktivitas_pengunjung_id');
             $aktivitasPengunjung = AktivitasPengunjung::find($id);
             if (!$aktivitasPengunjung) {
@@ -128,8 +137,7 @@ class AktivitasPengunjungController extends Controller
             }
 
             return ApiResponse::error('Failed to update Aktivitas Pengunjung');
-
-       } catch (Exception $e) {
+        } catch (Exception $e) {
             return ApiResponse::error('Failed to update Aktivitas Pengunjung', $e->getMessage());
         }
     }

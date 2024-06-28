@@ -12,45 +12,17 @@ class LantaiController extends Controller
     public function index(Request $request)
     {
         try {
-            // $keyword = $request->input('search');
+            $keyword = $request->input('search');
+            $pageSize = $request->input('pageSize', ApiResponse::$defaultPagination);
 
-            // $getData = LantaiOtmil::with(['lokasiOtmil', 'gedungOtmil'])
-            // ->where('nama_lantai', 'LIKE', '%' . $keyword . '%')
-            // ->orWhereHas('gedungOtmil', function ($q) use ($keyword){
-            //     $q ->where('nama_gedung_otmil', 'LIKE', '%' . $keyword . '%');
-            // })->orWhereHas('lokasiOtmil', function ($r) use ($keyword){
-            //     $r ->where('nama_lokasi_otmil', 'LIKE', '%' . $keyword . '%');
-            // })->get();
-            
-            // return ApiResponse::success([
-            //     'data' => $getData
-            // ]);
+            $getData = LantaiOtmil::with(['lokasiOtmil', 'gedungOtmil'])->where('nama_lantai', 'LIKE', '%' . $keyword . '%')
+            ->whereHas('gedungOtmil', function ($q) use ($keyword){
+                $q ->where('nama_gedung_otmil', 'LIKE', '%' . $keyword . '%');
+            })->whereHas('lokasiOtmil', function ($r) use ($keyword){
+                $r ->where('nama_lokasi_otmil', 'LIKE', '%' . $keyword . '%');
+            })->latest()->paginate($pageSize);
 
-            $query = LantaiOtmil::with(['lokasiOtmil', 'gedungOtmil']);
-
-            $filterableColumns = [
-                'lantai_otmil_id' => 'id',
-                'nama_lantai' => 'nama_lantai',
-                'panjang' => 'panjang',
-                'lebar' => 'lebar',
-                'posisi_X' => 'posisi_X',
-                'posisi_Y' => 'posisi_Y',
-                'lokasi_otmil_id' => 'lokasi_otmil_id',
-                'gedung_otmil_id' => 'gedung_otmil_id',
-            ];
-
-            $filters = $request->input('filter', []);
-
-            foreach ($filterableColumns as $requestKey => $column) {
-                if (isset($filters[$requestKey])) {
-                    $query->where($column, 'like', '%' . $filters[$requestKey] .'%');
-                }
-            }
-
-            $query->latest();
-            $paginatedData = $query->paginate($request->input('pageSize', ApiResponse::$defaultPagination));
-
-            $resourceCollection = LantaiOtmilResource::collection($paginatedData);
+            $resourceCollection = LantaiOtmilResource::collection($getData);
 
             return ApiResponse::pagination($resourceCollection);
         } catch (\Exception $e) {
@@ -73,7 +45,7 @@ class LantaiController extends Controller
          ]);
 
          $insert = LantaiOtmil::create($request->all());
-         return ApiResponse::success([
+         return ApiResponse::created([
             'data' => $insert
         ]);
         } catch (\Exception $e) {

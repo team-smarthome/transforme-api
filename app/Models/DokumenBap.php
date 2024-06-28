@@ -26,9 +26,9 @@ class DokumenBap extends Model
         'saksi_id'
     ];
 
-    public function penyidikan(): HasMany
+    public function penyidikan(): BelongsTo
     {
-        return $this->hasMany(Penyidikan::class, 'penyidikan_id', 'id'); // banyak dokumen bap dimiliki oleh satu penyidikan
+        return $this->belongsTo(Penyidikan::class, 'penyidikan_id', 'id'); // banyak dokumen bap dimiliki oleh satu penyidikan
     }
 
     public function wbpProfile(): BelongsTo

@@ -38,8 +38,8 @@ class WbpProfileResource extends JsonResource
         // }) : collect([]);
 
         return [
-            'id' => $this->id,
-            'nama_wbp' => $this->nama,
+            'wbp_profile_id' => $this->id,
+            'nama' => $this->nama,
             'pangkat_id' => $this->pangkat_id,
             'nama_pangkat' => $this->pangkat->nama_pangkat,
             'kesatuan_id' => $this->kesatuan_id,
@@ -87,7 +87,7 @@ class WbpProfileResource extends JsonResource
             'hubungan_kontak_keluarga' => $this->hubungan_kontak_keluarga,
             'nomor_kontak_keluarga' => $this->nomor_kontak_keluarga,
             'matra_id' => $this->matra_id,
-            'nama_matra' => $this->nama_matra,
+            'nama_matra' => $this->matra->nama_matra,
             'nrp' => $this->nrp,
             'tanggal_ditahan_otmil' => $this->tanggal_ditahan_otmil,
             'tanggal_ditahan_lemasmil' => $this->tanggal_ditahan_lemasmil,

@@ -23,19 +23,9 @@ class Shift extends Model
     'waktu_selesai'
   ];
 
-  protected $hidden = ['created_at', 'updated_at', 'deleted_at'];
-
-  public function toArray()
-  {
-    $array = parent::toArray();
-    $array['shift_id'] = $array['id'];
-    unset($array['id']);
-    return $array;
-  }
-
   public function petugas_shift(): HasMany
   {
-    return $this->hasMany(PetugasShift::class, 'shift_id', 'id');
+    return $this->HasMany(PetugasShift::class, 'shift_id', 'id');
   }
   public function schedule(): HasOne
   {

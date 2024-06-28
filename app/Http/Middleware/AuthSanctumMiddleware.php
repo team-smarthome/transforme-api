@@ -37,6 +37,7 @@ class AuthSanctumMiddleware
             })->first();
 
             if ($userRole && in_array($userRole->role_name, $roles)) {
+                $request->merge(['user' => $user]);
                 return $next($request);
             } else {
               if (!$userRole) {
@@ -51,6 +52,6 @@ class AuthSanctumMiddleware
             }
         } 
 
-        return response()->json(['status' => "NO", 'message' => 'Token Expired or Token Not Found'], 401);
+        return response()->json(['status' => "error", 'message' => 'Bearer token required'], 401);
     }
 }

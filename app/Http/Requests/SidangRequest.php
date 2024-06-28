@@ -31,6 +31,7 @@ class SidangRequest extends FormRequest
             'kasus_id' => 'nullable|uuid|exists:kasus,id',
             'tanggal_sidang' => 'nullable|date',
             'waktu_mulai_sidang' => 'nullable',
+            'waktu_selesai_sidang' => 'nullable',
             'pengadilan_militer_id' => 'nullable|uuid|exists:pengadilan_militer,id',
             'agenda_sidang' => 'nullable|string',
             'hasil_keputusan_sidang' => 'nullable|string',
@@ -38,14 +39,13 @@ class SidangRequest extends FormRequest
             'juru_sita' => 'nullable|string',
             'juru_pengacara_sidang' => 'nullable|string',
             'pengawas_peradilan_militer' => 'nullable|string',
-            'wbp_profile_id' => 'nullable|string|exists:wbp_profile,id',
+            // 'wbp_profile_id' => 'nullable',
             'zona_waktu' => 'nullable|string',
-            'oditur_penuntut_id' => 'nullable|array',
-            'role_ketua' => 'nullable|array',
         ];
     }
 
-    public function failedValidation(Validator $validator) {
+    public function failedValidation(Validator $validator)
+    {
         throw new HttpResponseException(response([
             "status" => "NO",
             "message" => "Validation Error",
@@ -53,7 +53,8 @@ class SidangRequest extends FormRequest
         ], 422));
     }
 
-    public function messages(): array {
+    public function messages(): array
+    {
         return [
             'nama_sidang.required' => 'Nama Sidang harus diisi',
             'nama_sidang.string' => 'Nama Sidang harus berupa string',
@@ -72,12 +73,13 @@ class SidangRequest extends FormRequest
             'juru_sita.string' => 'Juru Sita harus berupa string',
             'juru_pengacara_sidang.string' => 'Juru Pengacara Sidang harus berupa string',
             'pengawas_peradilan_militer.string' => 'Pengawas Peradilan Militer harus berupa string',
-            'wbp_profile_id.uuid' => 'WBP Profile ID harus berupa UUID',
-            'wbp_profile_id.exists' => 'WBP Profile ID tidak ditemukan',
+            // 'wbp_profile_id.uuid' => 'WBP Profile ID harus berupa UUID',
+            // 'wbp_profile_id.exists' => 'WBP Profile ID tidak ditemukan',
             'zona_waktu.string' => 'Zona Waktu harus berupa string',
             'oditur_penuntut_id.array' => 'Oditur Penuntut harus berupa array',
-            'role_ketua.array' => 'Role Ketua harus berupa array',
+            'role_ketua_oditur.array' => 'Role Ketua harus berupa array',
+            'nama_dokumen_persidangan.string' => 'Nama Dokumen harus diisi',
+            'link_dokumen_persidangan.string' => 'Dokumen harus diisi',
         ];
     }
-    
 }
