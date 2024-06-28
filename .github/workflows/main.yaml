@@ -21,7 +21,7 @@ jobs:
           key: ${{ secrets.PRIVATE_KEY }}
           port: 22
           script: |
-            cd /var/www/dev-siram-workstation.co.id
+            cd /var/www/dev-siram-workstation.transforme.co.id
             git stash
-            git checkout development-stagging-v2
-            git pull origin development-stagging-v2
+            git checkout ${{ steps.branch.outputs.branch }}
+            git pull origin ${{ steps.branch.outputs.branch }}
