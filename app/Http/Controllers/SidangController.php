@@ -19,7 +19,7 @@ class SidangController extends Controller
     public function index(Request $request)
     {
         try {
-            $query = Sidang::with(['oditurPenuntut', 'hakim', 'ahli', 'saksi', 'kasus', 'kasus', 'pengadilanMiliter', 'jenisPersidangan', 'wbpProfile', 'pengacara']);
+            $query = Sidang::with(['oditurPenuntut', 'hakim', 'ahli', 'saksi', 'kasus', 'kasus', 'pengadilanMiliter', 'jenisPersidangan', 'wbpProfile']);
 
             $filterableColumns = [
                 "sidang_id" => "id",
@@ -64,9 +64,9 @@ class SidangController extends Controller
                 'role_ketua_oditur',
                 'hakim_id',
                 'role_ketua_hakim',
-                'ahli_id',
-                'saksi_id',
-                'nama_pengacara',
+                'ahli',
+                'saksi',
+                'pengacara',
                 'jenis_pengacara'
             ]);
             $sidang = Sidang::create($sidangData);
@@ -117,8 +117,8 @@ class SidangController extends Controller
                 DB::table('pivot_sidang_hakim')->insert($pivotHakimData);
             }
 
-            if ($request->has('ahli_id')) {
-                foreach ($request->ahli_id as $ahliId) {
+            if ($request->has('ahli')) {
+                foreach ($request->ahli as $ahliId) {
                     $pivotAhliData[] = [
                         'id' => \Illuminate\Support\Str::uuid(),
                         'sidang_id' => $sidang->id,
@@ -130,8 +130,8 @@ class SidangController extends Controller
                 DB::table('pivot_sidang_ahli')->insert($pivotAhliData);
             }
 
-            if ($request->has('saksi_id')) {
-                foreach ($request->saksi_id as $saksiId) {
+            if ($request->has('saksi')) {
+                foreach ($request->saksi as $saksiId) {
                     $pivotSaksiData[] = [
                         'id' => \Illuminate\Support\Str::uuid(),
                         'sidang_id' => $sidang->id,
@@ -144,12 +144,12 @@ class SidangController extends Controller
             }
 
             //pivot sidangn pengacara mengirim nama_pengacara dan jenis_pengacara
-            if ($request->has('nama_pengacara')) {
-                foreach ($request->nama_pengacara as $index => $namaPengacara) {
+            if ($request->has('pengacara')) {
+                foreach ($request->pengacara as $namaPengacara) {
                     $pivotPengacaraData[] = [
                         'id' => \Illuminate\Support\Str::uuid(),
                         'sidang_id' => $sidang->id,
-                        //   'nama_pengacara' => $namaPengacara,
+                        'nama_pengacara' => $namaPengacara,
                         //   'jenis_pengacara' => $request->jenis_pengacara[$index],
                         'created_at' => now(),
                         'updated_at' => now()
