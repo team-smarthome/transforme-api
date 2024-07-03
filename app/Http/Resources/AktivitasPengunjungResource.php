@@ -39,7 +39,7 @@ class   AktivitasPengunjungResource extends JsonResource
             'nama_petugas' => $this->petugas->nama,
             'nrp_petugas' => $this->petugas->nrp,
             'pengunjung_id' => $this->pengunjung_id,
-            'nama_pengunjung' => $this->pengunjung->nama,
+            'nama_pengunjung' => $this->pengunjung->nama ?? null,
             'wbp_profile_id' => $this->wbp_profile_id,
             'nama_wbp' => $this->wbpProfile->nama,
             'd_createdAt' => $this->created_at,
