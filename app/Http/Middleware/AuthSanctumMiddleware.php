@@ -27,7 +27,7 @@ class AuthSanctumMiddleware
             $latestAccessToken = $user->tokens()->latest()->first();
     
             if (!$currentAccessToken || $currentAccessToken->id !== $latestAccessToken->id) {
-                return response()->json(['status' => "OK", 'message' => 'You are logged in'], 200);
+                return response()->json(['status' => "error", 'message' => 'Token Invalid'], 403);
             }
             // Query untuk mendapatkan role_name dari user
             $userRole = UserRole::where('id', function ($query) use ($user) {
