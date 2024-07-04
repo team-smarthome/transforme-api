@@ -12,18 +12,34 @@ class RuanganOtmilController extends Controller
     public function index(Request $request)
     {
         try {
-            $search = $request->input('search');
-            $searchType = $request->input('searchType');
-            $pageSize = $request->input('pageSize', ApiResponse::$defaultPagination);
+            $query = RuanganOtmil::with('lokasiOtmil','lantaiOtmil', 'zona');
+            $filterData = [
+                'nama_ruangan_otmil' => 'nama_ruangan_otmil',
+                'jenis_ruangan_otmil' => 'jenis_ruangan_otmil'
+            ];
+            foreach ($filterData as $field => $requestParam) {
+                if ($request->has($requestParam)) {
+                    $query->where($field, 'like', '%' . $request->input($requestParam) . '%');
+                }
+            }
 
-            $query = RuanganOtmil::with(['lokasiOtmil', 'lantaiOtmil', 'zona'])
-            ->where('nama_ruangan_otmil', 'LIKE', '%'. $search . '%')
-            ->where('jenis_ruangan_otmil', 'LIKE', '%'. $searchType . '%')
-            ->latest()->paginate($pageSize);
+            $query->latest();
+            $paginatedData = $query->paginate($request->input('pageSize', ApiResponse::$defaultPagination));
+            $resourceCollection = RuanganOtmilResource::collection($paginatedData);
 
-            $resourceCollection = RuanganOtmilResource::collection($query);
+            return ApiResponse::pagination($resourceCollection, 'Successfully get Data');
+            // $nama = $request->input('search');
+            // $searchType = $request->input('searchType');
+            // $pageSize = $request->input('pageSize', ApiResponse::$defaultPagination);
 
-            return ApiResponse::pagination($resourceCollection);
+            // $query = RuanganOtmil::with(['lokasiOtmil', 'lantaiOtmil', 'zona'])
+            // ->where('nama_ruangan_otmil', 'LIKE', '%'. $search . '%')
+            // ->where('jenis_ruangan_otmil', 'LIKE', '%'. $searchType . '%')
+            // ->latest()->paginate($pageSize);
+
+            // $resourceCollection = RuanganOtmilResource::collection($query);
+
+            // return ApiResponse::pagination($resourceCollection);
         } catch (\Exception $e) {
             return ApiResponse::error('An error occurred while fetching data.', $e->getMessage());
         }

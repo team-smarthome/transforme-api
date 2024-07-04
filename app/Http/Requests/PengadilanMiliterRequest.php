@@ -26,7 +26,7 @@ class PengadilanMiliterRequest extends FormRequest
         return [
             'nama_pengadilan_militer' => 'required|string|max:255',
             'provinsi_id' => 'required|string|max:255',
-            'kota_id' => 'required|string|max:255',
+            'kota_id' => 'nullable|string|max:255',
             'latitude' => 'required|string|max:255',
             'longitude' => 'required|string|max:255',
         ];

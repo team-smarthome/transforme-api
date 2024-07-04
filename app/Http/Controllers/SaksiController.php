@@ -18,19 +18,23 @@ class SaksiController extends Controller
                 'kasus_id' => 'kasus_id'
             ];
 
-            $filter = $request->input('filter', []);
-
-            foreach ($filterableColumns as $key => $column) {
-                if (isset($filter[$key])) {
-                    $query->where($column, 'like', '%' . $filter[$key] . '%');
+            foreach ($filterableColumns as $field => $requestParam) {
+                if ($request->has($requestParam)) {
+                    $query->where($field, 'like', '%' . $request->input($requestParam) . '%');
                 }
             }
 
             $query->latest();
-            $paginateData = $query->paginate($request->input('pageSize', ApiResponse::$defaultPagination));
-            $resourceCollection = SaksiResource::collection($paginateData);
+            $paginatedData = $query->paginate($request->input('pageSize', ApiResponse::$defaultPagination));
+            $resourceCollection = SaksiResource::collection($paginatedData);
 
-            return ApiResponse::pagination($resourceCollection);
+            return ApiResponse::pagination($resourceCollection, 'Successfully get Data');
+
+            // $query->latest();
+            // $paginateData = $query->paginate($request->input('pageSize', ApiResponse::$defaultPagination));
+            // $resourceCollection = SaksiResource::collection($paginateData);
+
+            // return ApiResponse::pagination($resourceCollection);
         } catch (\Exception $e) {
             return ApiResponse::error('Failed to get data.', $e->getMessage());
         }

@@ -21,10 +21,9 @@ class JenisPersidanganController extends Controller
         try {
             $query = JenisPersidangan::query();
             $filterableColumns = [
-                'jenis_persidangan_id' => 'id',
                 'nama_jenis_persidangan' => 'nama_jenis_persidangan'
             ];
-            
+
             foreach ($filterableColumns as $requestKey => $column) {
                 if ($request->has($requestKey)) {
                     $query->where($column, 'like', '%' . $request->input($requestKey) . '%');
@@ -117,7 +116,8 @@ class JenisPersidanganController extends Controller
         return ApiResponse::deleted();
     }
 
-    public function restore($id){
+    public function restore($id)
+    {
         $jenisPersidangan = JenisPersidangan::withTrashed()->findOrFail($id);
         $jenisPersidangan->restore();
 
