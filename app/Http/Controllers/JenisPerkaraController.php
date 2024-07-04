@@ -27,24 +27,18 @@ class JenisPerkaraController extends Controller
                 'jenis_pidana_id' => 'kategoriPerkara.jenis_pidana_id'
             ];
 
-            $filters = $request->input('filter', []);
-
-            foreach ($filterData as $key => $column) {
-                if (isset($filters[$key])) {
-                    if ($key === 'nama_kategori_perkara') {
-                        $query->whereHas('kategoriPerkara', function ($q) use ($filters, $key) {
-                            $q->where('nama_kategori_perkara', 'LIKE', '%' . $filters[$key] . '%');
-                        });
-                    }
-                    if ($key === 'jenis_pidana_id') {
-                        $query->whereHas('kategoriPerkara', function ($q) use ($filters, $key) {
-                            $q->where('jenis_pidana_id', 'LIKE', '%' . $filters[$key] . '%');
-                        });
-                    } else {
-                        $query->where($column, 'LIKE', '%' . $filters[$key] . '%');
-                    }
+            foreach($filterData as $requestKey => $column) {
+                if ($request->has($requestKey)) {
+                    $query->where($column, 'LIKE', '%' . $request->input($requestKey) . '%');
                 }
             }
+
+            if ($request->has('nama_kategori_perkara')) {
+                $query->whereHas('kategoriPerkara', function ($q) use ($request) {
+                    $q->where('nama_kategori_perkara', 'like', '%' . $request->input('nama_kategori_perkara') . '%');
+                });
+            }
+
 
             $query->latest();
             $paginatedData = $query->paginate($request->input('pageSize', ApiResponse::$defaultPagination));
