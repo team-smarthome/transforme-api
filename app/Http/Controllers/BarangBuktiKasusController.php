@@ -17,11 +17,11 @@ class BarangBuktiKasusController extends Controller
     public function index(Request $request)
     {
         try {
-           
+
 
             $nama_barang = $request->input('nama_barang');
             $nama_kasus = $request->input('nama_kasus');
-            $nama_perkara = $request->input('nama_perkara');
+            $nama_perkara = $request->input('nama_jenis_perkara');
             $pageSize = $request->input('pageSize', ApiResponse::$defaultPagination);
 
             $query = BarangBuktiKasus::with(['kasus', 'jenisPerkara'])
@@ -72,7 +72,7 @@ class BarangBuktiKasusController extends Controller
                 'longitude' => $request->longitude,
                 'jenis_perkara_id' => $request->jenis_perkara_id,
             ]);
-        
+
             if ($request->hasFile('dokumen_barang_bukti')) {
                 $dokumenPath = $request->file('dokumen_barang_bukti')->store('public/barang_bukti_kasus_file');
                 $barangBuktiKasus->dokumen_barang_bukti = str_replace('public/', '', $dokumenPath);
@@ -81,7 +81,7 @@ class BarangBuktiKasusController extends Controller
                 $gambarPath = $request->file('gambar_barang_bukti')->store('public/barang_bukti_kasus_image');
                 $barangBuktiKasus->gambar_barang_bukti = str_replace('public/', '', $gambarPath);
             }
-        
+
             if ($barangBuktiKasus->save()) {
                 return ApiResponse::created($barangBuktiKasus);
             } else {
@@ -89,14 +89,14 @@ class BarangBuktiKasusController extends Controller
             }
         } catch (QueryException $e) {
             return ApiResponse::error('Database error', $e->getMessage(), 500);
-    
+
         } catch (Exception $e) {
             return ApiResponse::error('An unexpected error occurred', $e->getMessage(), 500);
         }
 
 
     }
-    
+
 
     /**
      * Display the specified resource.
@@ -122,7 +122,7 @@ class BarangBuktiKasusController extends Controller
         try {
             $id = $request->input('barang_bukti_kasus_id');
             $barangBuktiKasus = BarangBuktiKasus::findOrFail($id);
-    
+
             $barangBuktiKasus->kasus_id = $request->kasus_id;
             $barangBuktiKasus->nama_bukti_kasus = $request->nama_bukti_kasus;
             $barangBuktiKasus->nomor_barang_bukti = $request->nomor_barang_bukti;
@@ -130,23 +130,23 @@ class BarangBuktiKasusController extends Controller
             $barangBuktiKasus->tanggal_diambil = $request->tanggal_diambil;
             $barangBuktiKasus->longitude = $request->longitude;
             $barangBuktiKasus->jenis_perkara_id = $request->jenis_perkara_id;
-    
+
             if ($request->hasFile('dokumen_barang_bukti')) {
                 $dokumenPath = $request->file('dokumen_barang_bukti')->store('public/barang_bukti_kasus');
                 $barangBuktiKasus->dokumen_barang_bukti = str_replace('public/', '', $dokumenPath);
             }
-    
+
             if ($request->hasFile('gambar_barang_bukti')) {
                 $gambarPath = $request->file('gambar_barang_bukti')->store('public/barang_bukti_kasus');
                 $barangBuktiKasus->gambar_barang_bukti = str_replace('public/', '', $gambarPath);
             }
-    
+
 
             if ($barangBuktiKasus->save()) {
                 return ApiResponse::updated($barangBuktiKasus);
             } else {
                 return ApiResponse::error('Failed to update data.', 500);
-            
+
             }
         } catch (QueryException $e) {
             return ApiResponse::error('Database error', $e->getMessage(), 500);
