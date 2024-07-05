@@ -17,24 +17,39 @@ class AsetController extends Controller
     public function index(Request $request)
     {
         try {
-            $query = Aset::with(['tipeAset', 'ruanganOtmil', 'ruanganLemasmil']);
-            $filterableColumns = [
-                'nama_tipe' => 'tipeAset.nama_tipe',
-                'nama_ruangan_otmil' => 'ruanganOtmil.nama_ruangan',
-                'nama_ruangan_lemasmil' => 'ruanganLemasmil.nama_ruangan',
-                'kondisi' => 'kondisi',
-                'tanggal_masuk' => 'tanggal_masuk',
-                'serial_number' => 'serial_number',
-                'model' => 'model',
-                'merek' => 'merek',
-            ];
 
-            foreach ($filterableColumns as $requestKey => $column) {
-                if ($request->has($requestKey)) {
-                    $query->where($column, 'like', '%' . $request->input($requestKey) . '%');
-                }
-            }
-            
+            $nama_aset = $request->input('nama_aset');
+            $nama_tipe = $request->input('nama_tipe');
+            $pageSize = $request->input('pageSize', ApiResponse::$defaultPagination);
+            $query = Aset::with(['tipeAset', 'ruanganOtmil', 'ruanganLemasmil'])
+                ->when($nama_aset, function ($q) use ($nama_aset) {
+                    $q->where('nama_aset', 'LIKE', '%' . $nama_aset . '%');
+                })
+                ->when($nama_tipe, function ($q) use ($nama_tipe) {
+                    $q->orWhereHas('tipeAset', function ($q) use ($nama_tipe) {
+                        $q->where('nama_tipe', 'LIKE', '%' . $nama_tipe . '%');
+                    });
+                })
+                ->latest()
+                ->paginate($pageSize);
+            // $filterableColumns = [
+            //     'nama_aset' => 'nama_aset',
+            //     'nama_tipe' => 'tipeAset.nama_tipe',
+            //     'nama_ruangan_otmil' => 'ruanganOtmil.nama_ruangan',
+            //     'nama_ruangan_lemasmil' => 'ruanganLemasmil.nama_ruangan',
+            //     'kondisi' => 'kondisi',
+            //     'tanggal_masuk' => 'tanggal_masuk',
+            //     'serial_number' => 'serial_number',
+            //     'model' => 'model',
+            //     'merek' => 'merek',
+            // ];
+
+            // foreach ($filterableColumns as $requestKey => $column) {
+            //     if ($request->has($requestKey)) {
+            //         $query->where($column, 'like', '%' . $request->input($requestKey) . '%');
+            //     }
+            // }
+
             // $filters = $request->input('filter', []);
 
             // foreach ($filterableColumns as $requestKey => $column) {
@@ -50,10 +65,10 @@ class AsetController extends Controller
             //     }
             //  }
 
-            $query->latest();
-            $paginatedData = $query->paginate($request->input('pageSize', ApiResponse::$defaultPagination));
+            // $query->latest();
+            // $paginatedData = $query->paginate($request->input('pageSize', ApiResponse::$defaultPagination));
 
-            $resourceCollection = AsetResource::collection($paginatedData);
+            $resourceCollection = AsetResource::collection($query);
 
             return ApiResponse::pagination($resourceCollection);
             // return ApiResponse::paginate($query);
