@@ -10,6 +10,7 @@ use App\Helpers\ApiResponse;
 use App\Http\Resources\KegiatanResource;
 use Exception;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Support\Facades\Log;
 
 
 class KegiatanController extends Controller
@@ -66,36 +67,87 @@ class KegiatanController extends Controller
     /**
      * Store a newly created resource in storage.
      */
+    // public function store(KegiatanRequest $request)
+    // {
+    //     DB::beginTransaction();
+    //     try {
+    //         $kegiatan = Kegiatan::create($request->validated());
+    //         $kegiatanWbp = [];
+    //         if ($request->has('peserta')) {
+    //             foreach ($request->peserta as $wbpProfileId) {
+    //                 $kegiatanWbp[] = [
+    //                     'id' => \Illuminate\Support\Str::uuid(),
+    //                     'kegiatan_id' => $kegiatan->id,
+    //                     'wbp_profile_id' => $wbpProfileId,
+    //                     'created_at' => now(),
+    //                     'updated_at' => now()
+    //                 ];
+    //             }
+    //             DB::table('kegiatan_wbp')->insert($kegiatanWbp);
+    //         }
+    //         DB::commit();
+    //         $kegiatan->wbpProfile = $kegiatanWbp;
+    //         return ApiResponse::created($kegiatan);
+    //     } catch (Exception $e) {
+    //         DB::rollBack();
+    //         return [
+    //             'status' => 'ERROR',
+    //             'message' => 'Data kegiatan gagal disimpan',
+    //             'data' => $e->getMessage()
+    //         ];
+    //     }
+    // }
+
     public function store(KegiatanRequest $request)
-    {
-        DB::beginTransaction();
-        try {
-            $kegiatan = Kegiatan::create($request->validated());
-            $kegiatanWbp = [];
-            if ($request->has('peserta')) {
-                foreach ($request->peserta as $wbpProfileId) {
-                    $kegiatanWbp[] = [
-                        'id' => \Illuminate\Support\Str::uuid(),
-                        'kegiatan_id' => $kegiatan->id,
-                        'wbp_profile_id' => $wbpProfileId,
-                        'created_at' => now(),
-                        'updated_at' => now()
-                    ];
-                }
-                DB::table('kegiatan_wbp')->insert($kegiatanWbp);
+{
+    DB::beginTransaction();
+    try {
+        // Validasi data request
+        $validatedData = $request->validated();
+        Log::info('Validated data: ', $validatedData);
+        
+        // Buat data kegiatan
+        $kegiatan = Kegiatan::create($validatedData);
+        Log::info('Kegiatan created: ', $kegiatan->toArray());
+
+        // Siapkan data peserta
+        $kegiatanWbp = [];
+        if ($request->has('peserta')) {
+            foreach ($request->peserta as $wbpProfileId) {
+                $kegiatanWbp[] = [
+                    'id' => \Illuminate\Support\Str::uuid(),
+                    'kegiatan_id' => $kegiatan->id,
+                    'wbp_profile_id' => $wbpProfileId,
+                    'created_at' => now(),
+                    'updated_at' => now()
+                ];
             }
-            DB::commit();
-            $kegiatan->wbpProfile = $kegiatanWbp;
-            return ApiResponse::created($kegiatan);
-        } catch (Exception $e) {
-            DB::rollBack();
-            return [
-                'status' => 'ERROR',
-                'message' => 'Data kegiatan gagal disimpan',
-                'data' => $e->getMessage()
-            ];
+            Log::info('Kegiatan WBP data: ', $kegiatanWbp);
+            
+            // Insert data peserta ke dalam tabel kegiatan_wbp
+            DB::table('kegiatan_wbp')->insert($kegiatanWbp);
         }
+
+        DB::commit();
+
+        // Tambahkan wbpProfile ke kegiatan
+        $kegiatan->wbpProfile = $kegiatanWbp;
+        Log::info('Final kegiatan with WBP: ', $kegiatan->toArray());
+        
+        // Return response sukses
+        return ApiResponse::created($kegiatan);
+    } catch (Exception $e) {
+        DB::rollBack();
+        Log::error('Error inserting kegiatan: ', ['error' => $e->getMessage()]);
+        
+        // Return response error
+        return [
+            'status' => 'ERROR',
+            'message' => 'Data kegiatan gagal disimpan',
+            'data' => $e->getMessage()
+        ];
     }
+}
 
     /**
      * Display the specified resource.
