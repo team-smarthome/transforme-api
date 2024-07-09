@@ -15,6 +15,8 @@ class PetugasResource extends JsonResource
   public function toArray(Request $request): array
   {
     return [
+      'xAxis' => rand(1, 100),
+      'yAxis' => rand(1, 100),
       "petugas_id" => $this->id,
       "nrp" => $this->nrp,
       "nama" => $this->nama,
