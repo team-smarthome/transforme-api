@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Models\KegiatanWbp;
 use App\Models\WbpProfile;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -15,9 +16,6 @@ class KegiatanResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        $wbpProfile = WbpProfile::select('id', 'nama')
-        ->get();
-
         return [
             'kegiatan_id' => $this->id,
             'nama_kegiatan' => $this->nama_kegiatan,
@@ -37,17 +35,18 @@ class KegiatanResource extends JsonResource
             'nama_lokasi_lemasmil' => $this->ruanganLemasmil->lokasiLemasmil->nama_lokasi_lemasmil ?? null,
             'status_zona_otmil' => $this->ruanganOtmil->zona->nama_zona ?? null,
             'status_zona_lemasmil' => $this->ruanganLemasmil->zona->nama_zona ?? null,
-            // 'peserta' => $this->wbpProfile->map(function($kegiatanWbp) {
-            //     return [
-            //         'wbp_profile_id' => (string) $kegiatanWbp->wbp_profile_id,
-            //     ];
-            // })
-            'peserta' => $wbpProfile->map(function($wbp){
+            'peserta' => $this->kegiatanWbpPivot->map(function($wbp) {
                 return [
                     'wbp_profile_id' => $wbp->id,
                     'nama_wbp' => $wbp->nama,
                 ];
-            })
+            })->toArray()
         ];
     }
 }
+
+// 'peserta' => $this->wbpProfile->map(function($kegiatanWbp) {
+            //     return [
+            //         'wbp_profile_id' => (string) $kegiatanWbp->wbp_profile_id,
+            //     ];
+            // })

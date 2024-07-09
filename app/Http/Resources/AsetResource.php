@@ -18,7 +18,7 @@ class AsetResource extends JsonResource
             'aset_id' => $this->id,
             'nama_aset' => $this->nama_aset,
             'tipe_aset_id' => $this->tipe_aset_id,
-            'nama_tipe' => $this->tipeAset->nama_tipe_aset ?? null,
+            'nama_tipe' => $this->tipeAset->nama_tipe,
             'ruangan_otmil_id' => $this->ruangan_otmil_id,
             'nama_ruangan_otmil' => $this->ruanganOtmil->nama_ruangan_otmil ?? null,
             'ruangan_lemasmil_id' => $this->ruangan_lemasmil_id ?? null,

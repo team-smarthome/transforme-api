@@ -52,6 +52,11 @@ class Kegiatan extends Model
         return $this->belongsToMany(WbpProfile::class, 'kegiatan_wbp', 'kegiatan_id', 'wbp_profile_id');
     }
 
+    public function kegiatanWbpPivot(): BelongsToMany
+    {
+        return $this->belongsToMany(WbpProfile::class, 'kegiatan_wbp', 'kegiatan_id', 'wbp_profile_id');
+    }
+
     public function penilaianKegiatanWbp(): HasMany
     {
         return $this->hasMany(PenilaianKegiatanWbp::class, 'kegiatan_id', 'id');
