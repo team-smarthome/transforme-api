@@ -38,6 +38,8 @@ class WbpProfileResource extends JsonResource
         // }) : collect([]);
 
         return [
+            'xAxis' => rand(1, 100),
+            'yAxis' => rand(1, 100),
             'wbp_profile_id' => $this->id,
             'nama' => $this->nama,
             'pangkat_id' => $this->pangkat_id,
