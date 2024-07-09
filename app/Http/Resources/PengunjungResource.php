@@ -15,6 +15,8 @@ class PengunjungResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
+            'xAxis' => rand(1, 100),
+            'yAxis' => rand(1, 100),
             'pengunjung_id' => $this->id,
             'nama' => $this->nama,
             'tempat_lahir' => $this->tempat_lahir,
