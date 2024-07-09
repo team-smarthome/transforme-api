@@ -26,7 +26,20 @@ class PengunjungController extends Controller
                 'nik' => 'nik'
             ];
 
-            $filters = $request->input('filter', []);
+
+            foreach ($filterableColumns as $requestKey => $column) {
+                if ($request->has($requestKey)) {
+                    $query->where($column, 'like', '%' . $request->input($requestKey) . '%');
+                }
+            }
+
+
+
+            if ($request->has('nama_wbp')) {
+                $query->whereHas('wbpProfile', function ($q) use ($request) {
+                    $q->where('nama_wbp', 'like', '%' . $request->input('nama_wbp') . '%');
+                });
+            }
             foreach ($filterableColumns as $key => $column) {
                 if (isset($filters[$key])) {
                     if ($key === 'nama_wbp') {
