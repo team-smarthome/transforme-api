@@ -33,23 +33,10 @@ class PengunjungController extends Controller
                 }
             }
 
-
-
             if ($request->has('nama_wbp')) {
                 $query->whereHas('wbpProfile', function ($q) use ($request) {
                     $q->where('nama_wbp', 'like', '%' . $request->input('nama_wbp') . '%');
                 });
-            }
-            foreach ($filterableColumns as $key => $column) {
-                if (isset($filters[$key])) {
-                    if ($key === 'nama_wbp') {
-                        $query->whereHas('wbpProfile', function ($q) use ($filters, $key) {
-                            $q->where('nama', 'LIKE', '%' . $filters[$key] . '%');
-                        });
-                    } else {
-                        $query->where($column, 'LIKE', '%' . $filters[$key] . '%');
-                    }
-                }
             }
 
             $query->latest();
