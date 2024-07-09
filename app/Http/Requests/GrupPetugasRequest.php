@@ -25,7 +25,7 @@ class GrupPetugasRequest extends FormRequest
   {
     return [
       "nama_grup_petugas" => 'required|string|max:255',
-      "ketua_grup" => 'required|string|max:255',
+      "ketua_grup_id" => 'required|string|max:255',
     ];
   }
   protected function failedValidation(Validator $validator)

@@ -96,7 +96,7 @@ class Petugas extends Model
   }
   public function ketua(): HasMany
   {
-    return $this->hasMany(GrupPetugas::class, 'ketua_grup', 'id');
+    return $this->hasMany(GrupPetugas::class, 'ketua_grup_id', 'id');
   }
   public function matra(): BelongsTo
   {

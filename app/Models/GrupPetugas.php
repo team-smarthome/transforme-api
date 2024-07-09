@@ -18,7 +18,7 @@ class GrupPetugas extends Model
   public $incrementing = false;
   public $timestamps = true;
 
-  protected $fillable = ['nama_grup_petugas', 'ketua_grup'];
+  protected $fillable = ['nama_grup_petugas', 'ketua_grup_id'];
 
   public function petugas(): HasMany
   {
@@ -26,6 +26,6 @@ class GrupPetugas extends Model
   }
   public function ketua(): BelongsTo
   {
-    return $this->belongsTo(Petugas::class, 'ketua_grup', 'id');
+    return $this->belongsTo(Petugas::class, 'ketua_grup_id', 'id');
   }
 }
