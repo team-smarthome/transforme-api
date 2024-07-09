@@ -28,9 +28,8 @@ class Kegiatan extends Model
 
     protected $fillable = [
         'nama_kegiatan',
-        'nama_kegiatan',
         'ruangan_otmil_id',
-        'ruagan_lemasmil_id',
+        'ruangan_lemasmil_id',
         'status_kegiatan',
         'waktu_mulai_kegiatan',
         'waktu_selesai_kegiatan',

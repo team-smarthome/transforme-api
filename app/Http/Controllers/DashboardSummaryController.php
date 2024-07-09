@@ -23,14 +23,14 @@ class DashboardSummaryController extends Controller
             $records = [];
 
             if (!empty($filterLokasiOtmil)) {
-                $lokasiOtmil = LokasiOtmil::where('lokasi_otmil_id', $filterLokasiOtmil)->first();
+                $lokasiOtmil = LokasiOtmil::where('id', $filterLokasiOtmil)->first();
                 if ($lokasiOtmil) {
                     $records['lokasi_otmil'] = $lokasiOtmil->nama_lokasi_otmil;
                 }
             }
 
             if (!empty($filterLokasiLemasmil)) {
-                $lokasiLemasmil = LokasiLemasmil::where('lokasi_lemasmil_id', $filterLokasiLemasmil)->first();
+                $lokasiLemasmil = LokasiLemasmil::where('id', $filterLokasiLemasmil)->first();
                 if ($lokasiLemasmil) {
                     $records['lokasi_lemasmil'] = $lokasiLemasmil->nama_lokasi_lemasmil;
                 }
@@ -47,7 +47,7 @@ class DashboardSummaryController extends Controller
                 $queryWBPTotal->where('wbp_perkara.lokasi_otmil_id', 'LIKE', '%' . $filterLokasiOtmil . '%');
             }
             if (!empty($filterLokasiLemasmil)) {
-                $queryWBPTotal->where('wbp_perkara.lokasi_lemasmil_id', 'LIKE', '%' . $filterLokasiLemasmil . '%');
+                $queryWBPTotal->where('wbp_perkara.lokasi_lemasmil_id', 'LIKE', "%$filterLokasiLemasmil%");
             }
 
             $totalWBP = $queryWBPTotal->count();
@@ -98,11 +98,11 @@ class DashboardSummaryController extends Controller
                 ->where('kamera.deleted_at');
 
             if (!empty($filterLokasiOtmil)) {
-                $queryTotalKamera->where('lokasi_otmil.lokasi_otmil_id', 'like', '%' . $filterLokasiOtmil . '%');
+                $queryTotalKamera->where('lokasi_otmil.id', 'like', "%$filterLokasiOtmil%");
             }
 
             if (!empty($filterLokasiLemasmil)) {
-                $queryTotalKamera->where('lokasi_lemasmil.lokasi_lemasmil_id', 'like', '%' . $filterLokasiLemasmil . '%');
+                $queryTotalKamera->where('lokasi_lemasmil.id', 'like', "%$filterLokasiLemasmil%");
             }
 
             $totalKamera = $queryTotalKamera->count();
@@ -114,14 +114,14 @@ class DashboardSummaryController extends Controller
             ->leftJoin('lokasi_otmil', 'ruangan_otmil.lokasi_otmil_id', '=', 'lokasi_otmil.id')
             ->leftJoin('lokasi_lemasmil', 'ruangan_lemasmil.lokasi_lemasmil_id', '=', 'lokasi_lemasmil.id')
             ->where('kamera.deleted_at')
-            ->where('kamera.status_kamera', 'Aktif');
+            ->where('kamera.status_kamera', 'online');
 
             // Add filter conditions
             if (!empty($filterLokasiOtmil)) {
-                $queryTotalKameraAktif->where('lokasi_otmil.lokasi_otmil_id', 'LIKE', '%' . $filterLokasiOtmil . '%');
+                $queryTotalKameraAktif->where('lokasi_otmil.id', 'LIKE', "%$filterLokasiOtmil%");
             }
             if (!empty($filterLokasiLemasmil)) {
-                $queryTotalKameraAktif->where('lokasi_lemasmil.lokasi_lemasmil_id', 'LIKE', '%' . $filterLokasiLemasmil . '%');
+                $queryTotalKameraAktif->where('lokasi_lemasmil.id', 'LIKE', "%$filterLokasiLemasmil%");
             }
 
             $totalKameraAktif = $queryTotalKameraAktif->count();
@@ -133,14 +133,14 @@ class DashboardSummaryController extends Controller
             ->leftJoin('lokasi_otmil', 'ruangan_otmil.lokasi_otmil_id', '=', 'lokasi_otmil.id')
             ->leftJoin('lokasi_lemasmil', 'ruangan_lemasmil.lokasi_lemasmil_id', '=', 'lokasi_lemasmil.id')
             ->where('kamera.deleted_at')
-            ->where('kamera.status_kamera', 'nonaktif');
+            ->where('kamera.status_kamera', 'offline');
 
             if (!empty($filterLokasiOtmil)) {
-                $queryTotalKameraNonaktif->where('lokasi_otmil.lokasi_otmil_id', 'like', "%$filterLokasiOtmil%");
+                $queryTotalKameraNonaktif->where('lokasi_otmil.id', 'like', "%$filterLokasiOtmil%");
             }
 
             if (!empty($filterLokasiLemasmil)) {
-                $queryTotalKameraNonaktif->where('lokasi_lemasmil.lokasi_lemasmil_id', 'like', "%$filterLokasiLemasmil%");
+                $queryTotalKameraNonaktif->where('lokasi_lemasmil.id', 'like', "%$filterLokasiLemasmil%");
             }
 
             $totalKameraNonaktif = $queryTotalKameraNonaktif->count();
@@ -155,11 +155,11 @@ class DashboardSummaryController extends Controller
             ->where('kamera.status_kamera', 'rusak');
 
             if (!empty($filterLokasiOtmil)) {
-                $queryTotalKameraRusak->where('lokasi_otmil.lokasi_otmil_id', 'like', "%$filterLokasiOtmil%");
+                $queryTotalKameraRusak->where('lokasi_otmil.id', 'like', "%$filterLokasiOtmil%");
             }
 
             if (!empty($filterLokasiLemasmil)) {
-                $queryTotalKameraRusak->where('lokasi_lemasmil.lokasi_lemasmil_id', 'like', "%$filterLokasiLemasmil%");
+                $queryTotalKameraRusak->where('lokasi_lemasmil.id', 'like', "%$filterLokasiLemasmil%");
             }
 
             $totalKameraRusak = $queryTotalKameraRusak->count();
@@ -173,11 +173,11 @@ class DashboardSummaryController extends Controller
             ->where('gateway.deleted_at');
 
             if (!empty($filterLokasiOtmil)) {
-                $queryTotalGateway->where('lokasi_otmil.lokasi_otmil_id', 'LIKE', '%' . $filterLokasiOtmil . '%');
+                $queryTotalGateway->where('lokasi_otmil.id', 'LIKE', "%$filterLokasiOtmil%");
             }
 
             if (!empty($filterLokasiLemasmil)) {
-                $queryTotalGateway->where('lokasi_lemasmil.lokasi_lemasmil_id', 'LIKE', '%' . $filterLokasiLemasmil . '%');
+                $queryTotalGateway->where('lokasi_lemasmil.id', 'LIKE', "%$filterLokasiLemasmil%");
             }
 
             $totalGateway = $queryTotalGateway->count();
@@ -189,14 +189,14 @@ class DashboardSummaryController extends Controller
             ->leftJoin('lokasi_otmil', 'ruangan_otmil.lokasi_otmil_id', '=', 'lokasi_otmil.id')
             ->leftJoin('lokasi_lemasmil', 'ruangan_lemasmil.lokasi_lemasmil_id', '=', 'lokasi_lemasmil.id')
             ->where('gateway.deleted_at')
-            ->where('gateway.status_gateway', 'Aktif');
+            ->where('gateway.status_gateway', 'aktif');
 
             if (!empty($filterLokasiOtmil)) {
-                $queryTotalGatewayAktif->where('lokasi_otmil.lokasi_otmil_id', 'LIKE', '%' . $filterLokasiOtmil . '%');
+                $queryTotalGatewayAktif->where('lokasi_otmil.id', 'LIKE', "%$filterLokasiOtmil%");
             }
 
             if (!empty($filterLokasiLemasmil)) {
-                $queryTotalGatewayAktif->where('lokasi_lemasmil.lokasi_lemasmil_id', 'LIKE', '%' . $filterLokasiLemasmil . '%');
+                $queryTotalGatewayAktif->where('lokasi_lemasmil.id', 'LIKE', "%$filterLokasiLemasmil%");
             }
 
             $totalGatewayAktif = $queryTotalGatewayAktif->count();
@@ -208,14 +208,14 @@ class DashboardSummaryController extends Controller
             ->leftJoin('lokasi_otmil', 'ruangan_otmil.lokasi_otmil_id', '=', 'lokasi_otmil.id')
             ->leftJoin('lokasi_lemasmil', 'ruangan_lemasmil.lokasi_lemasmil_id', '=', 'lokasi_lemasmil.id')
             ->where('gateway.deleted_at')
-            ->where('gateway.status_gateway', 'Nonaktif');
+            ->where('gateway.status_gateway', 'nonaktif');
 
             if (!empty($filterLokasiOtmil)) {
-                $queryTotalGatewayNonaktif->where('lokasi_otmil.lokasi_otmil_id', 'LIKE', '%' . $filterLokasiOtmil . '%');
+                $queryTotalGatewayNonaktif->where('lokasi_otmil.id', 'LIKE', "%$filterLokasiOtmil%");
             }
 
             if (!empty($filterLokasiLemasmil)) {
-                $queryTotalGatewayNonaktif->where('lokasi_lemasmil.lokasi_lemasmil_id', 'LIKE', '%' . $filterLokasiLemasmil . '%');
+                $queryTotalGatewayNonaktif->where('lokasi_lemasmil.id', 'LIKE', "%$filterLokasiLemasmil%");
             }
 
             $totalGatewayNonktif = $queryTotalGatewayNonaktif->count();
@@ -230,11 +230,11 @@ class DashboardSummaryController extends Controller
             ->where('gateway.status_gateway', 'rusak');
 
             if (!empty($filterLokasiOtmil)) {
-                $queryTotalGatewayRusak->where('lokasi_otmil.lokasi_otmil_id', 'LIKE', '%' . $filterLokasiOtmil . '%');
+                $queryTotalGatewayRusak->where('lokasi_otmil.id', 'LIKE', "%$filterLokasiOtmil%");
             }
 
             if (!empty($filterLokasiLemasmil)) {
-                $queryTotalGatewayRusak->where('lokasi_lemasmil.lokasi_lemasmil_id', 'LIKE', '%' . $filterLokasiLemasmil . '%');
+                $queryTotalGatewayRusak->where('lokasi_lemasmil.id', 'LIKE', "%$filterLokasiLemasmil%");
             }
 
             $totalGatewayRusak = $queryTotalGatewayRusak->count();
@@ -248,10 +248,10 @@ class DashboardSummaryController extends Controller
             ->where('gelang.deleted_at');
 
             if (!empty($filterLokasiOtmil)) {
-                $queryTotalGelang->where('lokasi_otmil.lokasi_otmil_id', 'LIKE', "%$filterLokasiOtmil%");
+                $queryTotalGelang->where('lokasi_otmil.id', 'LIKE', "%$filterLokasiOtmil%");
             }
             if (!empty($filterLokasiLemasmil)) {
-                $queryTotalGelang->where('lokasi_lemasmil.lokasi_lemasmil_id', 'LIKE', "%$filterLokasiLemasmil%");
+                $queryTotalGelang->where('lokasi_lemasmil.id', 'LIKE', "%$filterLokasiLemasmil%");
             }
 
             $totalGelang = $queryTotalGelang->count();
@@ -266,10 +266,10 @@ class DashboardSummaryController extends Controller
             ->where('gelang.baterai', '>', 20);
 
             if (!empty($filterLokasiOtmil)) {
-                $queryTotalGelangAktif->where('lokasi_otmil.lokasi_otmil_id', 'LIKE', "%$filterLokasiOtmil%");
+                $queryTotalGelangAktif->where('lokasi_otmil.id', 'LIKE', "%$filterLokasiOtmil%");
             }
             if (!empty($filterLokasiLemasmil)) {
-                $queryTotalGelangAktif->where('lokasi_lemasmil.lokasi_lemasmil_id', 'LIKE', "%$filterLokasiLemasmil%");
+                $queryTotalGelangAktif->where('lokasi_lemasmil.id', 'LIKE', "%$filterLokasiLemasmil%");
             }
 
             $totalGelangAktif = $queryTotalGelangAktif->count();
@@ -284,10 +284,10 @@ class DashboardSummaryController extends Controller
             ->where('gelang.baterai', '<=', 20);
 
             if (!empty($filterLokasiOtmil)) {
-                $queryTotalGelangLowPower->where('lokasi_otmil.lokasi_otmil_id', 'LIKE', "%$filterLokasiOtmil%");
+                $queryTotalGelangLowPower->where('lokasi_otmil.id', 'LIKE', "%$filterLokasiOtmil%");
             }
             if (!empty($filterLokasiLemasmil)) {
-                $queryTotalGelangLowPower->where('lokasi_lemasmil.lokasi_lemasmil_id', 'LIKE', "%$filterLokasiLemasmil%");
+                $queryTotalGelangLowPower->where('lokasi_lemasmil.id', 'LIKE', "%$filterLokasiLemasmil%");
             }
 
             $totalGelangNonaktif= $queryTotalGelangLowPower->count();
@@ -301,10 +301,10 @@ class DashboardSummaryController extends Controller
 
             // Add filter conditions
             if (!empty($filterLokasiOtmil)) {
-                $queryTotalPerkara->where('lokasi_otmil.lokasi_otmil_id', 'LIKE', "%$filterLokasiOtmil%");
+                $queryTotalPerkara->where('lokasi_otmil.id', 'LIKE', "%$filterLokasiOtmil%");
             }
             if (!empty($filterLokasiLemasmil)) {
-                $queryTotalPerkara->where('lokasi_lemasmil.lokasi_lemasmil_id', 'LIKE', "%$filterLokasiLemasmil%");
+                $queryTotalPerkara->where('lokasi_lemasmil.id', 'LIKE', "%$filterLokasiLemasmil%");
             }
 
             $totalperkara = $queryTotalPerkara->count();
@@ -326,10 +326,10 @@ class DashboardSummaryController extends Controller
 
                 // Tambahkan kondisi filter
                 if (!empty($filterLokasiOtmil)) {
-                    $queryPerkaraKategoriTotal->where('lokasi_otmil.lokasi_otmil_id', 'LIKE', "%$filterLokasiOtmil%");
+                    $queryPerkaraKategoriTotal->where('lokasi_otmil.id', 'LIKE', "%$filterLokasiOtmil%");
                 }
                 if (!empty($filterLokasiLemasmil)) {
-                    $queryPerkaraKategoriTotal->where('lokasi_lemasmil.lokasi_lemasmil_id', 'LIKE', "%$filterLokasiLemasmil%");
+                    $queryPerkaraKategoriTotal->where('lokasi_lemasmil.id', 'LIKE', "%$filterLokasiLemasmil%");
                 }
 
                 $totalPerkara = $queryPerkaraKategoriTotal->count();
