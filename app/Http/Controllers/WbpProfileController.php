@@ -27,7 +27,7 @@ class WbpProfileController extends Controller
 {
     public function index(Request $request)
     {
-        $nama = request()->input('nama');
+        $names = $request->input('names', []);
         $is_isolated = request()->input('is_isolated');
         $alamat = request()->input('alamat');
         $nama_pangkat = request()->input('nama_pangkat');
@@ -73,8 +73,8 @@ class WbpProfileController extends Controller
                 'aksesRuangan.ruanganLemasmilAkses',
             ])->where(function ($query)
             use (
+                $names,
                 $nrp,
-                $nama,
                 $is_isolated,
                 $alamat,
                 $nama_pangkat,
@@ -99,8 +99,8 @@ class WbpProfileController extends Controller
                     $query->where('nrp', 'LIKE', '%' . $nrp . '%');
                 }
 
-                if (!empty($nama)) {
-                    $query->where('nama', 'LIKE', '%' . $nama . '%');
+              if (!empty($names)) {
+                    $query->whereIn('nama', $names);
                 }
 
                 if (!empty($is_isolated)) {
