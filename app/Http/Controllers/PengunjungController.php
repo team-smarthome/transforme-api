@@ -28,9 +28,7 @@ class PengunjungController extends Controller
 
 
             foreach ($filterableColumns as $requestKey => $column) {
-                if (is_array($request->input($requestKey))) {
-                    $query->whereIn($column, $request->input($requestKey));
-                } else {
+                if ($request->has($requestKey)) {
                     $query->where($column, 'like', '%' . $request->input($requestKey) . '%');
                 }
             }
