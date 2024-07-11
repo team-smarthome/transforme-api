@@ -318,43 +318,47 @@ class petugasShiftController extends Controller
     }
   }
 
+
+
+
   public function rekapCuti(Request $request)
   {
     try {
       $query = PetugasShift::leftJoin('schedule', 'petugas_shift.schedule_id', '=', 'schedule.id')
         ->leftJoin('petugas', 'petugas_shift.petugas_id', '=', 'petugas.id')
         ->select(
-          'schedule.bulan',
           'schedule.tahun',
-          DB::raw('SUM(CASE WHEN petugas_shift.status_izin = "cuti" THEN 1 ELSE 0 END) AS cuti'),
-          DB::raw('GROUP_CONCAT(DISTINCT CASE WHEN petugas_shift.status_kehadiran = 0 AND petugas_shift.status_izin LIKE "Cuti" THEN petugas.id ELSE NULL END) AS petugas_cuti')
+          'schedule.bulan',
+          'schedule.tanggal',
+          DB::raw("SUM(CASE WHEN LOWER(petugas_shift.status_izin) = 'cuti' THEN 1 ELSE 0 END) AS cuti"),
+          DB::raw("STRING_AGG(DISTINCT CASE WHEN petugas_shift.status_kehadiran = 0 AND LOWER(petugas_shift.status_izin) = 'cuti' THEN petugas.id::text ELSE NULL END, ',') AS petugas_cuti")
         );
 
-      // $filters = $request->input('filter', []);
-      // if (!empty($filters['bulan'])) {
-      //   $query->where('schedule.bulan', $filters['bulan']);
-      // }
-      // if (!empty($filters['tahun'])) {
-      //   $query->where('schedule.tahun', $filters['tahun']);
-      // }
       $filterableColumns = [
         'bulan' => 'schedule.bulan',
-        'tahun' => 'schedule.tahun'
+        'tahun' => 'schedule.tahun',
+        'tanggal' => 'schedule.tanggal',
       ];
+
       foreach ($filterableColumns as $requestKey => $column) {
         if ($request->has($requestKey)) {
           $query->where($column, 'like', '%' . $request->input($requestKey) . '%');
         }
       }
-      $query->orderBy('schedule.tahun', 'desc')->orderBy('schedule.bulan', 'desc');
 
-      $result = $query->groupBy('schedule.bulan', 'schedule.tahun')->get();
+      // Filter tanggal
+
+      $query->orderBy('schedule.tahun', 'desc')
+        ->orderBy('schedule.bulan', 'desc');
+
+      $result = $query->groupBy('schedule.tahun', 'schedule.bulan',  'schedule.tanggal')->get();
 
       $formattedResult = $result->map(function ($item) {
         $petugasCutiArray = !empty($item->petugas_cuti) ? explode(',', $item->petugas_cuti) : [];
         return [
           'bulan' => (string)$item->bulan,
           'tahun' => (string)$item->tahun,
+          'tanggal' => (string)$item->tanggal,
           'cuti' => (string)$item->cuti,
           'petugas_cuti' => $petugasCutiArray
         ];
@@ -365,6 +369,9 @@ class petugasShiftController extends Controller
       return ApiResponse::error('Failed to get Data.', $e->getMessage());
     }
   }
+
+
+
 
 
   public function rekapAbsensi(Request $request)
