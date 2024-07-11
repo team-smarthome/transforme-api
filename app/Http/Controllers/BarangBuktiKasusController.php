@@ -137,7 +137,7 @@ class BarangBuktiKasusController extends Controller
             }
 
             if ($request->hasFile('gambar_barang_bukti')) {
-                $gambarPath = $request->file('gambar_barang_bukti')->store('public/barang_bukti_kasus');
+                $gambarPath = $request->file('gambar_barang_bukti')->store('public/barang_bukti_kasus_image');
                 $barangBuktiKasus->gambar_barang_bukti = str_replace('public/', '', $gambarPath);
             }
 

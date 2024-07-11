@@ -35,18 +35,18 @@ class PengunjungRequest extends FormRequest
             'wbp_profile_id'  => 'nullable|string',
             'hubungan_wbp' => 'nullable|string',
             'nik' => 'nullable|string',
-            'foto_wajah_fr' => 'nullable|string',
+            'foto_wajah_fr' => 'nullable',
         ];
     }
 
-    public function failedValidation(Validator $validator)
-    {
-        throw new HttpResponseException(response([
-            "status" => "NO",
-            "message" => "Validation Error",
-            "errors" => $validator->getMessageBag()
-        ], 422));
-    }
+    // public function failedValidation(Validator $validator)
+    // {
+    //     throw new HttpResponseException(response([
+    //         "status" => "NO",
+    //         "message" => "Validation Error",
+    //         "errors" => $validator->getMessageBag()
+    //     ], 422));
+    // }
 
     public function messages(): array {
         return [

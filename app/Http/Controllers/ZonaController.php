@@ -60,9 +60,27 @@ class ZonaController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function statusZona()
     {
-        //
+        try {
+            $zonaHijau = Zona::where('nama_zona', 'Zona Hijau')->count();
+            $zonaKuning = Zona::where('nama_zona', 'Zona Kuning')->count();
+            $zonaMerah = Zona::where('nama_zona', 'Zona Merah')->count();
+            $totalZona = Zona::count();
+
+            $records = [
+                [
+                    'zona_hijau' => $zonaHijau,
+                    'zona_kuning' => $zonaKuning,
+                    'zona_merah' => $zonaMerah,
+                    'Total_zona' => $totalZona,
+                ]
+            ];
+
+            return ApiResponse::success($records, 'Successfully get Data');
+        } catch (\Exception $e) {
+            return ApiResponse::error('Failed to get Data.', $e->getMessage());
+        }
     }
 
     /**
