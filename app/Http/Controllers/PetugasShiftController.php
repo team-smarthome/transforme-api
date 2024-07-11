@@ -326,37 +326,53 @@ class petugasShiftController extends Controller
         ->select(
           'schedule.bulan',
           'schedule.tahun',
-          DB::raw('SUM(CASE WHEN petugas_shift.status_izin = "cuti" THEN 1 ELSE 0 END) AS cuti'),
-          DB::raw('GROUP_CONCAT(DISTINCT CASE WHEN petugas_shift.status_kehadiran = 0 AND petugas_shift.status_izin LIKE "Cuti" THEN petugas.id ELSE NULL END) AS petugas_cuti')
+          'schedule.tanggal',
+          DB::raw("SUM(CASE WHEN LOWER(petugas_shift.status_izin) = 'cuti' THEN 1 ELSE 0 END) AS cuti"),
+          DB::raw("SUM(CASE WHEN LOWER(petugas_shift.status_izin) = 'sakit' THEN 1 ELSE 0 END) AS sakit"),
+          DB::raw("SUM(CASE WHEN LOWER(petugas_shift.status_izin) = 'izin' THEN 1 ELSE 0 END) AS izin"),
+          DB::raw("SUM(CASE WHEN LOWER(petugas_shift.status_izin) = 'absen' THEN 1 ELSE 0 END) AS absen"),
+          DB::raw("SUM(CASE WHEN petugas_shift.status_kehadiran = 1 THEN 1 ELSE 0 END) AS hadir"),
+          DB::raw("STRING_AGG(DISTINCT CASE WHEN petugas_shift.status_kehadiran = 0 AND LOWER(petugas_shift.status_izin) = 'cuti' THEN petugas.id::text ELSE NULL END, ',') AS petugas_cuti"),
+          DB::raw("STRING_AGG(DISTINCT CASE WHEN petugas_shift.status_kehadiran = 0 AND LOWER(petugas_shift.status_izin) = 'sakit' THEN petugas.id::text ELSE NULL END, ',') AS petugas_sakit"),
+          DB::raw("STRING_AGG(DISTINCT CASE WHEN petugas_shift.status_kehadiran = 0 AND LOWER(petugas_shift.status_izin) = 'izin' THEN petugas.id::text ELSE NULL END, ',') AS petugas_izin"),
+          DB::raw("STRING_AGG(DISTINCT CASE WHEN petugas_shift.status_kehadiran = 0 AND LOWER(petugas_shift.status_izin) = 'absen' THEN petugas.id::text ELSE NULL END, ',') AS petugas_absen"),
+          DB::raw("STRING_AGG(DISTINCT CASE WHEN petugas_shift.status_kehadiran = 1 THEN petugas.id::text ELSE NULL END, ',') AS petugas_hadir")
         );
 
-      // $filters = $request->input('filter', []);
-      // if (!empty($filters['bulan'])) {
-      //   $query->where('schedule.bulan', $filters['bulan']);
-      // }
-      // if (!empty($filters['tahun'])) {
-      //   $query->where('schedule.tahun', $filters['tahun']);
-      // }
       $filterableColumns = [
         'bulan' => 'schedule.bulan',
-        'tahun' => 'schedule.tahun'
+        'tahun' => 'schedule.tahun',
+        'tanggal' => 'schedule.tanggal'
       ];
+
       foreach ($filterableColumns as $requestKey => $column) {
         if ($request->has($requestKey)) {
           $query->where($column, 'like', '%' . $request->input($requestKey) . '%');
         }
       }
-      $query->orderBy('schedule.tahun', 'desc')->orderBy('schedule.bulan', 'desc');
 
-      $result = $query->groupBy('schedule.bulan', 'schedule.tahun')->get();
+      // Filter tanggal
+
+      $query->orderBy('schedule.tahun', 'desc')
+        ->orderBy('schedule.bulan', 'desc');
+
+      $result = $query->groupBy('schedule.bulan', 'schedule.tahun', 'schedule.tanggal')->get();
 
       $formattedResult = $result->map(function ($item) {
-        $petugasCutiArray = !empty($item->petugas_cuti) ? explode(',', $item->petugas_cuti) : [];
         return [
           'bulan' => (string)$item->bulan,
           'tahun' => (string)$item->tahun,
+          'tanggal' => (string)$item->tanggal,
           'cuti' => (string)$item->cuti,
-          'petugas_cuti' => $petugasCutiArray
+          'sakit' => (string)$item->sakit,
+          'izin' => (string)$item->izin,
+          'absen' => (string)$item->absen,
+          'hadir' => (string)$item->hadir,
+          'petugas_cuti' => !empty($item->petugas_cuti) ? explode(',', $item->petugas_cuti) : [],
+          'petugas_sakit' => !empty($item->petugas_sakit) ? explode(',', $item->petugas_sakit) : [],
+          'petugas_izin' => !empty($item->petugas_izin) ? explode(',', $item->petugas_izin) : [],
+          'petugas_absen' => !empty($item->petugas_absen) ? explode(',', $item->petugas_absen) : [],
+          'petugas_hadir' => !empty($item->petugas_hadir) ? explode(',', $item->petugas_hadir) : [],
         ];
       });
 
@@ -365,6 +381,62 @@ class petugasShiftController extends Controller
       return ApiResponse::error('Failed to get Data.', $e->getMessage());
     }
   }
+
+
+
+  // public function rekapCuti(Request $request)
+  // {
+  //   try {
+  //     $query = PetugasShift::leftJoin('schedule', 'petugas_shift.schedule_id', '=', 'schedule.id')
+  //       ->leftJoin('petugas', 'petugas_shift.petugas_id', '=', 'petugas.id')
+  //       ->select(
+  //         'schedule.tahun',
+  //         'schedule.bulan',
+  //         'schedule.tanggal',
+  //         DB::raw("SUM(CASE WHEN LOWER(petugas_shift.status_izin) = 'cuti' THEN 1 ELSE 0 END) AS cuti"),
+  //         DB::raw("STRING_AGG(DISTINCT CASE WHEN petugas_shift.status_kehadiran = 0 AND LOWER(petugas_shift.status_izin) = 'cuti' THEN petugas.id::text ELSE NULL END, ',') AS petugas_cuti"),
+  //         DB::raw("JSON_AGG(json_build_object('petugas_id', petugas.id, 'cuti', CASE WHEN petugas_shift.status_izin = 'cuti' THEN 1 ELSE 0 END)) AS detail_cuti")
+  //       );
+
+  //     $filterableColumns = [
+  //       'bulan' => 'schedule.bulan',
+  //       'tahun' => 'schedule.tahun',
+  //       'tanggal' => 'schedule.tanggal',
+  //     ];
+
+  //     foreach ($filterableColumns as $requestKey => $column) {
+  //       if ($request->has($requestKey)) {
+  //         $query->where($column, 'like', '%' . $request->input($requestKey) . '%');
+  //       }
+  //     }
+
+  //     // Filter tanggal
+
+  //     $query->orderBy('schedule.tahun', 'desc')
+  //       ->orderBy('schedule.bulan', 'desc');
+
+  //     $result = $query->groupBy('schedule.tahun', 'schedule.bulan',  'schedule.tanggal')->get();
+
+  //     $formattedResult = $result->map(function ($item) {
+  //       $petugasCutiArray = !empty($item->petugas_cuti) ? explode(',', $item->petugas_cuti) : [];
+  //       return [
+  //         'bulan' => (string)$item->bulan,
+  //         'tahun' => (string)$item->tahun,
+  //         'tanggal' => (string)$item->tanggal,
+  //         'cuti' => (string)$item->cuti,
+  //         'detail_cuti' => json_decode($item->detail_cuti, true),
+  //         'petugas_cuti' => $petugasCutiArray
+  //       ];
+  //     });
+
+  //     return ApiResponse::success($formattedResult);
+  //   } catch (\Exception $e) {
+  //     return ApiResponse::error('Failed to get Data.', $e->getMessage());
+  //   }
+  // }
+
+
+
 
 
   public function rekapAbsensi(Request $request)
