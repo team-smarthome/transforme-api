@@ -131,9 +131,9 @@ class PengunjungController extends Controller
             $findPengunjung = Pengunjung::where('id', $request['pengunjung_id'])->first();
             $image = $request['foto_wajah'];
             if (strpos($image, 'data:image/') === 0 && $image != $findPengunjung->foto_wajah) {
-                $image = Helpers::HandleImageToBase64($image, 'pengunjung-images');
+                $image = Helpers::HandleImageToBase64($image, 'pengunjung-image');
             }
-            $data_foto_wajah_fr = $request['foto_wajah'] == $findPengunjung->foto_wajah_fr ? $findPengunjung->foto_wajah_fr : $request['foto_wajah'];
+            // $data_foto_wajah_fr = $request['foto_wajah'] == $findPengunjung->foto_wajah_fr ? $findPengunjung->foto_wajah_fr : $request['foto_wajah'];
             $updatePengunjung = Pengunjung::where('id', $request['pengunjung_id'])
             ->update([
                 'nama' => $request->nama,
@@ -147,7 +147,7 @@ class PengunjungController extends Controller
                 'wbp_profile_id' => $request->wbp_profile_id,
                 'hubungan_wbp' => $request->hubungan_wbp,
                 'nik' => $request->nik,
-                'foto_wajah_fr' => $data_foto_wajah_fr,
+                'foto_wajah_fr' => $request->foto_wajah_fr,
              ]);
             DB::commit();
             return response()->json([
