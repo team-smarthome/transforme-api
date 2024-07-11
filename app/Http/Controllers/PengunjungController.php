@@ -5,9 +5,12 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Pengunjung;
 use App\Http\Requests\PengunjungRequest;
+use App\Helpers\Helpers;
 use App\Helpers\ApiResponse;
 use App\Http\Resources\PengunjungResource;
 use Exception;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class PengunjungController extends Controller
 {
@@ -29,7 +32,11 @@ class PengunjungController extends Controller
 
             foreach ($filterableColumns as $requestKey => $column) {
                 if ($request->has($requestKey)) {
-                    $query->where($column, 'like', '%' . $request->input($requestKey) . '%');
+                    if (is_array($request->input($requestKey))) {
+                        $query->whereIn($column, $request->input($requestKey));
+                    } else {
+                        $query->where($column, 'like', '%' . $request->input($requestKey) . '%');
+                    }
                 }
             }
 
@@ -62,32 +69,40 @@ class PengunjungController extends Controller
      */
     public function store(PengunjungRequest $request)
     {
+        $uuid = Uuid::uuid4()->toString();
+        $base64Image = $request['foto_wajah'];
+        $image = Helpers::HandleImageToBase64($base64Image, 'pengunjung-image');
         try {
-            $pengunjung =  new Pengunjung([
-                'nama' => $request->nama,
-                'tempat_lahir' => $request->tempat_lahir,
-                'tanggal_lahir' => $request->tanggal_lahir,
-                'jenis_kelamin' => $request->jenis_kelamin,
-                'provinsi_id' => $request->provinsi_id,
-                'kota_id' => $request->kota_id,
-                'alamat' => $request->alamat,
-                'foto_wajah' => $request->foto_wajah,
-                'wbp_profile_id' => $request->wbp_profile_id,
-                'hubungan_wbp' => $request->hubungan_wbp,
-                'nik' => $request->nik,
-                'foto_wajah_fr' => $request->foto_wajah_fr
-            ]);
+            DB::beginTransaction();
 
-            if ($request->hasFile('foto_wajah')) {
-                $gambarPath = $request->file('foto_wajah')->store('public/pengunjung_image');
-                $pengunjung->foto_wajah = str_replace('public/', '', $gambarPath);
-            }
+            $dataPengunjung = Pengunjung::create([
+            'id' => $uuid,
+            'nama' => $request->nama,
+            'tempat_lahir' => $request->tempat_lahir,
+            'tanggal_lahir' => $request->tanggal_lahir,
+            'jenis_kelamin' => $request->jenis_kelamin,
+            'provinsi_id' => $request->provinsi_id,
+            'kota_id' => $request->kota_id,
+            'alamat' => $request->alamat,
+            'foto_wajah' => $image,
+            'wbp_profile_id' => $request->wbp_profile_id,
+            'hubungan_wbp' => $request->hubungan_wbp,
+            'nik' => $request->nik,
+            'foto_wajah_fr' => $base64Image,
+        ]);
+        DB::commit();
 
-            $pengunjung->save();
-
-            return ApiResponse::created($pengunjung);
-        } catch (Exception $e) {
-            return ApiResponse::error('Failed to save Data.', $e->getMessage());
+        return response()->json([
+            'status' => 'OK',
+            'message' => 'Successfully created data.',
+        ], 201);
+        }catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'status' => 'Failed',
+                'message' => 'Failed to create data.',
+                'error' => $e->getMessage(),
+            ], 500);
         }
     }
     /**
@@ -112,34 +127,40 @@ class PengunjungController extends Controller
     public function update(PengunjungRequest $request)
     {
         try {
-            $id = $request->input('pengunjung_id');
-            $pengunjung = Pengunjung::findOrfail($id);
-            if (!$pengunjung) {
-                return ApiResponse::error('Data not found.', 'Data not found.', 404);
+            DB::beginTransaction();
+            $findPengunjung = Pengunjung::where('id', $request['pengunjung_id'])->first();
+            $image = $request['foto_wajah'];
+            if (strpos($image, 'data:image/') === 0 && $image != $findPengunjung->foto_wajah) {
+                $image = Helpers::HandleImageToBase64($image, 'pengunjung-image');
             }
-            $pengunjung->nama = $request->nama;
-            $pengunjung->tempat_lahir = $request->tempat_lahir;
-            $pengunjung->tanggal_lahir = $request->tanggal_lahir;
-            $pengunjung->jenis_kelamin = $request->jenis_kelamin;
-            $pengunjung->provinsi_id = $request->provinsi_id;
-            $pengunjung->kota_id = $request->kota_id;
-            $pengunjung->alamat = $request->alamat;
-            $pengunjung->wbp_profile_id = $request->wbp_profile_id;
-            $pengunjung->hubungan_wbp = $request->hubungan_wbp;
-            $pengunjung->nik = $request->nik;
-            $pengunjung->foto_wajah_fr = $request->foto_wajah_fr;
-
-            if ($request->hasFile('foto_wajah')) {
-                $gambarPath = $request->file('foto_wajah')->store('public/pengunjung_image');
-                $pengunjung->foto_wajah = str_replace('public/', '', $gambarPath);
-            }
-
-            $pengunjung->save();
-
-
-            return ApiResponse::updated($pengunjung);
+            // $data_foto_wajah_fr = $request['foto_wajah'] == $findPengunjung->foto_wajah_fr ? $findPengunjung->foto_wajah_fr : $request['foto_wajah'];
+            $updatePengunjung = Pengunjung::where('id', $request['pengunjung_id'])
+            ->update([
+                'nama' => $request->nama,
+                'tempat_lahir' => $request->tempat_lahir,
+                'tanggal_lahir' => $request->tanggal_lahir,
+                'jenis_kelamin' => $request->jenis_kelamin,
+                'provinsi_id' => $request->provinsi_id,
+                'kota_id' => $request->kota_id,
+                'alamat' => $request->alamat,
+                'foto_wajah' => $image,
+                'wbp_profile_id' => $request->wbp_profile_id,
+                'hubungan_wbp' => $request->hubungan_wbp,
+                'nik' => $request->nik,
+                'foto_wajah_fr' => $request->foto_wajah_fr,
+             ]);
+            DB::commit();
+            return response()->json([
+                'status' => 'OK',
+                'message' => 'Successfully updated data.',
+            ], 200);
         } catch (Exception $e) {
-            return ApiResponse::error('Failed to update Data.', $e->getMessage());
+                 DB::rollBack();
+                    return response()->json([
+                        'status' => 'Failed',
+                        'message' => 'Failed to create data.',
+                        'error' => $e->getMessage(),
+                    ], 500);
         }
     }
 

@@ -34,22 +34,18 @@ class PetugasController extends Controller
         'lokasi_otmil_id' => 'lokasi_otmil_id',
         'lokasi_lemasmil_id' => 'lokasi_lemasmil_id',
       ];
-      // $filters = $request->input('filter', []);
 
       foreach ($filterableColumns as $requestKey => $column) {
         if ($request->has($requestKey)) {
-          $query->where($column, 'like', '%' . $request->input($requestKey) . '%');
+          // Cek jika param adalah array
+          if (is_array($request->input($requestKey))) {
+            $query->whereIn($column, $request->input($requestKey));
+          } else {
+            $query->where($column, 'like', '%' . $request->input($requestKey) . '%');
+          }
         }
       }
 
-
-
-
-      // foreach ($filterableColumns as $requestKey => $column) {
-      //   if (isset($filters[$requestKey])) {
-      //     $query->where($column, 'like', '%' . $filters[$requestKey] . '%');
-      //   }
-      // }
       $query->latest();
       $paginatedData = $query->paginate($request->input('pageSize', ApiResponse::$defaultPagination));
 
