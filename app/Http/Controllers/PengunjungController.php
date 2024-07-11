@@ -84,11 +84,11 @@ class PengunjungController extends Controller
             'provinsi_id' => $request->provinsi_id,
             'kota_id' => $request->kota_id,
             'alamat' => $request->alamat,
-            'foto_wajah' => $request->foto_wajah,
+            'foto_wajah' => $image,
             'wbp_profile_id' => $request->wbp_profile_id,
             'hubungan_wbp' => $request->hubungan_wbp,
             'nik' => $request->nik,
-            'foto_wajah_fr' => $request->foto_wajah_fr,
+            'foto_wajah_fr' => $base64Image,
         ]);
         DB::commit();
 
@@ -143,11 +143,11 @@ class PengunjungController extends Controller
                 'provinsi_id' => $request->provinsi_id,
                 'kota_id' => $request->kota_id,
                 'alamat' => $request->alamat,
-                'foto_wajah' => $request->foto_wajah,
+                'foto_wajah' => $image,
                 'wbp_profile_id' => $request->wbp_profile_id,
                 'hubungan_wbp' => $request->hubungan_wbp,
                 'nik' => $request->nik,
-                'foto_wajah_fr' => $request->foto_wajah_fr,
+                'foto_wajah_fr' => $data_foto_wajah_fr,
              ]);
             DB::commit();
             return response()->json([
