@@ -5,9 +5,12 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Pengunjung;
 use App\Http\Requests\PengunjungRequest;
+use App\Helpers\Helpers;
 use App\Helpers\ApiResponse;
 use App\Http\Resources\PengunjungResource;
 use Exception;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class PengunjungController extends Controller
 {
