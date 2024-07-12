@@ -237,41 +237,40 @@ class petugasShiftController extends Controller
   }
 
 
-  /**
-   * Show the form for editing the specified resource.
-   */
+
+
   public function edit(Request $request)
   {
     try {
       $input = $request->input('petugas_shifts');
 
-      // Jika input adalah array, lakukan pembaruan grup
+
       if (is_array($input)) {
         $updatedShifts = [];
 
         foreach ($input as $shiftData) {
           $petugas_shift = PetugasShift::findOrFail($shiftData['petugas_shift_id']);
           $petugas_shift->update($shiftData);
+          $petugas_shift->fresh();
           $updatedShifts[] = $petugas_shift;
         }
 
         return ApiResponse::success('Data updated successfully', $updatedShifts);
       }
-      // Jika input bukan array, anggap sebagai pembaruan perorangan
+
       $id = $request->input('petugas_shift_id');
       $petugas_shift = PetugasShift::findOrFail($id);
+      $petugas_shift->update($request->all());
+      $petugas_shift->fresh();
 
 
       return ApiResponse::success('Data updated successfully', $petugas_shift);
-      return ApiResponse::updated($petugas_shift);
     } catch (QueryException $e) {
       return ApiResponse::error('Database error', $e->getMessage(), 500);
     } catch (Exception $e) {
       return ApiResponse::error('An unexpected error occurred', $e->getMessage(), 500);
     }
   }
-
-
 
 
 
