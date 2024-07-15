@@ -16,6 +16,12 @@ class DesktopController extends Controller
                 "positionY" => "left-[-10.5%]",
                 "nama" => "Interactive Desktop 1"
             ],    
+            [
+                "id" => 2,
+                "positionX" => "bottom-[70%]",
+                "positionY" => "left-[-12.5%]",
+                "nama" => "Interactive Desktop 2"
+            ],   
         ];
 
 
