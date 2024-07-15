@@ -16,6 +16,12 @@ class SelfRegDashboardController extends Controller
                 "positionY" => "left-[-10.5%]",
                 "nama" => "Self Registration Kiosk 1"
             ],    
+            [
+                "id" => 2,
+                "positionX" => "bottom-[58%]",
+                "positionY" => "left-[-12.5%]",
+                "nama" => "Self Registration Kiosk 2"
+            ],    
         ];
 
 
