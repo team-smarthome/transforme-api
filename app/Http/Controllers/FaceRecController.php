@@ -16,6 +16,12 @@ class FaceRecController extends Controller
                 "positionY" => "left-[-10%]",
                 "nama" => "Face Recognition 1"
             ],    
+            [
+                "id" => 2,
+                "positionX" => "bottom-[58%]",
+                "positionY" => "left-[-20%]",
+                "nama" => "Face Recognition 2"
+            ], 
         ];
 
 
