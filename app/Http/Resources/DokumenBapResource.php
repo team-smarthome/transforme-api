@@ -26,7 +26,7 @@ class DokumenBapResource extends JsonResource
             'nama_kasus' => $this->penyidikan->kasus->nama_kasus,
             'nrp_wbp' => $this->wbpProfile->nrp,
             'lokasi_otmil' => $this->wbpProfile->hunianWbpOtmil->lokasiOtmil->nama_lokasi_otmil,
-            'lokasi_lemasmil' => $this->wbpProfile->hunianWbpLemasmil->lokasiLemasmil->nama_lokasi_lemasmil,
+            'lokasi_lemasmil' => $this->wbpProfile->hunianWbpLemasmil->lokasiLemasmil->nama_lokasi_lemasmil ?? null,
             'wbp_profile_id' => $this->wbp_profile_id,
             'nama' => $this->wbpProfile->nama,
             'saksi_id' => $this->saksi_id,
