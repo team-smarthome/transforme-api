@@ -350,7 +350,9 @@ class petugasShiftController extends Controller
         }
       }
 
-      // Filter tanggal
+      if ($request->has('grup_petugas_id')) {
+        $query->where('petugas.grup_petugas_id', '=', $request->input('grup_petugas_id'));
+      }
 
       $query->orderBy('schedule.tahun', 'desc')
         ->orderBy('schedule.bulan', 'desc');
