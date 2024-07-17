@@ -10,6 +10,7 @@ use App\Helpers\ApiResponse;
 use App\Http\Resources\PengunjungResource;
 use Exception;
 use Illuminate\Support\Facades\DB;
+use Ramsey\Uuid\Uuid;
 use Illuminate\Support\Facades\Storage;
 
 class PengunjungController extends Controller
