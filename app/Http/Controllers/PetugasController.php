@@ -31,6 +31,7 @@ class PetugasController extends Controller
         'nrp' => 'nrp',
         'nama' => 'nama',
         'jabatan' => 'jabatan',
+        'pangkat_id' => 'pangkat_id',
         'lokasi_otmil_id' => 'lokasi_otmil_id',
         'lokasi_lemasmil_id' => 'lokasi_lemasmil_id',
       ];
