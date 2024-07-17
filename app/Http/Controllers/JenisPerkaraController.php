@@ -27,9 +27,15 @@ class JenisPerkaraController extends Controller
                 'jenis_pidana_id' => 'kategoriPerkara.jenis_pidana_id'
             ];
 
-            foreach($filterData as $requestKey => $column) {
+            foreach ($filterData as $requestKey => $column) {
                 if ($request->has($requestKey)) {
-                    $query->where($column, 'LIKE', '%' . $request->input($requestKey) . '%');
+                    if ($requestKey == 'nama_kategori_perkara') {
+                        $query->whereHas('kategoriPerkara', function ($q) use ($request, $requestKey) {
+                            $q->where('nama_kategori_perkara', 'like', '%' . $request->input($requestKey) . '%');
+                        });
+                    } else {
+                        $query->where($column, 'LIKE', '%' . $request->input($requestKey) . '%');
+                    }
                 }
             }
 
@@ -106,12 +112,12 @@ class JenisPerkaraController extends Controller
     {
         try {
             $jenisPerkara = $request->input('jenis_perkara_id');
-            
+
             $jenisPerkara = JenisPerkara::findOrFail($jenisPerkara);
             $jenisPerkara->update($request->all());
 
             return ApiResponse::updated();
-        
+
         } catch (\Exception $e) {
             return ApiResponse::error('Failed update data.', $e->getMessage());
         }
@@ -129,6 +135,6 @@ class JenisPerkaraController extends Controller
             return ApiResponse::deleted();
         } catch (\Exception $e) {
             return ApiResponse::error('Failed delete data.', $e->getMessage());
-        }   
+        }
     }
 }
