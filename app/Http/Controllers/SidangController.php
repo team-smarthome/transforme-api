@@ -361,6 +361,7 @@ class SidangController extends Controller
                     'created_at' => $dataCratedAt[0],
                     'updated_at' => now()
                 ];
+                DB::table('histori_vonis')->where('sidang_id', $sidang->id)->delete();
                 DB::table('histori_vonis')->insert($pivotVonisData);
             }
 
@@ -370,16 +371,19 @@ class SidangController extends Controller
                 $dokumenPath = str_replace('public/', '', $dokumenPath);
 
                 $pivotDokumenPersidangan = [
+                    'id' => \Illuminate\Support\Str::uuid()->toString(),
                     'sidang_id' => $sidang->id,
                     'nama_dokumen_persidangan' => $request->input('nama_dokumen_persidangan'),
                     'link_dokumen_persidangan' => $dokumenPath,
                     'created_at' => now(),
                     'updated_at' => now()
                 ];
-                DB::table('dokumen_persidangan')->updateOrInsert(
-                    ['sidang_id' => $sidang->id],
-                    $pivotDokumenPersidangan
-                );
+                // DB::table('dokumen_persidangan')->updateOrInsert(
+                //     ['sidang_id' => $sidang->id],
+                //     $pivotDokumenPersidangan
+                // );
+                DB::table('dokumen_persidangan')->where('sidang_id', $sidang->id)->delete();
+                DB::table('dokumen_persidangan')->insert($pivotDokumenPersidangan);
             }
 
             DB::commit();
