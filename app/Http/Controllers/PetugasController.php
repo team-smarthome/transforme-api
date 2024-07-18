@@ -36,17 +36,23 @@ class PetugasController extends Controller
         'lokasi_lemasmil_id' => 'lokasi_lemasmil_id',
       ];
 
+
+
+
       foreach ($filterableColumns as $requestKey => $column) {
         if ($request->has($requestKey)) {
-          // Cek jika param adalah array
           if (is_array($request->input($requestKey))) {
             $query->whereIn($column, $request->input($requestKey));
           } else {
-            $query->where($column, 'like', '%' . $request->input($requestKey) . '%');
+            // Use ILIKE for nama and jabatan to make the search case-insensitive
+            if (in_array($column, ['nama', 'jabatan'])) {
+              $query->where($column, 'ILIKE', '%' . $request->input($requestKey) . '%');
+            } else {
+              $query->where($column, 'like', '%' . $request->input($requestKey) . '%');
+            }
           }
         }
       }
-
       $query->latest();
       $paginatedData = $query->paginate($request->input('pageSize', ApiResponse::$defaultPagination));
 
