@@ -25,6 +25,11 @@ class GedungOtmil extends Model
         'lebar',
         'posisi_X',
         'posisi_Y',
+        'pin_X',
+        'pin_Y',
+        'box_X',
+        'box_Y',
+        'aspect_ratio',
     ];
 
     public function lokasiOtmil(): BelongsTo
