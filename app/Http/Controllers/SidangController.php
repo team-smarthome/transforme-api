@@ -235,28 +235,34 @@ class SidangController extends Controller
       // Update pivot tabel untuk oditur_penuntut_id
       if ($request->has('oditur_penuntut_id')) {
         $createdAtPivot = DB::table('pivot_sidang_oditur')
-          ->where('sidang_id', $sidang->id)
-          ->pluck('created_at', 'oditur_penuntut_id')
-          ->toArray();
+            ->where('sidang_id', $sidang->id)
+            ->pluck('created_at', 'oditur_penuntut_id')
+            ->toArray();
+
+        // Inisialisasi array untuk data pivot
         $pivotOditurData = [];
-        foreach ($request->oditur_penuntut_id as $index => $oditurId) {
-          $roleKetua = $request->role_ketua_oditur; // Ambil nilai role_ketua dari request
 
-          // Tentukan nilai role_ketua berdasarkan perbandingan dengan $oditurId
-          $isKetua = ($roleKetua === $oditurId) ? 1 : 0;
+        foreach ($request->oditur_penuntut_id as $oditurId) {
+            $roleKetua = $request->input('role_ketua_oditur'); // Ambil nilai role_ketua dari request
 
-          $pivotOditurData[] = [
-            'id' => \Illuminate\Support\Str::uuid(),
-            'sidang_id' => $sidang->id,
-            'oditur_penuntut_id' => $oditurId,
-            'role_ketua_oditur' => $isKetua,
-            'created_at' => $createdAtPivot[$oditurId] ?? now(),
-            'updated_at' => now()
-          ];
+            // Tentukan nilai role_ketua berdasarkan perbandingan dengan $oditurId
+            $isKetua = ($roleKetua === $oditurId) ? 1 : 0;
+
+            $pivotOditurData[] = [
+                'id' => \Illuminate\Support\Str::uuid(),
+                'sidang_id' => $sidang->id,
+                'oditur_penuntut_id' => $oditurId,
+                'role_ketua_oditur' => $isKetua,
+                'created_at' => $createdAtPivot[$oditurId] ?? now(),
+                'updated_at' => now()
+            ];
         }
+
+        // Hapus entri lama dan masukkan entri baru
         DB::table('pivot_sidang_oditur')->where('sidang_id', $sidang->id)->delete();
         DB::table('pivot_sidang_oditur')->insert($pivotOditurData);
-      }
+    }
+
 
       // Update pivot tabel untuk hakim_id
       if ($request->has('hakim_id')) {
@@ -325,18 +331,17 @@ class SidangController extends Controller
       }
 
       // Update pivot tabel untuk pengacara
-      if ($request->has('nama_pengacara')) {
+      if ($request->has('pengacara')) {
         $createdAtPivot = DB::table('pivot_sidang_pengacara')
           ->where('sidang_id', $sidang->id)
           ->pluck('created_at', 'nama_pengacara')
           ->toArray();
-        $pivotPengacaraData = [];
-        foreach ($request->nama_pengacara as $index => $namaPengacara) {
+        foreach ($request->pengacara as $namaPengacara) {
           $pivotPengacaraData[] = [
             'id' => \Illuminate\Support\Str::uuid(),
             'sidang_id' => $sidang->id,
             'nama_pengacara' => $namaPengacara,
-            'jenis_pengacara' => $request->jenis_pengacara[$index],
+            // 'jenis_pengacara' => $request->jenis_pengacara[$index],
             'created_at' => $createdAtPivot[$namaPengacara] ?? now(),
             'updated_at' => now()
           ];
