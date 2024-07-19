@@ -21,6 +21,11 @@ class GedungOtmilResource extends JsonResource
       'lebar' => number_format($this->lebar, 2, '.', ''),
       'posisi_X' => number_format($this->posisi_X, 2, '.', ''),
       'posisi_Y' => number_format($this->posisi_Y, 2, '.', ''),
+      'pin_X' => number_format($this->pin_X, 2, '.', ''),
+      'pin_Y' => number_format($this->pin_Y, 2, '.', ''),
+      'box_X' => number_format($this->box_X, 2, '.', ''),
+      'box_Y' => number_format($this->box_Y, 2, '.', ''),
+      'aspect_ratio' => number_format($this->aspect_ratio, 2, '.', ''),
       'lokasi_otmil' => [
         'lokasi_otmil_id' => $this->lokasi_otmil_id,
         'nama_lokasi_otmil' => $this->lokasiOtmil->nama_lokasi_otmil

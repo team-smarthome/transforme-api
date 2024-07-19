@@ -7,7 +7,7 @@ use App\Models\GedungOtmil;
 use App\Http\Resources\GedungOtmilResource;
 use App\Models\LokasiOtmil;
 
-class IndoorMapController extends Controller
+class IndoorMapController2 extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -22,11 +22,21 @@ class IndoorMapController extends Controller
                 }
 
                 $sum = ($paramOne / $paramTwo) * 100;
-                return round($sum, 0);
+                // return round($sum, 0);
 
-                // return $sum;
+                return $sum;
             }
 
+            function formatAspectRatio($aspectRatio) {
+                // Pastikan aspectRatio diformat dengan satu tempat desimal
+                $formattedRatio = number_format($aspectRatio, 1);
+
+                // Pisahkan menjadi bagian integer dan desimal
+                list($integerPart, $decimalPart) = explode('.', $formattedRatio);
+
+                // Bentuk string sesuai dengan format yang diinginkan
+                return 'aspect-[' . $integerPart . '/' . $decimalPart . ']';
+            }
 
             $lokasiOtmilId = $request->input('lokasi_otmil_id');
             // $namaLokasiOtmil = $request->input('nama_lokasi_otmil');
@@ -59,7 +69,10 @@ class IndoorMapController extends Controller
                 
                 $width = calc($gedung->panjang, $gedung->lokasiOtmil->panjang ?? 1);
                 $height = calc($gedung->lebar, $gedung->lokasiOtmil->lebar ?? 1);
-                $aspectRatio = round($gedung->panjang, 0) . "/" . round($gedung->lebar, 0);
+                // $width = 25.5;
+                // $height = 10.0;
+                $aspectRatio = $gedung->aspect_ratio ?? 0;
+                // $aspectRatio = round($gedung->panjang, 0) . "/" . round($gedung->lebar, 0);
 
                 $resLantai = $gedung->lantaiOtmil->map(function($lantai) use ($gedung) {
                     $resRuangan = $lantai->ruanganOtmil->map(function($ruangan) use ($lantai) {
@@ -72,8 +85,8 @@ class IndoorMapController extends Controller
                         return [
                             'id' => $ruangan->id,
                             'nama' => $ruangan->nama_ruangan_otmil,
-                            'positionX' => $PositionXRuangan,
-                            'positionY' => $PositionYRuangan,
+                            'positionX' => 'left-['.$PositionXRuangan.'%]',
+                            'positionY' => 'bottom-['.$PositionYRuangan.'%]',
                             'width' => 'w-[' . $widthRuangan . '%]',
                             'height' => 'h-[' . $heightRuangan . '%]',
                             'pathname' => strtolower(str_replace(" ", "-", $ruangan->nama_ruangan_otmil)),
@@ -103,7 +116,8 @@ class IndoorMapController extends Controller
                     'boxY' => 'mt-['.$BoxY.'%]',
                     'width' => 'w-[' .$width.'%]',
                     'height' => 'h-[' .$height.'%]',
-                    'aspectRatio' => 'aspect-[' . $width . '/' . $height . ']',
+                    'aspectRatio' => formatAspectRatio($aspectRatio),
+                    // 'aspectRatio' => 'aspect-[' . $width . '/' . $height . ']',
                     'pathname' => strtolower(str_replace(" ", "-", $gedung->nama_gedung_otmil)),
                     'lantai' => $resLantai,
                 ];
@@ -140,3 +154,4 @@ class IndoorMapController extends Controller
         }
     }
 }
+
