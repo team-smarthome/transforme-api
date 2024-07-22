@@ -23,8 +23,8 @@ class PenugasanController extends Controller
       $penugasan_id = $request->input('penugasan_id');
       $pageSize = $request->input('pageSize', ApiResponse::$defaultPagination);
       $query = Penugasan::with(['petugas_shift'])
-        ->where('id', 'like', '%' . $penugasan_id . '%')
-        ->where('nama_penugasan', 'like', '%' . $nama_penugasan . '%')
+        ->where('id', 'ILIKE', '%' . $penugasan_id . '%')
+        ->where('nama_penugasan', 'ILIKE', '%' . $nama_penugasan . '%')
         ->latest()->paginate($pageSize);
 
 
