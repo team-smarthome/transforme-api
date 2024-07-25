@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Mst_manufacturer extends Model
@@ -21,5 +22,8 @@ class Mst_manufacturer extends Model
         'platform_id',
     ];
 
-
+    public function platform(): BelongsTo
+    {
+        return $this->belongsTo(Platform::class, 'platform_id', 'id');
+    }
 }
