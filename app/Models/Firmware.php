@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Firmware extends Model
 {
     use HasFactory, SoftDeletes, HasUuids;
-    protected $table = 'mst_firmware';
+    protected $table = 'mst_firmware_version';
     protected $keyType = 'uuid';
     public $incrementing = false;
     public $timestamps = true;
@@ -31,5 +31,5 @@ class Firmware extends Model
     {
         return $this->hasMany(Device::class, 'firmware_version_id', 'id');
     }
-    
+
 }
