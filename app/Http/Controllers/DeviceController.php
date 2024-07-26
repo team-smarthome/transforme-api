@@ -19,39 +19,41 @@ class DeviceController extends Controller
      */
     public function index(Request $request)
     {
-        try {
-            $query = Device::with(['deviceType', 'deviceModel', 'manufacturer', 'firmwareVersion', 'platform']);
+    try {
+        $query = Device::with(['deviceType', 'deviceModel', 'manufacturer', 'firmwareVersion', 'platform']);
 
-            $filterableColumns = [
-                'device_id' => 'id',
-                'imei' => 'imei',
-                'wearer_name' => 'wearer_name',
-                'health_data_periodic' => 'health_data_periodic',
-                'status' => 'status',
-                'is_used' => 'is_used',
-                'device_type_id' => 'device_type_id',
-                'device_model_id' => 'device_model_id',
-                'manufacturer_id' => 'manufacturer_id',
-                'firmware_version_id' => 'firmware_version_id',
-                'platform_id' => 'platform_id',
-            ];
+        $filterableColumns = [
+            'device_id' => 'id',
+            'imei' => 'imei',
+            'wearer_name' => 'wearer_name',
+            'health_data_periodic' => 'health_data_periodic',
+            'status' => 'status',
+            'is_used' => 'is_used',
+            'device_type_id' => 'device_type_id',
+            'device_model_id' => 'device_model_id',
+            'manufacturer_id' => 'manufacturer_id',
+            'firmware_version_id' => 'firmware_version_id',
+            'platform_id' => 'platform_id',
+        ];
 
-            foreach ($filterableColumns as $key => $value) {
-                if ($request->has($key)) {
-                    $query->where($value, $request->input($key));
-                }
+        foreach ($filterableColumns as $key => $value) {
+        if ($request->has($key) && $request->input($key) !== '') {
+            $query->where($value, 'like', '%' . $request->input($key) . '%');
             }
-
-            $query->latest();
-            $paginatedData = $query->paginate($request->input('pageSize', ApiResponse::$defaultPagination));
-            $resourceCollection = DeviceResource::collection($paginatedData);
-
-            return ApiResponse::pagination($resourceCollection);
-
-        } catch (\Exception $e) {
-        return ApiResponse::error($e->getMessage());
         }
+
+
+        $query->latest();
+        $paginatedData = $query->paginate($request->input('pageSize', ApiResponse::$defaultPagination));
+        $resourceCollection = DeviceResource::collection($paginatedData);
+
+        return ApiResponse::pagination($resourceCollection);
+
+    } catch (\Exception $e) {
+        return ApiResponse::error($e->getMessage());
     }
+}
+
 
     /**
      * Show the form for creating a new resource.
