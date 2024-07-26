@@ -11,6 +11,6 @@ use App\Http\Middleware\AuthSanctumMiddleware;
 
 // Route::middleware([AuthSanctumMiddleware::class . ':admin,superadmin'])->group(function () {
     Route::post('platform', [PlatfromController::class, 'store']);
-    Route::put('platform/{id}', [PlatfromController::class, 'update']);
-    Route::delete('platform/{id}', [PlatfromController::class, 'destroy']);
+    Route::put('platform', [PlatfromController::class, 'update']);
+    Route::delete('platform', [PlatfromController::class, 'destroy']);
 // });
