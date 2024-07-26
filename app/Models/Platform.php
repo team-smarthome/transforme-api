@@ -22,4 +22,16 @@ class Platform extends Model
         'updated_at',
         'deleted_at'
     ];
+
+    public function mstManufacturer(): HasMany
+    {
+        return $this->hasMany(Mst_manufacturer::class, 'platform_id', 'id');
+    }
+
+    public function deviceType(): HasMany
+    {
+        return $this->hasMany(DeviceType::class, 'platform_id', 'id');
+    }
 }
+
+
