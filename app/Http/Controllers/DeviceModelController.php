@@ -92,21 +92,30 @@ class DeviceModelController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(DeviceModelRequest $request)
-    {
-        try {
-            $deviceModel = DeviceModel::find($request->device_model_id);
-            $deviceModel->model = $request->model;
-            $deviceModel->platform_id = $request->platform_id;
-            $deviceModel->save();
+public function update(DeviceModelRequest $request)
+{
+    try {
+        // Temukan DeviceModel berdasarkan ID
+        $deviceModel = DeviceModel::find($request->input('device_model_id'));
 
-            return ApiResponse::updated();
-        } catch (QueryException $e) {
-            return ApiResponse::error('Failed to update Device Model.', $e->getMessage());
-        } catch (Exception $e) {
-            return ApiResponse::error('An unexpected error occurred', $e->getMessage(), 500);
+        // Periksa jika deviceModel ditemukan
+        if (!$deviceModel) {
+            return ApiResponse::error('Device Model not found.', 'The requested Device Model does not exist.', 404);
         }
+
+        // Perbarui atribut pada deviceModel
+        $deviceModel->model = $request->input('model');
+        $deviceModel->platform_id = $request->input('platform_id');
+        $deviceModel->save();
+
+        return ApiResponse::updated();
+    } catch (QueryException $e) {
+        return ApiResponse::error('Failed to update Device Model.', $e->getMessage());
+    } catch (Exception $e) {
+        return ApiResponse::error('An unexpected error occurred', $e->getMessage(), 500);
     }
+}
+
 
     /**
      * Remove the specified resource from storage.
@@ -115,7 +124,7 @@ class DeviceModelController extends Controller
     {
          try {
             DB::beginTransaction();
-            $device = DeviceModel::find($reqeust->input('device_mode_id'));
+            $device = DeviceModel::find($request->input('device_mode_id'));
             $device->delete();
             DB::commit();
 
