@@ -15,10 +15,10 @@ class MstManufacturerResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'manufacturer_id' => $this->id,
+            'manufacture_id' => $this->id,
             'manufacture' => $this->manufacture,
             'platform_id' => $this->platform_id,
-            'platform' => $this->platform->platform
+            'nama_platform' => $this->platform->platform
         ];
     }
 }
