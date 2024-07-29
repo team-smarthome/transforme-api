@@ -47,7 +47,16 @@ class Device extends Model
     {
         return $this->belongsTo(Mst_manufacturer::class, 'manufacturer_id', 'id');
     }
-    
-    
+
+    public function firmwareVersion(): BelongsTo
+    {
+        return $this->belongsTo(Firmware::class, 'firmware_version_id', 'id');
+    }
+
+    public function platform(): BelongsTo
+    {
+        return $this->belongsTo(Platform::class, 'platform_id', 'id');
+    }
+
 }
 

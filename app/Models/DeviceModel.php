@@ -2,24 +2,27 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Mst_manufacturer extends Model
+class DeviceModel extends Model
 {
-    use HasFactory, HasUuids, SoftDeletes;
-
-    protected $table = 'mst_manufacturer';
+    use HasFactory, SoftDeletes, HasUuids;
+    protected $table = 'mst_device_model';
     protected $keyType = 'uuid';
     public $incrementing = false;
     public $timestamps = true;
 
     protected $fillable = [
-        'manufacture',
+        'id',
+        'model',
         'platform_id',
+        'created_at',
+        'updated_at',
+        'deleted_at'
     ];
 
     public function platform(): BelongsTo
@@ -27,8 +30,8 @@ class Mst_manufacturer extends Model
         return $this->belongsTo(Platform::class, 'platform_id', 'id');
     }
 
-    public function devices(): HasMany
+     public function devices(): HasMany
     {
-        return $this->hasMany(Device::class, 'manufacturer_id', 'id');
+        return $this->hasMany(Device::class, 'device_model_id', 'id');
     }
 }
