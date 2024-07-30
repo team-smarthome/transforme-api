@@ -2,17 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
 use App\Helpers\ApiResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\FirmwareRequest;
 use App\Http\Resources\FirmwareResource;
 use App\Models\Firmware;
 use Exception;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+
 
 class FirmwareController extends Controller
 {
-    public function index(Request $request)
+ public function index(Request $request)
     {
         try {
             $query = Firmware::with(['platform']);
@@ -65,21 +67,24 @@ class FirmwareController extends Controller
     public function update(FirmwareRequest $request)
     {
         try {
-            $id = $request->input('id');
-            $firmware = Firmware::find($id);
-            if (!$firmware) {
-                return ApiResponse::error('Failed to update version.', 'version not found.');
+            // Temukan DeviceModel berdasarkan ID
+            $deviceModel = Firmware::find($request->input('firmware_version_id'));
+
+            // Periksa jika deviceModel ditemukan
+            if (!$deviceModel) {
+                return ApiResponse::error('FirmWare not found.', 'The requested Device Model does not exist.', 404);
             }
 
-            $firmware->version = $request->version;
-            $firmware->platform_id = $request->platform_id;
+            // Perbarui atribut pada deviceModel
+            $deviceModel->version = $request->input('version');
+            $deviceModel->platform_id = $request->input('platform_id');
+            $deviceModel->save();
 
-            if ($firmware->save()) {
-                return ApiResponse::updated($firmware); 
-                return ApiResponse::error('Failed to update version.', 'Unknown error.');
-            }
+            return ApiResponse::updated();
         } catch (Exception $e) {
-            return ApiResponse::error('Failed to update version.', $e->getMessage());
+            return ApiResponse::error('Failed to update Device Model.', $e->getMessage());
+        } catch (Exception $e) {
+            return ApiResponse::error('An unexpected error occurred', $e->getMessage(), 500);
         }
     }
 
@@ -88,20 +93,16 @@ class FirmwareController extends Controller
     //  */
     public function destroy(Request $request)
     {
-        try {
-            $id = $request->input('id');
-            $firmware = Firmware::find($id);
-            if (!$firmware) {
-                return ApiResponse::error('Failed to delete firmware.', 'firmware not found.');
-            }
+         try {
+            DB::beginTransaction();
+            $device = Firmware::find($request->input('firmware_version_id'));
+            $device->delete();
+            DB::commit();
 
-            if ($firmware->delete()) {
-                return ApiResponse::deleted();
-            } else {
-                return ApiResponse::error('Failed to delete firmware.', 'Unknown error.');
-            }
+            return ApiResponse::deleted();
         } catch (Exception $e) {
-            return ApiResponse::error('Failed to delete firmware.', $e->getMessage());
+            DB::rollBack();
+            return ApiResponse::error($e->getMessage());
         }
     }
 }

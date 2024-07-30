@@ -18,7 +18,7 @@ class FirmwareResource extends JsonResource
             'firmware_version_id' => $this->id,
             'version' => $this->version,
             'platform_id' => $this->platform_id,
-            'platform' => $this->platform->platform
+            'nama_platform' => $this->platform->platform
         ];
     }
 }
