@@ -31,5 +31,5 @@ class Firmware extends Model
     {
         return $this->hasMany(Device::class, 'firmware_version_id', 'id');
     }
-    
+
 }

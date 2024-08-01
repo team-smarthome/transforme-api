@@ -32,6 +32,11 @@ class Platform extends Model
     {
         return $this->hasMany(DeviceType::class, 'platform_id', 'id');
     }
+
+    public function firmwareVersion(): HasMany
+    {
+        return $this->hasMany(Firmware::class, 'platform_id', 'id');
+    }
 }
 
 
