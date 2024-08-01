@@ -31,7 +31,8 @@ class KameraRequest extends FormRequest
       "ruangan_lemasmil_id" => "nullable|uuid|exists:ruangan_lemasmil,id",
       "merk" => "nullable|string|max:100",
       "model" => "nullable|string|max:100",
-      "status_kamera" => "nullable|string|max:100"
+      "status_kamera" => "nullable|string|max:100",
+      "is_play" => "nullable"
     ];
   }
   public function failedValidation(Validator $validator)

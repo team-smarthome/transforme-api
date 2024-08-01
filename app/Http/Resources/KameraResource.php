@@ -26,6 +26,7 @@ class KameraResource extends JsonResource
       'merk' => $this->merk,
       'model' => $this->model,
       'status_kamera' => $this->status_kamera,
+      'is_play' => $this->is_play,
       'created_at' => $this->created_at,
       'updated_at' => $this->updated_at,
     ];

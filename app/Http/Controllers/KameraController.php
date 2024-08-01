@@ -36,6 +36,7 @@ class KameraController extends Controller
       $kamera_id = $request->input('kamera_id');
       $search = $request->input('search');
       $status_kamera = $request->input('status_kamera');
+      $is_play = $request->input('is_play');
       $pageSize = $request->input('pageSize', ApiResponse::$defaultPagination);
 
 
@@ -43,6 +44,7 @@ class KameraController extends Controller
         ->where('id', 'LIKE', '%' . $kamera_id . '%')
         ->where('nama_kamera', 'LIKE', '%' . $search . '%')
         ->where('status_kamera', 'LIKE', '%' . $status_kamera . '%')
+        ->where('is_play', 'LIKE', '%' . $is_play . '%')
         ->latest()->paginate($pageSize);
 
 
