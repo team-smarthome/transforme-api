@@ -2,23 +2,23 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
-
-class Mst_manufacturer extends Model
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+class Firmware extends Model
 {
-    use HasFactory, HasUuids, SoftDeletes;
-
-    protected $table = 'mst_manufacturer';
+    use HasFactory, SoftDeletes, HasUuids;
+    protected $table = 'mst_firmware_version';
     protected $keyType = 'uuid';
     public $incrementing = false;
     public $timestamps = true;
 
     protected $fillable = [
-        'manufacture',
+        'id',
+        'version',
         'platform_id',
     ];
 
@@ -29,6 +29,7 @@ class Mst_manufacturer extends Model
 
     public function devices(): HasMany
     {
-        return $this->hasMany(Device::class, 'manufacturer_id', 'id');
+        return $this->hasMany(Device::class, 'firmware_version_id', 'id');
     }
+
 }

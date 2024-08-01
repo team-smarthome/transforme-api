@@ -70,7 +70,7 @@ class MstManufacturerController extends Controller
     public function update(MstManufacturerRequest $request)
     {
         try {
-            $id = $request->input('id');
+            $id = $request->input('manufacture_id');
             $manufacture = Mst_manufacturer::find($id);
             if (!$manufacture) {
                 return ApiResponse::error('Failed to update Manufacture.', 'Manufacture not found.');
@@ -94,7 +94,7 @@ class MstManufacturerController extends Controller
     public function destroy(Request $request)
     {
         try {
-            $id = $request->input('id');
+            $id = $request->input('manufacture_id');
             $manufacture = Mst_manufacturer::find($id);
             if (!$manufacture) {
                 return ApiResponse::error('Failed to delete Manufacture.', 'Manufacture not found.');

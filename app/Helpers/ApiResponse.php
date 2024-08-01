@@ -7,7 +7,7 @@ use Illuminate\Http\Resources\Json\ResourceCollection;
 
 class ApiResponse
 {
-  public static $defaultPagination = 25;
+  public static $defaultPagination = 30;
 
   public static function success($data = [], $message = 'Successfully get Data')
   {
