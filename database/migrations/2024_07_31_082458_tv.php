@@ -13,8 +13,9 @@ return new class extends Migration
     {
         Schema::create('tv', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->string('gmac', 100)->nullable();
             $table->string('nama_tv', 100)->nullable();
+            $table->string('model', 100)->nullable();
+            $table->string('gmac', 100)->nullable();
             $table->uuid('ruangan_otmil_id')->nullable();
             $table->uuid('ruangan_lemasmil_id')->nullable();
             $table->string('status_tv', 100)->nullable();

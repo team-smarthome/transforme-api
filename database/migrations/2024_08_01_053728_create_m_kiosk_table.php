@@ -11,15 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('desktop', function (Blueprint $table) {
+        Schema::create('m_kiosk', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->string('nama_desktop', 100)->nullable();
-            $table->string('model', 100)->nullable();
+            $table->string('nama_m_kiosk', 100)->nullable();
             $table->string('gmac', 100)->nullable();
             $table->uuid('ruangan_otmil_id')->nullable();
             $table->uuid('ruangan_lemasmil_id')->nullable();
-            $table->string('status_desktop', 100)->nullable();
-            $table->string('v_desktop_topic', 100)->nullable();
+            $table->string('status_m_kiosk', 100)->nullable();
+            $table->string('v_m_kiosk_topic', 100)->nullable();
             $table->timestamps();
             $table->softDeletes();
 
@@ -33,6 +32,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('desktop');
+        Schema::dropIfExists('m_kiosk');
     }
 };
