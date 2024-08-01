@@ -27,7 +27,8 @@ class Kamera extends Model
     'ruangan_lemasmil_id',
     'merk',
     'model',
-    'status_kamera'
+    'status_kamera',
+    'is_play',
   ];
 
   public function ruanganOtmil(): BelongsTo
