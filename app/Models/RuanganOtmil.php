@@ -81,4 +81,24 @@ class RuanganOtmil extends Model
   {
     return $this->hasMany(PetugasShift::class, "ruangan_otmil_id", "id");
   }
+
+  public function tv(): HasMany
+  {
+    return $this->hasMany(TV::class, "ruangan_otmil_id", "id");
+  }
+
+  public function desktop(): HasMany
+  {
+    return $this->hasMany(Desktop::class, "ruangan_otmil_id", "id");
+  }
+
+  public function accessPoint(): HasMany
+  {
+    return $this->hasMany(AccessPoint::class, "ruangan_otmil_id", "id");
+  }
+
+  public function accessDoor(): HasMany
+  {
+    return $this->hasMany(AccessDoor::class, "ruangan_otmil_id", "id");
+  }
 }
