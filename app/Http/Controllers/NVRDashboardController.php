@@ -14,13 +14,13 @@ class NVRDashboardController extends Controller
                 "id" => 1,
                 "positionX" => "bottom-[82%]",
                 "positionY" => "left-[-1%]",
-                "nama" => "NVR 1"
+                "nama" => "Joyvision 1"
             ],    
             [
                 "id" => 2,
                 "positionX" => "bottom-[19%]",
                 "positionY" => "left-[-10.5%]",
-                "nama" => "NVR 2"
+                "nama" => "Joyvision 2"
             ],
         ];
 
