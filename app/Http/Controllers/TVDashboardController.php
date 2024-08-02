@@ -14,13 +14,13 @@ class TVDashboardController extends Controller
                 "id" => 1,
                 "positionX" => "bottom-[38%]",
                 "positionY" => "left-[-10.5%]",
-                "nama" => "Interactive TV 1"
+                "nama" => "Samsung TV 1"
             ],    
             [
                 "id" => 2,
                 "positionX" => "bottom-[40%]",
                 "positionY" => "left-[-12.5%]",
-                "nama" => "Interactive TV 2"
+                "nama" => "Samsung TV 2"
             ],   
         ];
 

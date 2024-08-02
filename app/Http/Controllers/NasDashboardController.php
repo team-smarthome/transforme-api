@@ -14,14 +14,14 @@ class NasDashboardController extends Controller
                 "id" => 1,
                 "positionX" => "bottom-[88%]",
                 "positionY" => "left-[19%]",
-                "nama" => "NAS 1",
+                "nama" => "Joyvision 1",
                 "ruangan" => "Kantor 1"
             ],    
             [
                 "id" => 2,
                 "positionX" => "bottom-[9%]",
                 "positionY" =>  "left-[19%]",
-                "nama" => "NAS 2",
+                "nama" => "Joyvision 2",
                 "ruangan" => "Kantor 2"
             ],
         ];
