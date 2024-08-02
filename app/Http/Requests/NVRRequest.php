@@ -6,7 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class TvRequest extends FormRequest
+class NVRRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,13 +24,12 @@ class TvRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'gmac' => 'nullable|string',
-            'model' => 'required|string',
-            'nama_tv' => 'required|string',
+            'gmac' => 'required|string',
+            'nama_nvr' => 'required|string',
             'ruangan_otmil_id' => 'nullable|string',
             'ruangan_lemasmil_id' => 'nullable|string',
-            'status_tv' => 'nullable|string',
-            'v_tv_topic' => 'nullable|string'
+            'status_nvr' => 'nullable|string',
+            'v_nvr_topic' => 'nullable|string'
         ];
     }
 
@@ -44,15 +43,15 @@ class TvRequest extends FormRequest
 
     public function messages(): array {
         return [
-            'gmac.nullable' => 'Gmac harus diisi',
+            'gmac.required' => 'Gmac harus diisi',
             'gmac.string' => 'Gmac harus berupa string',
-            'nama_tv.required' => 'Nama TV harus diisi',
-            'nama_tv.string' => 'Nama TV harus berupa string',
+            'nama_nvr.required' => 'Nama Access Point harus diisi',
+            'nama_nvr.string' => 'Nama Access Point harus berupa string',
             'model.string' => 'Model harus berupa string',
             'ruangan_otmil_id.string' => 'Ruangan OTMIL ID harus berupa string',
             'ruangan_lemasmil_id.string' => 'Ruangan Lemasmil ID harus berupa string',
-            'status_tv.string' => 'Status TV harus berupa string',
-            'v_tv_topic.string' => 'V TV Topic harus berupa string'
+            'status_nvr.string' => 'Status Access Point harus berupa string',
+            'v_nvr_topic.string' => 'V Access Point Topic harus berupa string'
         ];
     }
 }

@@ -101,4 +101,24 @@ class RuanganOtmil extends Model
   {
     return $this->hasMany(AccessDoor::class, "ruangan_otmil_id", "id");
   }
+
+  public function faceRec(): HasMany
+  {
+    return $this->hasMany(FaceRec::class, "ruangan_otmil_id", "id");
+  }
+
+  public function nvr(): HasMany
+  {
+    return $this->hasMany(NVR::class, "ruangan_otmil_id", "id");
+  }
+
+  public function nas(): HasMany
+  {
+    return $this->hasMany(NAS::class, "ruangan_otmil_id", "id");
+  }
+
+  public function mKiosk(): HasMany
+  {
+    return $this->hasMany(Mkiosk::class, "ruangan_otmil_id", "id");
+  }
 }

@@ -24,7 +24,7 @@ class DesktopRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'gmac' => 'required|string',
+            'gmac' => 'nullable|string',
             'model' => 'required|string',
             'nama_desktop' => 'required|string',
             'ruangan_otmil_id' => 'nullable|string',
@@ -44,7 +44,7 @@ class DesktopRequest extends FormRequest
 
     public function messages(): array {
         return [
-            'gmac.required' => 'Gmac harus diisi',
+            'gmac.nullable' => 'Gmac harus diisi',
             'gmac.string' => 'Gmac harus berupa string',
             'nama_desktop.required' => 'Nama Desktop harus diisi',
             'nama_desktop.string' => 'Nama Desktop harus berupa string',
