@@ -30,6 +30,8 @@ class GatewayRequest extends FormRequest
             'ruangan_otmil_id' => 'nullable|string',
             'ruangan_lemasmil_id' => 'nullable|string',
             'status_gateway' => 'nullable|string',
+            'posisi_X' => 'nullable',
+            'posisi_Y' => 'nullable',
             'v_gateway_topic' => 'nullable|string'
         ];
     }
