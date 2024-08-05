@@ -15,88 +15,37 @@ class GatewayController extends Controller
      * Display a listing of the resource.
      */
 
-     public function index(Request $request)
-     {
-         try {
-             $query = Gateway::query();
-             $filterableColumns = [
-                 'gateway_id' => 'id',
-                 'dmac' => 'dmac',
-                 'nama_gateway' => 'nama_gateway',
-                 'ruangan_otmil_id' => 'ruangan_otmil_id',
-                 'ruangan_lemasmil_id' => 'ruangan_lemasmil_id',
-                 'status_gateway' => 'status_gateway'
-             ];
-             $filters = $request->input('filter', []);
-
-             foreach ($filterableColumns as $requestKey => $column) {
-                 if (isset($filters[$requestKey])) {
-                     $query->where($column, 'like', '%' . $filters[$requestKey] . '%');
-                 }
-             }
-
-             $query->latest();
-             $paginatedData = $query->paginate($request->input('pageSize', ApiResponse::$defaultPagination));
-
-             $resourceCollection = GatewayResource::collection($paginatedData);
-
-             return ApiResponse::pagination($resourceCollection, 'Successfully get Data');
-         } catch (\Exception $e) {
-             return ApiResponse::error('Failed to get data.', $e->getMessage());
-         }
-     }
-
     public function dashboardGateway(Request $request)
     {
         try {
-            $query = Gateway::with(['ruanganOtmil.zona', 'ruanganLemasmil.zona', 'ruanganOtmil.lokasiOtmil', 'ruanganLemasmil.lokasiLemasmil']);
-            $filterableColumns = [
-                'lokasi_otmil_id' => 'ruanganOtmil.lokasiOtmil.lokasi_otmil_id',
-                'lokasi_lemasmil_id' => 'ruanganLemasmil.lokasiLemasmil.lokasi_lemasmil_id',
-                'ruangan_otmil_id' => 'ruangan_otmil_id',
-                'ruangan_lemasmil_id' => 'ruangan_lemasmil_id',
-                'gmac' => 'gmac',
-                'nama_gateway' => 'nama_gateway',
-                'nama_ruangan_otmil' => 'ruanganOtmil.nama_ruangan_otmil',
-                'nama_ruangan_lemasmil' => 'ruanganLemasmil.nama_ruangan_lemasmil',
-                'jenis_ruangan_otmil' => 'ruanganOtmil.jenis_ruangan_otmil',
-                'jenis_ruangan_lemasmil' => 'ruanganLemasmil.jenis_ruangan_lemasmil',
-                'status_gateway' => 'status_gateway'
-            ];
+             $query = Gateway::with([
+            'ruanganOtmil.zona', 
+            'ruanganLemasmil.zona', 
+            'ruanganOtmil.lokasiOtmil', 
+            'ruanganLemasmil.lokasiLemasmil'
+        ]);
 
-            $filters = $request->input('filter', []);
+        // Definisi kolom yang bisa difilter
+        $filterableColumns = [
+            'lokasi_otmil_id' => 'ruanganOtmil.lokasiOtmil.lokasi_otmil_id',
+            'lokasi_lemasmil_id' => 'ruanganLemasmil.lokasiLemasmil.lokasi_lemasmil_id',
+            'ruangan_otmil_id' => 'ruangan_otmil_id',
+            'ruangan_lemasmil_id' => 'ruangan_lemasmil_id',
+            'gmac' => 'gmac',
+            'nama_gateway' => 'nama_gateway',
+            'nama_ruangan_otmil' => 'ruanganOtmil.nama_ruangan_otmil',
+            'nama_ruangan_lemasmil' => 'ruanganLemasmil.nama_ruangan_lemasmil',
+            'jenis_ruangan_otmil' => 'ruanganOtmil.jenis_ruangan_otmil',
+            'jenis_ruangan_lemasmil' => 'ruanganLemasmil.jenis_ruangan_lemasmil',
+            'status_gateway' => 'status_gateway'
+        ];
 
-            foreach ($filterableColumns as $requestKey => $column) {
-                if (isset($filters[$requestKey])) {
-                    if ($requestKey === 'nama_ruangan_otmil') {
-                        $query->whereHas('ruanganOtmil', function ($q) use ($filters, $requestKey) {
-                            $q->where('nama_ruangan_otmil', 'LIKE', '%' . $filters[$requestKey] . '%');
-                        });
-                    } elseif ($requestKey === 'nama_ruangan_lemasmil') {
-                        $query->whereHas('ruanganLemasmil', function ($q) use ($filters, $requestKey) {
-                            $q->where('nama_ruangan_lemasmil', 'LIKE', '%' . $filters[$requestKey] . '%');
-                        });
-                    } elseif ($requestKey === 'jenis_ruangan_otmil') {
-                        $query->whereHas('ruanganOtmil', function ($q) use ($filters, $requestKey) {
-                            $q->where('jenis_ruangan_otmil', 'LIKE', '%' . $filters[$requestKey] . '%');
-                        });
-                    } elseif ($requestKey === 'jenis_ruangan_lemasmil') {
-                        $query->whereHas('ruanganLemasmil', function ($q) use ($filters, $requestKey) {
-                            $q->where('jenis_ruangan_lemasmil', 'LIKE', '%' . $filters[$requestKey] . '%');
-                        });
-                    } elseif ($requestKey === 'lokasi_otmil_id') {
-                        $query->whereHas('ruanganOtmil.lokasiOtmil', function ($q) use ($filters, $requestKey) {
-                            $q->where('lokasi_otmil_id', 'LIKE', '%' . $filters[$requestKey] . '%');
-                        });
-                    } elseif ($requestKey === 'lokasi_lemasmil_id') {
-                        $query->whereHas('ruanganLemasmil.lokasiLemasmil', function ($q) use ($filters, $requestKey) {
-                            $q->where('lokasi_lemasmil_id', 'LIKE', '%' . $filters[$requestKey] . '%');
-                        });
-                    } else {
-                        $query->where($column, 'LIKE', '%' . $filters[$requestKey] . '%');
-                    }
-                }
+        // Melakukan filtering berdasarkan parameter yang ada di request
+           if ($request->has('nama_gateway')) {
+                $nama_gateway = $request->input('nama_gateway');
+                $query->where('nama_gateway', 'like', '%' . $nama_gateway . '%');
             }
+            
             $query->latest();
             $gatewayData = $query->get();
 
