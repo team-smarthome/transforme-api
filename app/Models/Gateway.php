@@ -31,7 +31,9 @@ class Gateway extends Model
         'ruangan_otmil_id',
         'ruangan_lemasmil_id',
         'status_gateway',
-        'v_gateway_topic'
+        'v_gateway_topic',
+        'posisi_X',
+        'posisi_Y',
     ];
 
     public function ruanganOtmil(): BelongsTo
