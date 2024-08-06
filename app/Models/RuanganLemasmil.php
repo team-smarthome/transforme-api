@@ -92,4 +92,10 @@ class RuanganLemasmil extends Model
   {
     return $this->hasMany(AccessDoor::class, 'ruangan_lemasmil_id', 'id');
   }
+
+  public function faceRec(): HasMany
+  {
+    return $this->hasMany(FaceRec::class, "ruangan_lemasmil_id", "id");
+  }
+
 }
