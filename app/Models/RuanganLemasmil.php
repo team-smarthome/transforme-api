@@ -98,4 +98,9 @@ class RuanganLemasmil extends Model
     return $this->hasMany(FaceRec::class, "ruangan_lemasmil_id", "id");
   }
 
+  public function selfReg(): HasMany
+  {
+    return $this->hasMany(SelfReg::class, "ruangan_lemasmil_id", "id");
+  }
+
 }

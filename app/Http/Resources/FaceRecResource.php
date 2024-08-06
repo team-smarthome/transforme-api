@@ -40,7 +40,7 @@ class FaceRecResource extends JsonResource
             'positionY' => $positionYFormatted ?? null,
         ];
     }
-      /**
+    /**
      * Format the position value into a string with a percentage format.
      *
      * @param float $value

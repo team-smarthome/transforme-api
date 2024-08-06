@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class TvResource extends JsonResource
+class NvrResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -17,12 +17,11 @@ class TvResource extends JsonResource
         $positionXFormatted = $this->formatPosition($this->posisi_X, 'bottom');
         $positionYFormatted = $this->formatPosition($this->posisi_Y, 'left');
         return [
-            'tv_id' => $this->id, //
+            'nvr_id' => $this->id, //
             'gmac' => $this->gmac, //
-            'model' => $this->model, //
-            'nama_tv' => $this->nama_tv, //
-            'status_tv' => $this->status_tv, //
-            'v_tv_topic' => $this->v_tv_topic, //
+            'nama_nvr' => $this->nama_nvr, //
+            'status_nvr' => $this->status_nvr, //
+            'v_nvr_topic' => $this->v_nvr_topic, //
             'lokasi_otmil_id' => $this->ruanganOtmil->lokasi_otmil_id, // ro
             'nama_lokasi_otmil' => $this->ruanganOtmil->lokasiOtmil->nama_lokasi_otmil, // ro lo
             'ruangan_otmil_id' => $this->ruangan_otmil_id, // ro
@@ -38,7 +37,7 @@ class TvResource extends JsonResource
             'zona_id_lemasmil' => $this->ruanganLemasmil->zona_id ?? null, // rl
             'status_zona_ruangan_lemasmil' => $this->ruanganLemasmil->zona->nama_zona ?? null, // rl zona
             'positionX' => $positionXFormatted ?? null,
-            'positionY' => $positionYFormatted ?? null,
+            'positionY' => $positionYFormatted ?? null, 
         ];
     }
     /**
