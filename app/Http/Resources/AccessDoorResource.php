@@ -14,6 +14,8 @@ class AccessDoorResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        $positionXFormatted = $this->formatPosition($this->posisi_X, 'bottom');
+        $positionYFormatted = $this->formatPosition($this->posisi_Y, 'left');
         return [
             'access_door_id' => $this->id, //
             'gmac' => $this->gmac, //
@@ -34,6 +36,20 @@ class AccessDoorResource extends JsonResource
             'jenis_ruangan_lemasmil' => $this->ruanganLemasmil->jenis_ruangan_lemasmil ?? null, // rl
             'zona_id_lemasmil' => $this->ruanganLemasmil->zona_id ?? null, // rl
             'status_zona_ruangan_lemasmil' => $this->ruanganLemasmil->zona->nama_zona ?? null, // rl zona
+            'positionX' => $positionXFormatted ?? null,
+            'positionY' => $positionYFormatted ?? null,
         ];
+    }
+
+      /**
+     * Format the position value into a string with a percentage format.
+     *
+     * @param float $value
+     * @param string $direction
+     * @return string
+     */
+    private function formatPosition(float $value, string $direction): string
+    {
+        return "{$direction}-[{$value}%]";
     }
 }
