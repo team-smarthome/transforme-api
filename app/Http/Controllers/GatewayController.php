@@ -18,32 +18,36 @@ class GatewayController extends Controller
     public function dashboardGateway(Request $request)
     {
         try {
-             $query = Gateway::with([
-            'ruanganOtmil.zona', 
-            'ruanganLemasmil.zona', 
-            'ruanganOtmil.lokasiOtmil', 
-            'ruanganLemasmil.lokasiLemasmil'
-        ]);
+            $query = Gateway::with([
+                'ruanganOtmil.zona', 
+                'ruanganLemasmil.zona', 
+                'ruanganOtmil.lokasiOtmil', 
+                'ruanganLemasmil.lokasiLemasmil'
+            ]);
 
-        // Definisi kolom yang bisa difilter
-        $filterableColumns = [
-            'lokasi_otmil_id' => 'ruanganOtmil.lokasiOtmil.lokasi_otmil_id',
-            'lokasi_lemasmil_id' => 'ruanganLemasmil.lokasiLemasmil.lokasi_lemasmil_id',
-            'ruangan_otmil_id' => 'ruangan_otmil_id',
-            'ruangan_lemasmil_id' => 'ruangan_lemasmil_id',
-            'gmac' => 'gmac',
-            'nama_gateway' => 'nama_gateway',
-            'nama_ruangan_otmil' => 'ruanganOtmil.nama_ruangan_otmil',
-            'nama_ruangan_lemasmil' => 'ruanganLemasmil.nama_ruangan_lemasmil',
-            'jenis_ruangan_otmil' => 'ruanganOtmil.jenis_ruangan_otmil',
-            'jenis_ruangan_lemasmil' => 'ruanganLemasmil.jenis_ruangan_lemasmil',
-            'status_gateway' => 'status_gateway'
-        ];
+            // Definisi kolom yang bisa difilter
+            $filterableColumns = [
+                'lokasi_otmil_id' => 'ruanganOtmil.lokasiOtmil.lokasi_otmil_id',
+                'lokasi_lemasmil_id' => 'ruanganLemasmil.lokasiLemasmil.lokasi_lemasmil_id',
+                'ruangan_otmil_id' => 'ruangan_otmil_id',
+                'ruangan_lemasmil_id' => 'ruangan_lemasmil_id',
+                'gmac' => 'gmac',
+                'nama_gateway' => 'nama_gateway',
+                'nama_ruangan_otmil' => 'ruanganOtmil.nama_ruangan_otmil',
+                'nama_ruangan_lemasmil' => 'ruanganLemasmil.nama_ruangan_lemasmil',
+                'jenis_ruangan_otmil' => 'ruanganOtmil.jenis_ruangan_otmil',
+                'jenis_ruangan_lemasmil' => 'ruanganLemasmil.jenis_ruangan_lemasmil',
+                'status_gateway' => 'status_gateway'
+            ];
 
-        // Melakukan filtering berdasarkan parameter yang ada di request
-           if ($request->has('nama_gateway')) {
+            // Melakukan filtering berdasarkan parameter yang ada di request
+            if ($request->has('nama_gateway')) {
                 $nama_gateway = $request->input('nama_gateway');
-                $query->where('nama_gateway', 'like', '%' . $nama_gateway . '%');
+                if (is_array($nama_gateway)) {
+                    $query->whereIn('nama_gateway', $nama_gateway);
+                } else {
+                    $query->where('nama_gateway', 'like', '%' . $nama_gateway . '%');
+                }
             }
             
             $query->latest();
@@ -78,6 +82,7 @@ class GatewayController extends Controller
             return ApiResponse::error('Failed to get Data.', $e->getMessage());
         }
     }
+
 
     /**
      * Show the form for creating a new resource.
