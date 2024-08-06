@@ -31,37 +31,13 @@ class TVController extends Controller
         'status_tv' => 'status_tv'
       ];
 
-      $filters = $request->input('filter', []);
 
-      foreach ($filterableColumns as $requestKey => $column) {
-        if (isset($filters[$requestKey])) {
-          if ($requestKey === 'nama_ruangan_otmil') {
-            $query->whereHas('ruanganOtmil', function ($q) use ($filters, $requestKey) {
-              $q->where('nama_ruangan_otmil', 'LIKE', '%' . $filters[$requestKey] . '%');
-            });
-          } elseif ($requestKey === 'nama_ruangan_lemasmil') {
-            $query->whereHas('ruanganLemasmil', function ($q) use ($filters, $requestKey) {
-              $q->where('nama_ruangan_lemasmil', 'LIKE', '%' . $filters[$requestKey] . '%');
-            });
-          } elseif ($requestKey === 'jenis_ruangan_otmil') {
-            $query->whereHas('ruanganOtmil', function ($q) use ($filters, $requestKey) {
-              $q->where('jenis_ruangan_otmil', 'LIKE', '%' . $filters[$requestKey] . '%');
-            });
-          } elseif ($requestKey === 'jenis_ruangan_lemasmil') {
-            $query->whereHas('ruanganLemasmil', function ($q) use ($filters, $requestKey) {
-              $q->where('jenis_ruangan_lemasmil', 'LIKE', '%' . $filters[$requestKey] . '%');
-            });
-          } elseif ($requestKey === 'lokasi_otmil_id') {
-            $query->whereHas('ruanganOtmil.lokasiOtmil', function ($q) use ($filters, $requestKey) {
-              $q->where('lokasi_otmil_id', 'LIKE', '%' . $filters[$requestKey] . '%');
-            });
-          } elseif ($requestKey === 'lokasi_lemasmil_id') {
-            $query->whereHas('ruanganLemasmil.lokasiLemasmil', function ($q) use ($filters, $requestKey) {
-              $q->where('lokasi_lemasmil_id', 'LIKE', '%' . $filters[$requestKey] . '%');
-            });
-          } else {
-            $query->where($column, 'LIKE', '%' . $filters[$requestKey] . '%');
-          }
+      if ($request->has('nama_tv')) {
+        $nama_tv = $request->input('nama_tv');
+        if (is_array($nama_tv)) {
+          $query->whereIn('nama_tv', $nama_tv);
+        } else {
+          $query->where('nama_tv', 'like', '%' . $nama_tv . '%');
         }
       }
 
