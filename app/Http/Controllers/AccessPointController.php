@@ -32,37 +32,12 @@ class AccessPointController extends Controller
                 'status_access_point' => 'status_access_point'
             ];
 
-            $filters = $request->input('filter', []);
-
-            foreach ($filterableColumns as $requestKey => $column) {
-                if (isset($filters[$requestKey])) {
-                    if ($requestKey === 'nama_ruangan_otmil') {
-                        $query->whereHas('ruanganOtmil', function ($q) use ($filters, $requestKey) {
-                            $q->where('nama_ruangan_otmil', 'LIKE', '%' . $filters[$requestKey] . '%');
-                        });
-                    } elseif ($requestKey === 'nama_ruangan_lemasmil') {
-                        $query->whereHas('ruanganLemasmil', function ($q) use ($filters, $requestKey) {
-                            $q->where('nama_ruangan_lemasmil', 'LIKE', '%' . $filters[$requestKey] . '%');
-                        });
-                    } elseif ($requestKey === 'jenis_ruangan_otmil') {
-                        $query->whereHas('ruanganOtmil', function ($q) use ($filters, $requestKey) {
-                            $q->where('jenis_ruangan_otmil', 'LIKE', '%' . $filters[$requestKey] . '%');
-                        });
-                    } elseif ($requestKey === 'jenis_ruangan_lemasmil') {
-                        $query->whereHas('ruanganLemasmil', function ($q) use ($filters, $requestKey) {
-                            $q->where('jenis_ruangan_lemasmil', 'LIKE', '%' . $filters[$requestKey] . '%');
-                        });
-                    } elseif ($requestKey === 'lokasi_otmil_id') {
-                        $query->whereHas('ruanganOtmil.lokasiOtmil', function ($q) use ($filters, $requestKey) {
-                            $q->where('lokasi_otmil_id', 'LIKE', '%' . $filters[$requestKey] . '%');
-                        });
-                    } elseif ($requestKey === 'lokasi_lemasmil_id') {
-                        $query->whereHas('ruanganLemasmil.lokasiLemasmil', function ($q) use ($filters, $requestKey) {
-                            $q->where('lokasi_lemasmil_id', 'LIKE', '%' . $filters[$requestKey] . '%');
-                        });
-                    } else {
-                        $query->where($column, 'LIKE', '%' . $filters[$requestKey] . '%');
-                    }
+            if ($request->has('nama_access_point')) {
+                $nama_access_point = $request->input('nama_access_point');
+                if (is_array($nama_access_point)) {
+                    $query->whereIn('nama_access_point', $nama_access_point);
+                } else {
+                    $query->where('nama_access_point', 'like', '%' . $nama_access_point . '%');
                 }
             }
 
