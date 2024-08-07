@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class TvResource extends JsonResource
+class NasResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -17,12 +17,11 @@ class TvResource extends JsonResource
         $positionXFormatted = $this->formatPosition($this->posisi_X, 'bottom');
         $positionYFormatted = $this->formatPosition($this->posisi_Y, 'left');
         return [
-            'tv_id' => $this->id, //
+            'nas_id' => $this->id, //
             'gmac' => $this->gmac, //
-            'model' => $this->model, //
-            'nama_tv' => $this->nama_tv, //
-            'status_tv' => $this->status_tv, //
-            'v_tv_topic' => $this->v_tv_topic, //
+            'nama_nas' => $this->nama_nas, //
+            'status_nas' => $this->status_nas, //
+            'v_nas_topic' => $this->v_nas_topic, //
             'lokasi_otmil_id' => $this->ruanganOtmil->lokasi_otmil_id, // ro
             'nama_lokasi_otmil' => $this->ruanganOtmil->lokasiOtmil->nama_lokasi_otmil, // ro lo
             'ruangan_otmil_id' => $this->ruangan_otmil_id, // ro

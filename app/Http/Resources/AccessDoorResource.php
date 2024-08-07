@@ -41,7 +41,7 @@ class AccessDoorResource extends JsonResource
         ];
     }
 
-      /**
+    /**
      * Format the position value into a string with a percentage format.
      *
      * @param float $value
