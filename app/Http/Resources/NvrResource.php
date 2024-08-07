@@ -14,8 +14,13 @@ class NvrResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        $positionXFormatted = $this->formatPosition($this->posisi_X, 'bottom');
-        $positionYFormatted = $this->formatPosition($this->posisi_Y, 'left');
+        // Pastikan posisi_X dan posisi_Y bukan null dan memiliki nilai default jika diperlukan
+        $positionX = $this->posisi_X ?? 0.0; // Atau nilai default lain
+        $positionY = $this->posisi_Y ?? 0.0; // Atau nilai default lain
+
+        $positionXFormatted = $this->formatPosition($positionX, 'bottom');
+        $positionYFormatted = $this->formatPosition($positionY, 'left');
+
         return [
             'nvr_id' => $this->id, //
             'gmac' => $this->gmac, //
@@ -36,10 +41,11 @@ class NvrResource extends JsonResource
             'jenis_ruangan_lemasmil' => $this->ruanganLemasmil->jenis_ruangan_lemasmil ?? null, // rl
             'zona_id_lemasmil' => $this->ruanganLemasmil->zona_id ?? null, // rl
             'status_zona_ruangan_lemasmil' => $this->ruanganLemasmil->zona->nama_zona ?? null, // rl zona
-            'positionX' => $positionXFormatted ?? null,
-            'positionY' => $positionYFormatted ?? null, 
+            'positionX' => $positionXFormatted,
+            'positionY' => $positionYFormatted,
         ];
     }
+
     /**
      * Format the position value into a string with a percentage format.
      *
