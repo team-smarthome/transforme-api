@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Kamera;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -14,6 +15,11 @@ class KameraResource extends JsonResource
    */
   public function toArray(Request $request): array
   {
+    $totalKameras = Kamera::count();
+
+    // Convert posisi_X and posisi_Y to the desired format
+    $positionXFormatted = $this->formatPosition($this->posisi_X, 'left');
+    $positionYFormatted = $this->formatPosition($this->posisi_Y, 'bottom');
     return [
       'kamera_id' => $this->id,
       'nama_kamera' => $this->nama_kamera,
@@ -27,10 +33,22 @@ class KameraResource extends JsonResource
       'model' => $this->model,
       'status_kamera' => $this->status_kamera,
       'is_play' => $this->is_play,
-      'posisi_X' => $this->posisi_X,
-      'posisi_Y' => $this->posisi_Y,
+      'positionX' => $positionXFormatted,
+      'positionY' => $positionYFormatted,
       'created_at' => $this->created_at,
       'updated_at' => $this->updated_at,
     ];
+  }
+
+  /**
+   * Format the position value into a string with a percentage format.
+   *
+   * @param float $value
+   * @param string $direction
+   * @return string
+   */
+  private function formatPosition(float $value, string $direction): string
+  {
+    return "{$direction}-[{$value}%]";
   }
 }
