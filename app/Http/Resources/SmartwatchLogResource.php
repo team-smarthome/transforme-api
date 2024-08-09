@@ -28,14 +28,14 @@ class SmartwatchLogResource extends JsonResource
         'low_blood_pressure' => $this->n_low_blood_pressure,
         'oxygen' => $this->n_oxygen,
       ],
-      'health_logs' => [
-        'inserted_at' => $this->health_log_inserted_at,
-        'heart_rate' => $this->logged_heart_rate,
-        'temperature' => $this->logged_temperature,
-        'high_blood_pressure' => $this->logged_high_blood_pressure,
-        'low_blood_pressure' => $this->logged_low_blood_pressure,
-        'oxygen' => $this->logged_oxygen,
-      ],
+      // 'health_logs' => [
+      //   'inserted_at' => $this->health_log_inserted_at,
+      //   'heart_rate' => $this->logged_heart_rate,
+      //   'temperature' => $this->logged_temperature,
+      //   'high_blood_pressure' => $this->logged_high_blood_pressure,
+      //   'low_blood_pressure' => $this->logged_low_blood_pressure,
+      //   'oxygen' => $this->logged_oxygen,
+      // ],
       'location_logs' => [
         'inserted_at' => $this->location_log_inserted_at,
         'latitude' => $this->logged_lat,
