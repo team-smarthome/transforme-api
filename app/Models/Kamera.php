@@ -29,6 +29,8 @@ class Kamera extends Model
     'model',
     'status_kamera',
     'is_play',
+    'posisi_X',
+    'posisi_Y',
   ];
 
   public function ruanganOtmil(): BelongsTo
