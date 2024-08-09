@@ -32,6 +32,8 @@ class KameraRequest extends FormRequest
       "merk" => "nullable|string|max:100",
       "model" => "nullable|string|max:100",
       "status_kamera" => "nullable|string|max:100",
+      "posisi_X" => "nullable",
+      "posisi_Y" => "nullable",
       "is_play" => "nullable"
     ];
   }

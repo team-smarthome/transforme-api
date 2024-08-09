@@ -11,9 +11,14 @@ class SmartwatchLogController extends Controller
 {
   public function index(Request $request)
   {
+    // Get query parameters
+    $imei = $request->query('imei');
+    $startDate = $request->query('start_date');
+    $endDate = $request->query('end_date');
+    $pageSize = $request->query('pageSize', ApiResponse::$defaultPagination);
 
-    $pageSize = $request->input('pageSize', ApiResponse::$defaultPagination);
-    $logs = DB::table('tr_device_last_data as DL')
+    // Initialize the query builder
+    $query = DB::table('tr_device_last_data as DL')
       ->join('mst_device as MD', 'DL.v_imei', '=', 'MD.imei')
       ->join('tr_health_log as HL', 'DL.v_imei', '=', 'HL.v_imei')
       ->join('tr_location_log as LL', 'DL.v_imei', '=', 'LL.v_imei')
@@ -46,11 +51,28 @@ class SmartwatchLogController extends Controller
         'LL.n_direction',
         'LL.n_altitude',
         'LL.n_signal_strength'
-      )
-      ->latest()->paginate($pageSize);
+      );
 
+    // Add conditions based on the query parameters
+    if (!empty($imei)) {
+      $query->where('DL.v_imei', 'ILIKE', '%' . $imei . '%');
+    }
 
+    if (!empty($startDate) && !empty($endDate)) {
+      $query->whereBetween('HL.d_insert', [$startDate, $endDate]);
+    } elseif (!empty($startDate)) {
+      $query->whereDate('HL.d_insert', $startDate);
+    } elseif (!empty($endDate)) {
+      $query->whereDate('HL.d_insert', $endDate);
+    }
+
+    // Paginate and get results
+    $logs = $query->latest()->paginate($pageSize);
+
+    // Create a resource collection
     $resourceCollection = SmartwatchLogResource::collection($logs);
+
+    // Prepare response with pagination
     return ApiResponse::pagination($resourceCollection, 'Successfully get Data');
   }
 }
