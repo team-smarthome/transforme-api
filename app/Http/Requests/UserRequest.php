@@ -32,7 +32,7 @@ class UserRequest extends FormRequest
       'user_role_id' => 'required|uuid|exists:user_role,id',
       'lokasi_otmil_id' => 'nullable|uuid|exists:lokasi_otmil,id',
       'lokasi_lemasmil_id' => 'nullable|uuid|exists:lokasi_lemasmil,id',
-      'is_suspended' => 'required|integer|in:0,1',
+      'is_suspended' => 'required|boolean',
       'petugas_id' => 'required|uuid|exists:petugas,id',
       'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
       'last_login' => 'nullable|date',
