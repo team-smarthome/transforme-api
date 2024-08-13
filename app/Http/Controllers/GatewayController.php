@@ -46,7 +46,7 @@ class GatewayController extends Controller
         if (is_array($nama_gateway)) {
           $query->whereIn('nama_gateway', $nama_gateway);
         } else {
-          $query->where('nama_gateway', 'like', '%' . $nama_gateway . '%');
+          $query->where('nama_gateway', 'ilike', '%' . $nama_gateway . '%');
         }
       }
 
@@ -125,7 +125,7 @@ class GatewayController extends Controller
   //             if (is_array($nama_gateway)) {
   //                 $query->whereIn('nama_gateway', $nama_gateway);
   //             } else {
-  //                 $query->where('nama_gateway', 'like', '%' . $nama_gateway . '%');
+  //                 $query->where('nama_gateway', 'ilike', '%' . $nama_gateway . '%');
   //             }
   //         }
 
