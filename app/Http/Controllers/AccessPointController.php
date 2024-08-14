@@ -37,7 +37,15 @@ class AccessPointController extends Controller
                 if (is_array($nama_access_point)) {
                     $query->whereIn('nama_access_point', $nama_access_point);
                 } else {
-                    $query->where('nama_access_point', 'like', '%' . $nama_access_point . '%');
+                    $query->where('nama_access_point', 'ilike', '%' . $nama_access_point . '%');
+                }
+            }
+            if ($request->has('status_access_point')) {
+                $status_access_point = $request->input('status_access_point');
+                if (is_array($status_access_point)) {
+                    $query->whereIn('status_access_point', $status_access_point);
+                } else {
+                    $query->where('status_access_point', 'ilike', '%' . $status_access_point . '%');
                 }
             }
 

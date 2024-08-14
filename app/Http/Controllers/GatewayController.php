@@ -56,7 +56,7 @@ class GatewayController extends Controller
         if (is_array($status_gateway)) {
           $query->whereIn('status_gateway', $status_gateway);
         } else {
-          $query->where('status_gateway', $status_gateway);
+          $query->where('status_gateway', 'ilike', '%' . $status_gateway . '%');
         }
       }
 

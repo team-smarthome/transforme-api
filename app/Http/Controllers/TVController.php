@@ -37,10 +37,18 @@ class TVController extends Controller
         if (is_array($nama_tv)) {
           $query->whereIn('nama_tv', $nama_tv);
         } else {
-          $query->where('nama_tv', 'like', '%' . $nama_tv . '%');
+          $query->where('nama_tv', 'ilike', '%' . $nama_tv . '%');
         }
       }
 
+        if ($request->has('status_tv')) {
+        $status_tv = $request->input('status_tv');
+        if (is_array($status_tv)) {
+          $query->whereIn('status_tv', $status_tv);
+        } else {
+          $query->where('status_tv', 'ilike', '%' . $status_tv . '%');
+        }
+      }
       $query->latest();
       $accessPointData = $query->get();
 

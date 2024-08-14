@@ -36,10 +36,18 @@ class NasController extends Controller
                 if (is_array($nama_nas)) {
                     $query->whereIn('nama_nas', $nama_nas);
                 } else {
-                    $query->where('nama_nas', 'like', '%' . $nama_nas . '%');
+                    $query->where('nama_nas', 'ilike', '%' . $nama_nas . '%');
                 }
             }
-
+     
+               if ($request->has('status_nas')) {
+                $status_nas = $request->input('status_nas');
+                if (is_array($status_nas)) {
+                    $query->whereIn('status_nas', $status_nas);
+                } else {
+                    $query->where('status_nas', 'ilike', '%' . $status_nas . '%');
+                }
+            }
             $query->latest();
             $nasData = $query->get();
 
