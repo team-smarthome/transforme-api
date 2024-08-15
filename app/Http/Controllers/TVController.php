@@ -37,7 +37,15 @@ class TVController extends Controller
         if (is_array($nama_tv)) {
           $query->whereIn('nama_tv', $nama_tv);
         } else {
-          $query->where('nama_tv', 'like', '%' . $nama_tv . '%');
+          $query->where('nama_tv', 'ilike', '%' . $nama_tv . '%');
+        }
+      }
+      if ($request->has('status_tv')) {
+        $status_tv = $request->input('status_tv');
+        if (is_array($status_tv)) {
+          $query->whereIn('status_tv', $status_tv);
+        } else {
+          $query->where('status_tv', 'ilike', '%' . $status_tv . '%');
         }
       }
 
@@ -74,67 +82,67 @@ class TVController extends Controller
     }
   }
 
-    public function store(TvRequest $request)
-    {
-        try {
-            if (TV::where('gmac', $request->gmac)->exists()) {
-                return ApiResponse::error('Failed to create TV.', 'Gmac already exists.');
-            }
+  public function store(TvRequest $request)
+  {
+    try {
+      if (TV::where('gmac', $request->gmac)->exists()) {
+        return ApiResponse::error('Failed to create TV.', 'Gmac already exists.');
+      }
 
-            $tv = new TV([
-                'gmac' => $request->gmac,
-                'nama_tv' => $request->nama_tv,
-                'model' => $request->model,
-                'ruangan_otmil_id' => $request->ruangan_otmil_id,
-                'ruangan_lemasmil_id' => $request->ruangan_lemasmil_id,
-                'status_tv' => $request->status_tv,
-                'v_tv_topic' => $request->v_tv_topic
-            ]);
+      $tv = new TV([
+        'gmac' => $request->gmac,
+        'nama_tv' => $request->nama_tv,
+        'model' => $request->model,
+        'ruangan_otmil_id' => $request->ruangan_otmil_id,
+        'ruangan_lemasmil_id' => $request->ruangan_lemasmil_id,
+        'status_tv' => $request->status_tv,
+        'v_tv_topic' => $request->v_tv_topic
+      ]);
 
-            if ($tv->save()) {
-                $data = $tv->toArray();
-                $formattedData = array_merge(['id' => $tv->id], $data);
-                return ApiResponse::created($formattedData);
-            }
-        } catch (Exception $e) {
-            return ApiResponse::error('Failed to create TV.', $e->getMessage());
-        }
+      if ($tv->save()) {
+        $data = $tv->toArray();
+        $formattedData = array_merge(['id' => $tv->id], $data);
+        return ApiResponse::created($formattedData);
+      }
+    } catch (Exception $e) {
+      return ApiResponse::error('Failed to create TV.', $e->getMessage());
     }
+  }
 
-    public function update(TvRequest $request)
-    {
-        try {
-            $id = $request->input('tv_id');
-            $tv = TV::findOrFail($id);
-            $tv->gmac = $request->gmac;
-            $tv->model = $request->model;
-            $tv->nama_tv = $request->nama_tv;
-            $tv->ruangan_otmil_id = $request->ruangan_otmil_id;
-            $tv->ruangan_lemasmil_id = $request->ruangan_lemasmil_id;
-            $tv->status_tv = $request->status_tv;
-            $tv->v_tv_topic = $request->v_tv_topic;
+  public function update(TvRequest $request)
+  {
+    try {
+      $id = $request->input('tv_id');
+      $tv = TV::findOrFail($id);
+      $tv->gmac = $request->gmac;
+      $tv->model = $request->model;
+      $tv->nama_tv = $request->nama_tv;
+      $tv->ruangan_otmil_id = $request->ruangan_otmil_id;
+      $tv->ruangan_lemasmil_id = $request->ruangan_lemasmil_id;
+      $tv->status_tv = $request->status_tv;
+      $tv->v_tv_topic = $request->v_tv_topic;
 
-            if ($tv->save()) {
-                $data = $tv->toArray();
-                return ApiResponse::updated($data);
-            }
-        } catch (Exception $e) {
-            return ApiResponse::error('Failed to update TV.', $e->getMessage());
-        }
+      if ($tv->save()) {
+        $data = $tv->toArray();
+        return ApiResponse::updated($data);
+      }
+    } catch (Exception $e) {
+      return ApiResponse::error('Failed to update TV.', $e->getMessage());
     }
+  }
 
-    public function destroy(Request $request)
-    {
-        try {
-            $id = $request->input('tv_id');
-            $tv = TV::findOrFail($id);
-            if (!$tv) {
-                return ApiResponse::error('TV not found.', 'TV not found.', 404);
-            }
-            $tv->delete();
-            return ApiResponse::deleted();
-        } catch (Exception $e) {
-            return ApiResponse::error('Failed to delete TV.', $e->getMessage());
-        }
+  public function destroy(Request $request)
+  {
+    try {
+      $id = $request->input('tv_id');
+      $tv = TV::findOrFail($id);
+      if (!$tv) {
+        return ApiResponse::error('TV not found.', 'TV not found.', 404);
+      }
+      $tv->delete();
+      return ApiResponse::deleted();
+    } catch (Exception $e) {
+      return ApiResponse::error('Failed to delete TV.', $e->getMessage());
     }
+  }
 }
