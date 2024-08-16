@@ -34,6 +34,10 @@ class RuanganLemasmil extends Model
   {
     return $this->hasMany(Gelang::class, 'ruangan_lemasmil_id', 'id');
   }
+  public function helmet(): HasMany
+  {
+    return $this->hasMany(Helmet::class, 'ruangan_lemasmil_id', 'id');
+  }
   public function kamera(): HasMany
   {
     return $this->hasMany(Kamera::class, 'ruangan_lemasmil_id', 'id');
@@ -102,5 +106,4 @@ class RuanganLemasmil extends Model
   {
     return $this->hasMany(SelfReg::class, "ruangan_lemasmil_id", "id");
   }
-
 }
