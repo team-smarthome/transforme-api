@@ -15,7 +15,8 @@ class RuanganOtmilController extends Controller
       $query = RuanganOtmil::with('lokasiOtmil', 'lantaiOtmil', 'zona');
       $filterData = [
         'nama_ruangan_otmil' => 'nama_ruangan_otmil',
-        'jenis_ruangan_otmil' => 'jenis_ruangan_otmil'
+        'jenis_ruangan_otmil' => 'jenis_ruangan_otmil',
+        'lantai_otmil_id' => 'lantai_otmil_id'
       ];
 
 
@@ -25,7 +26,7 @@ class RuanganOtmilController extends Controller
           if ($field == 'nama_ruangan_otmil') {
             $query->where($field, 'ILIKE', '%' . $request->input($requestParam) . '%');
           } else {
-            $query->where($field, 'LIKE', '%' . $request->input($requestParam) . '%');
+            $query->where($field, 'ILIKE', '%' . $request->input($requestParam) . '%');
           }
         }
       }
