@@ -41,6 +41,8 @@ class GatewayController extends Controller
       ];
 
       // Melakukan filtering berdasarkan parameter yang ada di request
+
+
       if ($request->has('nama_gateway')) {
         $nama_gateway = $request->input('nama_gateway');
         if (is_array($nama_gateway)) {
@@ -50,6 +52,14 @@ class GatewayController extends Controller
         }
       }
 
+      if ($request->has('ruangan_otmil_id')) {
+        $ruangan_otmil_id = $request->input('ruangan_otmil_id');
+        if (is_array($ruangan_otmil_id)) {
+          $query->whereIn('ruangan_otmil_id', $ruangan_otmil_id);
+        } else {
+          $query->where('ruangan_otmil_id', $ruangan_otmil_id);
+        }
+      }
       // Filter berdasarkan status_gateway
       if ($request->has('status_gateway')) {
         $status_gateway = $request->input('status_gateway');
