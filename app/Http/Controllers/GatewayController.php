@@ -25,30 +25,40 @@ class GatewayController extends Controller
         'ruanganLemasmil.lokasiLemasmil'
       ]);
 
-      // Definisi kolom yang bisa difilter
-      $filterableColumns = [
-        'lokasi_otmil_id' => 'ruanganOtmil.lokasiOtmil.lokasi_otmil_id',
-        'lokasi_lemasmil_id' => 'ruanganLemasmil.lokasiLemasmil.lokasi_lemasmil_id',
-        'ruangan_otmil_id' => 'ruangan_otmil_id',
-        'ruangan_lemasmil_id' => 'ruangan_lemasmil_id',
-        'gmac' => 'gmac',
-        'nama_gateway' => 'nama_gateway',
-        'nama_ruangan_otmil' => 'ruanganOtmil.nama_ruangan_otmil',
-        'nama_ruangan_lemasmil' => 'ruanganLemasmil.nama_ruangan_lemasmil',
-        'jenis_ruangan_otmil' => 'ruanganOtmil.jenis_ruangan_otmil',
-        'jenis_ruangan_lemasmil' => 'ruanganLemasmil.jenis_ruangan_lemasmil',
-        'status_gateway' => 'status_gateway'
-      ];
-
       // Melakukan filtering berdasarkan parameter yang ada di request
-
-
       if ($request->has('nama_gateway')) {
         $nama_gateway = $request->input('nama_gateway');
         if (is_array($nama_gateway)) {
           $query->whereIn('nama_gateway', $nama_gateway);
         } else {
           $query->where('nama_gateway', 'ilike', '%' . $nama_gateway . '%');
+        }
+      }
+
+      // Filter berdasarkan gedung_otmil_id melalui relasi
+      if ($request->has('gedung_otmil_id')) {
+        $gedung_otmil_id = $request->input('gedung_otmil_id');
+        if (is_array($gedung_otmil_id)) {
+          $query->whereHas('ruanganOtmil.lantaiOtmil', function ($q) use ($gedung_otmil_id) {
+            $q->whereIn('gedung_otmil_id', $gedung_otmil_id);
+          });
+        } else {
+          $query->whereHas('ruanganOtmil.lantaiOtmil', function ($q) use ($gedung_otmil_id) {
+            $q->where('gedung_otmil_id', $gedung_otmil_id);
+          });
+        }
+      }
+
+      if ($request->has('lantai_otmil_id')) {
+        $lantai_otmil_id = $request->input('lantai_otmil_id');
+        if (is_array($lantai_otmil_id)) {
+          $query->whereHas('ruanganOtmil', function ($q) use ($lantai_otmil_id) {
+            $q->whereIn('lantai_otmil_id', $lantai_otmil_id);
+          });
+        } else {
+          $query->whereHas('ruanganOtmil', function ($q) use ($lantai_otmil_id) {
+            $q->where('lantai_otmil_id', $lantai_otmil_id);
+          });
         }
       }
 
@@ -60,6 +70,7 @@ class GatewayController extends Controller
           $query->where('ruangan_otmil_id', $ruangan_otmil_id);
         }
       }
+
       // Filter berdasarkan status_gateway
       if ($request->has('status_gateway')) {
         $status_gateway = $request->input('status_gateway');
@@ -106,71 +117,94 @@ class GatewayController extends Controller
 
   // public function dashboardGateway(Request $request)
   // {
-  //     try {
-  //         $query = Gateway::with([
-  //             'ruanganOtmil.zona', 
-  //             'ruanganLemasmil.zona', 
-  //             'ruanganOtmil.lokasiOtmil', 
-  //             'ruanganLemasmil.lokasiLemasmil'
-  //         ]);
+  //   try {
+  //     $query = Gateway::with([
+  //       'ruanganOtmil.zona',
+  //       'ruanganLemasmil.zona',
+  //       'ruanganOtmil.lokasiOtmil',
+  //       'ruanganLemasmil.lokasiLemasmil'
+  //     ]);
 
-  //         // Definisi kolom yang bisa difilter
-  //         $filterableColumns = [
-  //             'lokasi_otmil_id' => 'ruanganOtmil.lokasiOtmil.lokasi_otmil_id',
-  //             'lokasi_lemasmil_id' => 'ruanganLemasmil.lokasiLemasmil.lokasi_lemasmil_id',
-  //             'ruangan_otmil_id' => 'ruangan_otmil_id',
-  //             'ruangan_lemasmil_id' => 'ruangan_lemasmil_id',
-  //             'gmac' => 'gmac',
-  //             'nama_gateway' => 'nama_gateway',
-  //             'nama_ruangan_otmil' => 'ruanganOtmil.nama_ruangan_otmil',
-  //             'nama_ruangan_lemasmil' => 'ruanganLemasmil.nama_ruangan_lemasmil',
-  //             'jenis_ruangan_otmil' => 'ruanganOtmil.jenis_ruangan_otmil',
-  //             'jenis_ruangan_lemasmil' => 'ruanganLemasmil.jenis_ruangan_lemasmil',
-  //             'status_gateway' => 'status_gateway'
-  //         ];
+  //     // Definisi kolom yang bisa difilter
+  //     $filterableColumns = [
+  //       'lokasi_otmil_id' => 'ruanganOtmil.lokasiOtmil.lokasi_otmil_id',
+  //       'lokasi_lemasmil_id' => 'ruanganLemasmil.lokasiLemasmil.lokasi_lemasmil_id',
+  //       'ruangan_otmil_id' => 'ruangan_otmil_id',
+  //       'ruangan_lemasmil_id' => 'ruangan_lemasmil_id',
+  //       'gmac' => 'gmac',
+  //       'nama_gateway' => 'nama_gateway',
+  //       'nama_ruangan_otmil' => 'ruanganOtmil.nama_ruangan_otmil',
+  //       'nama_ruangan_lemasmil' => 'ruanganLemasmil.nama_ruangan_lemasmil',
+  //       'jenis_ruangan_otmil' => 'ruanganOtmil.jenis_ruangan_otmil',
+  //       'jenis_ruangan_lemasmil' => 'ruanganLemasmil.jenis_ruangan_lemasmil',
+  //       'status_gateway' => 'status_gateway'
+  //     ];
 
-  //         // Melakukan filtering berdasarkan parameter yang ada di request
-  //         if ($request->has('nama_gateway')) {
-  //             $nama_gateway = $request->input('nama_gateway');
-  //             if (is_array($nama_gateway)) {
-  //                 $query->whereIn('nama_gateway', $nama_gateway);
-  //             } else {
-  //                 $query->where('nama_gateway', 'ilike', '%' . $nama_gateway . '%');
-  //             }
-  //         }
+  //     // Melakukan filtering berdasarkan parameter yang ada di request
 
-  //         $query->latest();
-  //         $gatewayData = $query->get();
 
-  //         $totalGateway = $gatewayData->count();
-  //         $totalaktif = $gatewayData->where('status_gateway', 'aktif')->count();
-  //         $totalnonaktif = $gatewayData->where('status_gateway', 'nonaktif')->count();
-
-  //         $paginatedData = $query->paginate($request->input('pageSize', ApiResponse::$defaultPagination));
-  //         $resourceCollection = GatewayResource::collection($paginatedData);
-
-  //         $responseData = [
-  //             "status" => "OK",
-  //             "message" => "Successfully get Data",
-  //             "records" => $resourceCollection->toArray($request),
-  //             "totalGateway" => $totalGateway,
-  //             "totalaktif" => $totalaktif,
-  //             "totalnonaktif" => $totalnonaktif,
-  //             "pagination" => [
-  //                 "currentPage" => $paginatedData->currentPage(),
-  //                 "pageSize" => $paginatedData->perPage(),
-  //                 "from" => $paginatedData->firstItem(),
-  //                 "to" => $paginatedData->lastItem(),
-  //                 "totalRecords" => $paginatedData->total(),
-  //                 "totalPages" => $paginatedData->lastPage()
-  //             ]
-  //         ];
-
-  //         return response()->json($responseData);
-  //     } catch (\Exception $e) {
-  //         return ApiResponse::error('Failed to get Data.', $e->getMessage());
+  //     if ($request->has('nama_gateway')) {
+  //       $nama_gateway = $request->input('nama_gateway');
+  //       if (is_array($nama_gateway)) {
+  //         $query->whereIn('nama_gateway', $nama_gateway);
+  //       } else {
+  //         $query->where('nama_gateway', 'ilike', '%' . $nama_gateway . '%');
+  //       }
   //     }
+
+  //     if ($request->has('ruangan_otmil_id')) {
+  //       $ruangan_otmil_id = $request->input('ruangan_otmil_id');
+  //       if (is_array($ruangan_otmil_id)) {
+  //         $query->whereIn('ruangan_otmil_id', $ruangan_otmil_id);
+  //       } else {
+  //         $query->where('ruangan_otmil_id', $ruangan_otmil_id);
+  //       }
+  //     }
+  //     // Filter berdasarkan status_gateway
+  //     if ($request->has('status_gateway')) {
+  //       $status_gateway = $request->input('status_gateway');
+  //       if (is_array($status_gateway)) {
+  //         $query->whereIn('status_gateway', $status_gateway);
+  //       } else {
+  //         $query->where('status_gateway', $status_gateway);
+  //       }
+  //     }
+
+  //     $query->latest();
+  //     $gatewayData = $query->get();
+
+  //     $totalGateway = $gatewayData->count();
+  //     $totalaktif = $gatewayData->where('status_gateway', 'aktif')->count();
+  //     $totalnonaktif = $gatewayData->where('status_gateway', 'nonaktif')->count();
+
+  //     $paginatedData = $query->paginate($request->input('pageSize', ApiResponse::$defaultPagination));
+  //     $resourceCollection = GatewayResource::collection($paginatedData);
+
+  //     $responseData = [
+  //       "status" => "OK",
+  //       "message" => "Successfully get Data",
+  //       "records" => $resourceCollection->toArray($request),
+  //       "totalGateway" => $totalGateway,
+  //       "totalaktif" => $totalaktif,
+  //       "totalnonaktif" => $totalnonaktif,
+  //       "pagination" => [
+  //         "currentPage" => $paginatedData->currentPage(),
+  //         "pageSize" => $paginatedData->perPage(),
+  //         "from" => $paginatedData->firstItem(),
+  //         "to" => $paginatedData->lastItem(),
+  //         "totalRecords" => $paginatedData->total(),
+  //         "totalPages" => $paginatedData->lastPage()
+  //       ]
+  //     ];
+
+  //     return response()->json($responseData);
+  //   } catch (\Exception $e) {
+  //     return ApiResponse::error('Failed to get Data.', $e->getMessage());
+  //   }
   // }
+
+
+
 
 
   /**
