@@ -39,7 +39,10 @@ class RuanganOtmil extends Model
   {
     return $this->belongsTo(LantaiOtmil::class, "lantai_otmil_id", "id");
   }
-
+  public function getGedungOtmilIdAttribute()
+  {
+    return $this->lantaiOtmil->gedung_otmil_id ?? null;
+  }
   public function gelang(): HasMany
   {
     return $this->hasMany(Gelang::class, "ruangan_otmil_id", "id");
