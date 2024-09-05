@@ -27,6 +27,8 @@ class KameraResource extends JsonResource
       'ip_address' => $this->ip_address,
       'ruangan_otmil_id' => $this->ruangan_otmil_id ?? null,
       'nama_ruangan_otmil' => $this->ruanganOtmil->nama_ruangan_otmil ?? null,
+      'lantai_otmil_id' => $this->lantai_otmil_id,
+      'gedung_otmil_id' => $this->gedung_otmil_id,
       'ruangan_lemasmil_id' => $this->ruangan_lemasmil_id ?? null,
       'nama_ruangan_lemasmil' => $this->ruanganLemasmil->nama_ruangan_lemasmil ?? null,
       'nama_lokasi_otmil' =>  $this->ruanganOtmil->lokasiOtmil->nama_lokasi_otmil ?? null,
