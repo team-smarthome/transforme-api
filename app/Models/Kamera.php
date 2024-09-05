@@ -37,6 +37,15 @@ class Kamera extends Model
   {
     return $this->belongsTo(RuanganOtmil::class, 'ruangan_otmil_id', 'id');
   }
+  public function getLantaiOtmilIdAttribute()
+  {
+    return $this->ruanganOtmil->lantai_otmil_id ?? null;
+  }
+
+  public function getGedungOtmilIdAttribute()
+  {
+    return $this->ruanganOtmil->lantaiOtmil->gedung_otmil_id ?? null;
+  }
   public function ruanganLemasmil(): BelongsTo
   {
     return $this->belongsTo(RuanganLemasmil::class, 'ruangan_lemasmil_id', 'id');
