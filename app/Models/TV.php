@@ -10,30 +10,38 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class TV extends Model
 {
-    use softDeletes, HasUuids;
+  use softDeletes, HasUuids;
 
-    protected $table = 'tv';
-    protected $keyType = 'uuid';
-    public $incrementing = false;
-    public $timestamps = true;
+  protected $table = 'tv';
+  protected $keyType = 'uuid';
+  public $incrementing = false;
+  public $timestamps = true;
 
-    protected $fillable = [
-        'nama_tv',
-        'model',
-        'gmac',
-        'ruangan_otmil_id',
-        'ruangan_lemasmil_id',
-        'status_tv',
-        'v_tv_topic'
-    ];
+  protected $fillable = [
+    'nama_tv',
+    'model',
+    'gmac',
+    'ruangan_otmil_id',
+    'ruangan_lemasmil_id',
+    'status_tv',
+    'v_tv_topic'
+  ];
 
-    public function ruanganOtmil(): BelongsTo
-    {
-        return $this->belongsTo(RuanganOtmil::class, 'ruangan_otmil_id', 'id');
-    }
+  public function ruanganOtmil(): BelongsTo
+  {
+    return $this->belongsTo(RuanganOtmil::class, 'ruangan_otmil_id', 'id');
+  }
+  public function getLantaiOtmilIdAttribute()
+  {
+    return $this->ruanganOtmil->lantai_otmil_id ?? null;
+  }
 
-    public function ruanganLemasmil(): BelongsTo
-    {
-        return $this->belongsTo(RuanganLemasmil::class, 'ruangan_lemasmil_id', 'id');
-    }
+  public function getGedungOtmilIdAttribute()
+  {
+    return $this->ruanganOtmil->lantaiOtmil->gedung_otmil_id ?? null;
+  }
+  public function ruanganLemasmil(): BelongsTo
+  {
+    return $this->belongsTo(RuanganLemasmil::class, 'ruangan_lemasmil_id', 'id');
+  }
 }

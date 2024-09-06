@@ -40,6 +40,41 @@ class TVController extends Controller
           $query->where('nama_tv', 'ilike', '%' . $nama_tv . '%');
         }
       }
+
+      if ($request->has('gedung_otmil_id')) {
+        $gedung_otmil_id = $request->input('gedung_otmil_id');
+        if (is_array($gedung_otmil_id)) {
+          $query->whereHas('ruanganOtmil.lantaiOtmil', function ($q) use ($gedung_otmil_id) {
+            $q->whereIn('gedung_otmil_id', $gedung_otmil_id);
+          });
+        } else {
+          $query->whereHas('ruanganOtmil.lantaiOtmil', function ($q) use ($gedung_otmil_id) {
+            $q->where('gedung_otmil_id', $gedung_otmil_id);
+          });
+        }
+      }
+
+      if ($request->has('lantai_otmil_id')) {
+        $lantai_otmil_id = $request->input('lantai_otmil_id');
+        if (is_array($lantai_otmil_id)) {
+          $query->whereHas('ruanganOtmil', function ($q) use ($lantai_otmil_id) {
+            $q->whereIn('lantai_otmil_id', $lantai_otmil_id);
+          });
+        } else {
+          $query->whereHas('ruanganOtmil', function ($q) use ($lantai_otmil_id) {
+            $q->where('lantai_otmil_id', $lantai_otmil_id);
+          });
+        }
+      }
+
+      if ($request->has('ruangan_otmil_id')) {
+        $ruangan_otmil_id = $request->input('ruangan_otmil_id');
+        if (is_array($ruangan_otmil_id)) {
+          $query->whereIn('ruangan_otmil_id', $ruangan_otmil_id);
+        } else {
+          $query->where('ruangan_otmil_id', $ruangan_otmil_id);
+        }
+      }
       if ($request->has('status_tv')) {
         $status_tv = $request->input('status_tv');
         if (is_array($status_tv)) {
