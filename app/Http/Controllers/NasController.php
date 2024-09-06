@@ -39,6 +39,40 @@ class NasController extends Controller
           $query->where('nama_nas', 'ilike', '%' . $nama_nas . '%');
         }
       }
+      if ($request->has('gedung_otmil_id')) {
+        $gedung_otmil_id = $request->input('gedung_otmil_id');
+        if (is_array($gedung_otmil_id)) {
+          $query->whereHas('ruanganOtmil.lantaiOtmil', function ($q) use ($gedung_otmil_id) {
+            $q->whereIn('gedung_otmil_id', $gedung_otmil_id);
+          });
+        } else {
+          $query->whereHas('ruanganOtmil.lantaiOtmil', function ($q) use ($gedung_otmil_id) {
+            $q->where('gedung_otmil_id', $gedung_otmil_id);
+          });
+        }
+      }
+
+      if ($request->has('lantai_otmil_id')) {
+        $lantai_otmil_id = $request->input('lantai_otmil_id');
+        if (is_array($lantai_otmil_id)) {
+          $query->whereHas('ruanganOtmil', function ($q) use ($lantai_otmil_id) {
+            $q->whereIn('lantai_otmil_id', $lantai_otmil_id);
+          });
+        } else {
+          $query->whereHas('ruanganOtmil', function ($q) use ($lantai_otmil_id) {
+            $q->where('lantai_otmil_id', $lantai_otmil_id);
+          });
+        }
+      }
+
+      if ($request->has('ruangan_otmil_id')) {
+        $ruangan_otmil_id = $request->input('ruangan_otmil_id');
+        if (is_array($ruangan_otmil_id)) {
+          $query->whereIn('ruangan_otmil_id', $ruangan_otmil_id);
+        } else {
+          $query->where('ruangan_otmil_id', $ruangan_otmil_id);
+        }
+      }
       if ($request->has('status_nas')) {
         $status_nas = $request->input('status_nas');
         if (is_array($status_nas)) {
@@ -62,7 +96,7 @@ class NasController extends Controller
         "status" => "OK",
         "message" => "Successfully get Data",
         "records" => $resourceCollection->toArray($request),
-        "totalNas$totalNas" => $totalNas,
+        "totalNas" => $totalNas,
         "totalaktif" => $totalaktif,
         "totalnonaktif" => $totalnonaktif,
         "pagination" => [
