@@ -10,29 +10,37 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class NasModel extends Model
 {
-    use HasFactory, SoftDeletes, HasUuids;
+  use HasFactory, SoftDeletes, HasUuids;
 
-    protected $table = 'nas';
-    protected $keyType = 'uuid';
-    public $incrementing = false;
-    public $timestamps = true;
-    
-    protected $fillable = [
-        'nama_nas',
-        'gmac',
-        'ruangan_otmil_id',
-        'ruangan_lemasmil_id',
-        'status_nas',
-        'v_nas_topic'
-    ];
+  protected $table = 'nas';
+  protected $keyType = 'uuid';
+  public $incrementing = false;
+  public $timestamps = true;
 
-    public function ruanganOtmil(): BelongsTo
-    {
-        return $this->belongsTo(RuanganOtmil::class, 'ruangan_otmil_id', 'id');
-    }
+  protected $fillable = [
+    'nama_nas',
+    'gmac',
+    'ruangan_otmil_id',
+    'ruangan_lemasmil_id',
+    'status_nas',
+    'v_nas_topic'
+  ];
 
-    public function ruanganLemasmil(): BelongsTo
-    {
-        return $this->belongsTo(RuanganLemasmil::class, 'ruangan_lemasmil_id', 'id');
-    }
+  public function ruanganOtmil(): BelongsTo
+  {
+    return $this->belongsTo(RuanganOtmil::class, 'ruangan_otmil_id', 'id');
+  }
+  public function getLantaiOtmilIdAttribute()
+  {
+    return $this->ruanganOtmil->lantai_otmil_id ?? null;
+  }
+
+  public function getGedungOtmilIdAttribute()
+  {
+    return $this->ruanganOtmil->lantaiOtmil->gedung_otmil_id ?? null;
+  }
+  public function ruanganLemasmil(): BelongsTo
+  {
+    return $this->belongsTo(RuanganLemasmil::class, 'ruangan_lemasmil_id', 'id');
+  }
 }
