@@ -11,16 +11,19 @@ return new class extends Migration
    */
   public function up(): void
   {
-    Schema::create('nvr', function (Blueprint $table) {
+    Schema::create('autogate_single', function (Blueprint $table) {
       $table->uuid('id')->primary();
-      $table->string('nama_nvr', 100)->nullable();
+      $table->string('nama_autogate_single', 100)->nullable();
       $table->string('gmac', 100)->nullable();
       $table->uuid('ruangan_otmil_id')->nullable();
       $table->uuid('ruangan_lemasmil_id')->nullable();
-      $table->string('status_nvr', 100)->nullable();
-      $table->string('v_nvr_topic', 100)->nullable();
+      $table->string('status_autogate_single', 100)->nullable();
+      $table->string('v_autogate_single_topic', 100)->nullable();
       $table->timestamps();
       $table->softDeletes();
+      $table->double('posisi_X', 8, 2)->nullable();
+      $table->double('posisi_Y', 8, 2)->nullable();
+
 
       $table->foreign('ruangan_otmil_id')->references('id')->on('ruangan_otmil');
       $table->foreign('ruangan_lemasmil_id')->references('id')->on('ruangan_lemasmil');
@@ -32,6 +35,6 @@ return new class extends Migration
    */
   public function down(): void
   {
-    Schema::dropIfExists('nvr');
+    Schema::dropIfExists('autogate_single');
   }
 };
