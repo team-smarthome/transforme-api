@@ -116,4 +116,9 @@ class RuanganLemasmil extends Model
   {
     return $this->hasMany(RegistrationKios::class, "ruangan_lemasmil_id", "id");
   }
+
+  public function emergencypushbutton(): HasMany
+  {
+    return $this->hasMany(EmergencyPushButton::class, "ruangan_lemasmil_id", "id");
+  }
 }
