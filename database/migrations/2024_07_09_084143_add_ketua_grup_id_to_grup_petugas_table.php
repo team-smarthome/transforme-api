@@ -10,10 +10,10 @@ class AddKetuaGrupIdToGrupPetugasTable extends Migration
   {
     Schema::table('grup_petugas', function (Blueprint $table) {
       // Tambahkan kolom ketua_grup_id sebagai UUID
-      $table->uuid('ketua_grup_id')->nullable();
+      // $table->uuid('ketua_grup_id')->nullable();
 
-      // Tambahkan foreign key constraint ke tabel petugas
-      $table->foreign('ketua_grup_id')->references('id')->on('petugas')->onDelete('set null');
+      // // Tambahkan foreign key constraint ke tabel petugas
+      // $table->foreign('ketua_grup_id')->references('id')->on('petugas')->onDelete('set null');
     });
   }
 

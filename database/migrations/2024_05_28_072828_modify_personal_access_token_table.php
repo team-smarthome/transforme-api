@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::table('personal_access_tokens', function (Blueprint $table) {
             //
-            $table->uuid('tokenable_id')->change();
+            // $table->uuid('tokenable_id')->change();
         });
     }
     
