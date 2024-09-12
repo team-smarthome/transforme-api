@@ -75,6 +75,11 @@ class RuanganOtmil extends Model
     return $this->hasMany(RegistrationKios::class, "ruangan_otmil_id", "id");
   }
 
+  public function emergencypushbutton(): HasMany
+  {
+    return $this->hasMany(EmergencyPushButton::class, "ruangan_otmil_id", "id");
+  }
+
   public function zona(): BelongsTo
   {
     return $this->belongsTo(Zona::class, 'zona_id', 'id');

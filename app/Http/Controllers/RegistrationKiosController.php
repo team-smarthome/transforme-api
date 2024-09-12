@@ -74,9 +74,9 @@ class RegistrationKiosController extends Controller
             $query->latest();
             $registration_kiosData = $query->get();
 
-            $totaregistrationkios = $registration_kiosData->count();
-            $totalaktif = $registration_kiosData->where('status_autogate_dual', 'aktif')->count();
-            $totalnonaktif = $registration_kiosData->where('status_autogate_dual', 'nonaktif')->count();
+            $totalegistrationkios = $registration_kiosData->count();
+            $totalaktif = $registration_kiosData->where('status_registration_kios', 'aktif')->count();
+            $totalnonaktif = $registration_kiosData->where('status_registration_kios', 'nonaktif')->count();
 
             $paginatedData = $query->paginate($request->input('pageSize', ApiResponse::$defaultPagination));
             $resourceCollection = RegistrationKiosResource::collection($paginatedData);
@@ -85,7 +85,7 @@ class RegistrationKiosController extends Controller
                 "status" => "OK",
                 "message" => "Successfully get Data",
                 "records" => $resourceCollection->toArray($request),
-                "totaregistrationkios" => $totaregistrationkios,
+                "totalegistrationkios" => $totalegistrationkios,
                 "totalaktif" => $totalaktif,
                 "totalnonaktif" => $totalnonaktif,
                 "pagination" => [
