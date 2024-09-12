@@ -97,13 +97,23 @@ class RuanganLemasmil extends Model
     return $this->hasMany(AccessDoor::class, 'ruangan_lemasmil_id', 'id');
   }
 
-  public function faceRec(): HasMany
-  {
-    return $this->hasMany(FaceRec::class, "ruangan_lemasmil_id", "id");
-  }
+  // public function faceRec(): HasMany
+  // {
+  //   return $this->hasMany(FaceRec::class, "ruangan_lemasmil_id", "id");
+  // }
 
-  public function selfReg(): HasMany
+  // public function selfReg(): HasMany
+  // {
+  //   return $this->hasMany(SelfReg::class, "ruangan_lemasmil_id", "id");
+  // }
+
+  public function gateway(): HasMany
   {
-    return $this->hasMany(SelfReg::class, "ruangan_lemasmil_id", "id");
+    return $this->hasMany(Gateway::class, "ruangan_lemasmil_id", "id");
+  }
+  
+  public function registrationkios(): HasMany
+  {
+    return $this->hasMany(RegistrationKios::class, "ruangan_lemasmil_id", "id");
   }
 }

@@ -69,6 +69,11 @@ class RuanganOtmil extends Model
   {
     return $this->hasMany(Gateway::class, "ruangan_otmil_id", "id");
   }
+  
+  public function registrationkios(): HasMany
+  {
+    return $this->hasMany(RegistrationKios::class, "ruangan_otmil_id", "id");
+  }
 
   public function zona(): BelongsTo
   {
@@ -109,13 +114,13 @@ class RuanganOtmil extends Model
     return $this->hasMany(AccessDoor::class, "ruangan_otmil_id", "id");
   }
 
-  public function faceRec(): HasMany
-  {
-    return $this->hasMany(FaceRec::class, "ruangan_otmil_id", "id");
-  }
+  // public function faceRec(): HasMany
+  // {
+  //   return $this->hasMany(FaceRec::class, "ruangan_otmil_id", "id");
+  // }
 
-  public function selfReg(): HasMany
-  {
-    return $this->hasMany(SelfReg::class, "ruangan_otmil_id", "id");
-  }
+  // public function selfReg(): HasMany
+  // {
+  //   return $this->hasMany(SelfReg::class, "ruangan_otmil_id", "id");
+  // }
 }
